@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 import { lint, lintHelp } from "./commands/lint.ts";
 import { schema, schemaHelp } from "./commands/schema.ts";
+import { sim, simHelp } from "./commands/sim.ts";
 
 type Command = { run: (args: readonly string[]) => Promise<number>; help: string };
 
 const commands: Record<string, Command> = {
   lint: { run: lint, help: lintHelp },
   schema: { run: schema, help: schemaHelp },
+  sim: { run: sim, help: simHelp },
 };
 
 const usage = `abtune <command> [options]

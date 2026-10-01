@@ -2,7 +2,7 @@
 
 **A/B test your taste.** Answer a fast run of this-or-that questions (*Bon Jovi or Britney? 80s or 90s? Cats or dogs?*) and get a playlist that sounds like you, built from an open catalog of ~2M songs. Push it to Spotify or export it, and share your music-personality card.
 
-> **Status: pre-alpha.** Milestone M0 (scaffold) is done; the quiz engine (M2) is in progress. The build brief is [`docs/HANDOFF.md`](docs/HANDOFF.md).
+> **Status: pre-alpha.** Done: M0 (scaffold, CI, question-bank lint) and M2 (the deterministic quiz engine). Next: M1, the open-data music catalog. The build brief is [`docs/HANDOFF.md`](docs/HANDOFF.md).
 
 ## Run it
 
@@ -24,6 +24,7 @@ pnpm test          # all tests
 pnpm typecheck
 pnpm lint          # Biome
 pnpm abtune lint   # validate the question bank
+pnpm abtune sim    # replay the quiz engine: golden sequences + random-run stats
 ```
 
 Web app in dev mode: `pnpm --filter @abtune/web dev:server` and `pnpm --filter @abtune/web dev:client` in two terminals, then open the Vite URL.
