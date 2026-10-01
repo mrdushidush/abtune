@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Lint, typecheck, test (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec biome ci .
+      - run: pnpm typecheck
+      - run: pnpm test
+      - name: Lint question bank
+        run: pnpm abtune lint
+      - name: JSON Schema is up to date
+        run: pnpm abtune schema --out data/questions/schema.json --check
+      - run: pnpm --filter @abtune/web build
+
+  cross-os:
+    name: Test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        # macOS minutes cost 10x on private repos: run it on main and manual runs only.
+        os: ${{ fromJSON(github.event_name == 'pull_request' && '["windows-latest"]' || '["windows-latest","macos-latest"]') }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: pnpm abtune lint
+
+  compose-smoke:
+    name: docker compose smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker compose up -d --build
+      - name: Wait for /api/health
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://127.0.0.1:8787/api/health; then echo; exit 0; fi
+            sleep 1
+          done
+          docker compose logs
+          exit 1
+      - name: Serves the web app
+        run: curl -sf http://127.0.0.1:8787/ | grep -q "<title>ABTune</title>"
+      - if: always()
+        run: docker compose down

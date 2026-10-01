@@ -1,0 +1,20 @@
+{
+  "name": "@abtune/bank",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ABTune question bank: YAML schema, parsing, merging and lint.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./node": "./src/node.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@abtune/engine": "workspace:*",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.5"
+  }
+}

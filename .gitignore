@@ -1,0 +1,13 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+Thumbs.db
+.vite/
+# Catalog artifacts are built or downloaded, never committed (the 5k test fixture lives elsewhere).
+data/catalog/
+data/dumps/

@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // The engine must run in browsers too: no Node or DOM typings in src.
+    "types": []
+  },
+  "include": ["src"]
+}

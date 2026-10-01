@@ -1,0 +1,13 @@
+name: abtune
+
+services:
+  app:
+    build: .
+    image: abtune:local
+    # Loopback only: Spotify requires http://127.0.0.1:<port>/callback redirects (HANDOFF §3.1).
+    ports:
+      - "127.0.0.1:${ABTUNE_PORT:-8787}:8787"
+    env_file:
+      - path: .env
+        required: false
+    restart: unless-stopped

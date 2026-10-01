@@ -1,0 +1,327 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "number",
+      "const": 1
+    },
+    "dimensions": {
+      "type": "object",
+      "properties": {
+        "scalar": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "decades": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "genres": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "languages": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "scalar",
+        "decades",
+        "genres",
+        "languages"
+      ],
+      "additionalProperties": false
+    },
+    "packs": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "weight": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "default": {
+            "type": "boolean"
+          },
+          "opt_in": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "weight",
+          "default"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "pack": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pri": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "q": {
+            "type": "string",
+            "minLength": 1
+          },
+          "weight": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "sensitive": {
+            "type": "string",
+            "minLength": 1
+          },
+          "unlock_if": {
+            "type": "object",
+            "properties": {
+              "any": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]*=(a|b)$"
+                }
+              },
+              "top_genres": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "classic_rock",
+                    "alt_indie",
+                    "metal",
+                    "punk",
+                    "pop",
+                    "dance_pop",
+                    "hiphop",
+                    "rnb_soul",
+                    "funk_disco",
+                    "house_techno",
+                    "edm",
+                    "chill_ambient",
+                    "synth_newwave",
+                    "folk",
+                    "country",
+                    "blues",
+                    "jazz",
+                    "classical",
+                    "soundtrack",
+                    "reggae",
+                    "latin",
+                    "world",
+                    "mizrahi",
+                    "kpop"
+                  ]
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "a": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 22
+              },
+              "emoji": {
+                "type": "string",
+                "minLength": 1
+              },
+              "fx": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "enum": [
+                    "energy",
+                    "valence",
+                    "dance",
+                    "acoustic",
+                    "intensity",
+                    "tempo",
+                    "mainstream",
+                    "vocal",
+                    "complexity",
+                    "dec50",
+                    "dec60",
+                    "dec70",
+                    "dec80",
+                    "dec90",
+                    "dec00",
+                    "dec10",
+                    "dec20",
+                    "classic_rock",
+                    "alt_indie",
+                    "metal",
+                    "punk",
+                    "pop",
+                    "dance_pop",
+                    "hiphop",
+                    "rnb_soul",
+                    "funk_disco",
+                    "house_techno",
+                    "edm",
+                    "chill_ambient",
+                    "synth_newwave",
+                    "folk",
+                    "country",
+                    "blues",
+                    "jazz",
+                    "classical",
+                    "soundtrack",
+                    "reggae",
+                    "latin",
+                    "world",
+                    "mizrahi",
+                    "kpop",
+                    "lang_en",
+                    "lang_he",
+                    "lang_fr",
+                    "lang_es",
+                    "lang_other"
+                  ]
+                },
+                "additionalProperties": {
+                  "type": "number",
+                  "minimum": -1,
+                  "maximum": 1
+                }
+              }
+            },
+            "required": [
+              "label",
+              "emoji",
+              "fx"
+            ],
+            "additionalProperties": false
+          },
+          "b": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 22
+              },
+              "emoji": {
+                "type": "string",
+                "minLength": 1
+              },
+              "fx": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "enum": [
+                    "energy",
+                    "valence",
+                    "dance",
+                    "acoustic",
+                    "intensity",
+                    "tempo",
+                    "mainstream",
+                    "vocal",
+                    "complexity",
+                    "dec50",
+                    "dec60",
+                    "dec70",
+                    "dec80",
+                    "dec90",
+                    "dec00",
+                    "dec10",
+                    "dec20",
+                    "classic_rock",
+                    "alt_indie",
+                    "metal",
+                    "punk",
+                    "pop",
+                    "dance_pop",
+                    "hiphop",
+                    "rnb_soul",
+                    "funk_disco",
+                    "house_techno",
+                    "edm",
+                    "chill_ambient",
+                    "synth_newwave",
+                    "folk",
+                    "country",
+                    "blues",
+                    "jazz",
+                    "classical",
+                    "soundtrack",
+                    "reggae",
+                    "latin",
+                    "world",
+                    "mizrahi",
+                    "kpop",
+                    "lang_en",
+                    "lang_he",
+                    "lang_fr",
+                    "lang_es",
+                    "lang_other"
+                  ]
+                },
+                "additionalProperties": {
+                  "type": "number",
+                  "minimum": -1,
+                  "maximum": 1
+                }
+              }
+            },
+            "required": [
+              "label",
+              "emoji",
+              "fx"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "pack",
+          "pri",
+          "a",
+          "b"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "version"
+  ],
+  "additionalProperties": false,
+  "title": "ABTune question bank file"
+}

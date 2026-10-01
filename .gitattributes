@@ -1,0 +1,5 @@
+# Normalize line endings: YAML and source are hashed for determinism (seed/engine_version).
+* text=auto eol=lf
+*.png binary
+*.parquet binary
+*.gz binary
