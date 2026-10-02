@@ -668,16 +668,18 @@ questions:
   a: { label: "Hebrew", emoji: "🇮🇱", fx: { lang_he: 1 } }
   b: { label: "French", emoji: "🇫🇷", fx: { lang_fr: 1 } }
 
+# Asked of French-leaning listeners only: after "Hebrew", "Other languages" would read as
+# "Hebrew too" but count as lang_other and outweigh the Hebrew answer (M3 persona eval).
 - id: spanish_other
   pack: deep
   pri: 60
-  unlock_if: { any: ["english_world=b"] }
+  unlock_if: { any: ["hebrew_french=b"] }
   a: { label: "Spanish", emoji: "🇪🇸", fx: { lang_es: 1 } }
   b: { label: "Other languages", emoji: "🌐", fx: { lang_other: 1 } }
 
 - id: mizrahi_israelirock
   pack: deep
-  pri: 64
+  pri: 82
   unlock_if: { any: ["hebrew_french=a"], top_genres: [mizrahi] }
   a: { label: "Mizrahi", emoji: "🪘", fx: { mizrahi: 1, lang_he: 0.6, dance: 0.4 } }
   b: { label: "Israeli rock", emoji: "🎸", fx: { classic_rock: 0.5, alt_indie: 0.3, lang_he: 0.8 } }
@@ -691,7 +693,7 @@ questions:
 
 - id: einstein_omeradam
   pack: deep
-  pri: 60
+  pri: 85
   unlock_if: { any: ["hebrew_french=a"] }
   a: { label: "Arik Einstein", emoji: "🌿", fx: { lang_he: 0.8, folk: 0.5, classic_rock: 0.3, dec70: 0.8 } }
   b: { label: "Omer Adam", emoji: "🎉", fx: { lang_he: 0.8, mizrahi: 0.7, pop: 0.4, dec10: 0.8 } }

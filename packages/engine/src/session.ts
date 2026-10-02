@@ -1,7 +1,7 @@
 import { bankIndex } from "./dims.ts";
 import { type AnswerEvent, foldProfile, type Profile } from "./profile.ts";
 import { computeSeed } from "./seed.ts";
-import { nextQuestion } from "./select.ts";
+import { nextQuestion, type SelectOptions } from "./select.ts";
 import type { Bank, Choice, Question } from "./types.ts";
 import { engineVersion } from "./version.ts";
 
@@ -89,7 +89,11 @@ export function validateLog(bank: Bank, log: readonly AnswerEvent[]): void {
   }
 }
 
-export function viewSession(bank: Bank, state: SessionState): SessionView {
+export function viewSession(
+  bank: Bank,
+  state: SessionState,
+  options: SelectOptions = {},
+): SessionView {
   const profile = foldProfile(bank, state.answer_log);
   const answered = profile.answered;
   const mode = state.config.mode;
@@ -102,6 +106,7 @@ export function viewSession(bank: Bank, state: SessionState): SessionView {
     state.answer_log,
     new Set(state.config.packs),
     position,
+    options,
   );
   return question
     ? { ...base, status: "asking", question }
@@ -113,10 +118,11 @@ export function reduceSession(
   bank: Bank,
   state: SessionState,
   action: SessionAction,
+  options: SelectOptions = {},
 ): SessionState {
   switch (action.type) {
     case "answer": {
-      const view = viewSession(bank, state);
+      const view = viewSession(bank, state, options);
       if (view.status !== "asking" || !view.question) {
         throw new SessionError(`Cannot answer: session is ${view.status}.`);
       }
@@ -135,7 +141,7 @@ export function reduceSession(
         ? state
         : { ...state, answer_log: state.answer_log.slice(0, -1) };
     case "ten_more": {
-      const status = viewSession(bank, state).status;
+      const status = viewSession(bank, state, options).status;
       if (status === "asking") throw new SessionError("Cannot add 10 more while still asking.");
       return { ...state, config: { ...state.config, mode: state.config.mode + MORE_STEP } };
     }

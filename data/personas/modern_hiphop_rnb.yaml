@@ -1,0 +1,8 @@
+id: modern_hiphop_rnb
+name: Modern hip-hop & R&B
+clusters: { hiphop: 1, rnb_soul: 0.8 }
+decades: { dec10: 1, dec20: 1 }
+languages: { lang_en: 1 }
+scalars:
+  dance: [0, 1]
+  vocal: [0, 1]

@@ -108,12 +108,31 @@ importers:
       '@abtune/engine':
         specifier: workspace:*
         version: link:../engine
+      '@abtune/eval':
+        specifier: workspace:*
+        version: link:../eval
 
   packages/engine:
     dependencies:
       '@noble/hashes':
         specifier: ^2.4.0
         version: 2.4.0
+
+  packages/eval:
+    dependencies:
+      '@abtune/engine':
+        specifier: workspace:*
+        version: link:../engine
+      yaml:
+        specifier: ^2.9.1
+        version: 2.9.1
+      zod:
+        specifier: ^4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@abtune/bank':
+        specifier: workspace:*
+        version: link:../bank
 
 packages:
 

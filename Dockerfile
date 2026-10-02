@@ -12,6 +12,7 @@ COPY packages/engine/package.json packages/engine/
 COPY packages/bank/package.json packages/bank/
 COPY packages/cli/package.json packages/cli/
 COPY packages/catalog/package.json packages/catalog/
+COPY packages/eval/package.json packages/eval/
 COPY apps/web/package.json apps/web/
 
 FROM manifests AS build
@@ -26,9 +27,11 @@ RUN pnpm install --frozen-lockfile --prod --filter "@abtune/web..." --filter "@a
 COPY packages/engine/src packages/engine/src
 COPY packages/bank/src packages/bank/src
 COPY packages/catalog/src packages/catalog/src
+COPY packages/eval/src packages/eval/src
 COPY packages/cli/src packages/cli/src
 COPY apps/web/src/server apps/web/src/server
 COPY data/questions data/questions
+COPY data/personas data/personas
 COPY --from=build /app/apps/web/dist apps/web/dist
 # Catalogs are mounted here (compose) and written by `abtune catalog fetch`.
 RUN mkdir -p data/catalog && chown node:node data/catalog

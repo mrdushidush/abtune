@@ -650,6 +650,12 @@ SPICY_PACK_DEFAULT=off
     - Always answering **A**: `bonjovi_britney, dancefloor_carcry, classical_edm, gym_yoga, english_world, heavy_smooth, hits_gems, scifi_romance, fresh_timeless, adele_dualipa`
     - Always answering **B**: `bonjovi_britney, heavy_smooth, classical_edm, scifi_romance, bubblegum_artpop, english_world, dancefloor_carcry, matrix_titanic, fresh_timeless, adele_dualipa`
 
+    **Updated in M3 (2026-10-02, see DECISIONS.md):** the persona eval chose to normalize IG by key count after the 3-question hook (§18). The engine's sequences are now:
+    - Always answering **A**: `bonjovi_britney, dancefloor_carcry, classical_edm, horror_comedy, hits_gems, fast_slow, dec70_dec00, ai_handmade, english_world, simple_complex`
+    - Always answering **B**: `bonjovi_britney, heavy_smooth, classical_edm, horror_comedy, hits_gems, simple_complex, dancefloor_carcry, ai_handmade, fast_slow, english_world`
+
+    The original table above is still reproduced with `igNorm: "none"` (§8.3 as written), and a test pins both.
+
 ---
 
 ## 17. Evaluation harness

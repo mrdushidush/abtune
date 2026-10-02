@@ -1,0 +1,8 @@
+id: eighties_pop
+name: 80s pop nostalgic
+clusters: { pop: 1, synth_newwave: 1, dance_pop: 0.8, funk_disco: 0.5 }
+decades: { dec80: 1, dec90: 0.3 }
+languages: { lang_en: 1 }
+scalars:
+  valence: [0, 1]
+  dance: [0, 1]

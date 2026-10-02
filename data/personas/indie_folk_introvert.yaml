@@ -1,0 +1,8 @@
+id: indie_folk_introvert
+name: Indie folk introvert
+clusters: { folk: 1, alt_indie: 1, chill_ambient: 0.4 }
+decades: { dec00: 1, dec10: 1, dec20: 1 }
+scalars:
+  energy: [-1, 0]
+  acoustic: [0.2, 1]
+  intensity: [-1, 0]

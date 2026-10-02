@@ -87,12 +87,33 @@ export function eligibleQuestions(
   });
 }
 
+export type IgNorm = "none" | "sqrt" | "keys";
+
+export interface SelectOptions {
+  /**
+   * HANDOFF §18: IG favors questions with many fx keys. `sqrt` / `keys` divide IG by the square
+   * root of / the number of keys; `none` is §8.3 as written. Default: DEFAULT_IG_NORM.
+   */
+  readonly igNorm?: IgNorm;
+  /** Score the hook (positions 1–3) by §8.3 as written, normalizing only from position 4. */
+  readonly rawHook?: boolean;
+}
+
+/** The engine's question-selection rule (set by the M3 persona eval; see DECISIONS.md). */
+export const DEFAULT_IG_NORM: IgNorm = "keys";
+export const DEFAULT_RAW_HOOK = true;
+
 /**
  * HANDOFF §8.3 information gain:
  *   u(k) = 1 / C_k for scalars, 1 / (1 + E_G(k)) for categoricals
  *   IG(q) = Σ_k |fx_a[k] − fx_b[k]| · u(k) · w_q,  score = IG · (0.5 + pri/100)
  */
-export function scoreQuestion(bank: Bank, profile: Profile, question: Question): number {
+export function scoreQuestion(
+  bank: Bank,
+  profile: Profile,
+  question: Question,
+  options: SelectOptions = {},
+): number {
   const keyDiffs = bankIndex(bank).keyDiffs.get(question.id) ?? [];
   const wq = questionWeight(bank, question);
   let ig = 0;
@@ -103,6 +124,10 @@ export function scoreQuestion(bank: Bank, profile: Profile, question: Question):
         : 1 / (1 + profile.groups[dim.group].evidence);
     ig += diff * u * wq;
   }
+  const keys = keyDiffs.length;
+  const norm = options.igNorm ?? DEFAULT_IG_NORM;
+  if (keys > 0 && norm === "keys") ig /= keys;
+  else if (keys > 0 && norm === "sqrt") ig /= Math.sqrt(keys);
   return ig * (0.5 + question.pri / 100);
 }
 
@@ -121,17 +146,20 @@ export function nextQuestion(
   log: readonly AnswerEvent[],
   enabledPacks: ReadonlySet<string>,
   position: number,
+  options: SelectOptions = {},
 ): Question | null {
   const eligible = eligibleQuestions(bank, profile, log, enabledPacks);
   if (eligible.length === 0) return null;
   const slot = slotFor(position, enabledPacks.has(SPICY_PACK));
   const inPool = eligible.filter((q) => inSlot(q.pack, slot));
   const pool = inPool.length > 0 ? inPool : eligible;
+  const scoring: SelectOptions =
+    slot === "hook" && (options.rawHook ?? DEFAULT_RAW_HOOK) ? { igNorm: "none" } : options;
 
   let best: Question | null = null;
   let bestScore = Number.NEGATIVE_INFINITY;
   for (const q of pool) {
-    const score = scoreQuestion(bank, profile, q);
+    const score = scoreQuestion(bank, profile, q, scoring);
     if (score > bestScore || (score === bestScore && best && compareIds(q.id, best.id) < 0)) {
       best = q;
       bestScore = score;

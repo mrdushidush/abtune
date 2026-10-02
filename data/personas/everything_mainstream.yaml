@@ -1,0 +1,7 @@
+id: everything_mainstream
+name: Everything mainstream
+clusters: { pop: 1, dance_pop: 1, hiphop: 0.6, rnb_soul: 0.6 }
+decades: { dec00: 1, dec10: 1, dec20: 1 }
+languages: { lang_en: 1 }
+scalars:
+  mainstream: [0.6, 1]

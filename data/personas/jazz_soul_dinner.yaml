@@ -1,0 +1,8 @@
+id: jazz_soul_dinner
+name: Jazz & soul dinner host
+clusters: { jazz: 1, rnb_soul: 1, blues: 0.6, funk_disco: 0.3 }
+decades: { dec50: 1, dec60: 1, dec70: 1 }
+scalars:
+  energy: [-1, 0.2]
+  intensity: [-1, 0]
+  acoustic: [0, 1]

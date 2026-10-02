@@ -1,0 +1,8 @@
+id: metalhead_2000s
+name: 2000s metalhead
+clusters: { metal: 1, punk: 0.5, alt_indie: 0.3 }
+decades: { dec00: 1, dec90: 0.5, dec10: 0.5 }
+scalars:
+  intensity: [0.3, 1]
+  energy: [0.2, 1]
+  acoustic: [-1, 0.2]

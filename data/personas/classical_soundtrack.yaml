@@ -1,0 +1,7 @@
+id: classical_soundtrack
+name: Classical + soundtrack
+clusters: { classical: 1, soundtrack: 1 }
+scalars:
+  vocal: [-1, 0]
+  acoustic: [0, 1]
+  intensity: [-1, 0.3]

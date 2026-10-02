@@ -8,6 +8,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./build": "./src/build.ts",
+    "./reader": "./src/reader.ts",
     "./report": "./src/report.ts"
   },
   "scripts": {

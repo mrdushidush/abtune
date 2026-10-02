@@ -2,7 +2,7 @@
 
 **A/B test your taste.** Answer a fast run of this-or-that questions (*Bon Jovi or Britney? 80s or 90s? Cats or dogs?*) and get a playlist that sounds like you, built from an open catalog of ~2M songs. Push it to Spotify or export it, and share your music-personality card.
 
-> **Status: pre-alpha.** Done: M0 (scaffold, CI, question-bank lint), M1 (the open-data music catalog) and M2 (the deterministic quiz engine). Next: M3, the playlist generator. The build brief is [`docs/HANDOFF.md`](docs/HANDOFF.md).
+> **Status: pre-alpha.** Done: M0 (scaffold, CI, question-bank lint), M1 (the open-data music catalog), M2 (the deterministic quiz engine) and M3 (the playlist generator and persona eval). Next: M4, the web UI. The build brief is [`docs/HANDOFF.md`](docs/HANDOFF.md).
 
 ## Run it
 
@@ -37,6 +37,8 @@ pnpm typecheck
 pnpm lint          # Biome
 pnpm abtune lint   # validate the question bank
 pnpm abtune sim    # replay the quiz engine: golden sequences + random-run stats
+pnpm abtune generate --persona eighties_pop --mode 50   # a playlist from an eval persona
+pnpm abtune eval   # persona eval + §16 checks; writes docs/eval/<date>.md on the full catalog
 pnpm abtune catalog --help
 ```
 
@@ -48,15 +50,17 @@ Node runs the TypeScript sources directly (type stripping), so there is no build
 
 | Path | What |
 |---|---|
-| `packages/engine` | Pure, deterministic core: profile math, question selection, seeds. Runs in the browser and on the server. |
+| `packages/engine` | Pure, deterministic core: profile math, question selection, seeds, playlist generation, archetypes. The quiz runs in the browser; generation runs on the server. |
 | `packages/bank` | Question bank YAML: schema, parsing, merging, lint. |
 | `packages/catalog` | Catalog pipeline (DuckDB): downloads, extraction, canonicalization, features, dev sample, fixture. |
+| `packages/eval` | Persona eval harness: persona bot, playlist metrics, weight tuning, reports. |
 | `packages/cli` | The `abtune` command. |
 | `apps/web` | API server (Hono) and UI (React + Vite). |
 | `data/questions` | `seed.yaml` and community packs. |
+| `data/personas` | The 12 eval personas (what a listener wants, in the bank's dimensions). |
 | `data/tag_map.yaml` | MusicBrainz tags → genre clusters, community-editable like the question packs. |
 | `data/catalog-fixture` | 5k-track test catalog (CC BY-NC-SA 3.0 US). |
-| `docs` | Brief, ADRs, decision log, data licenses, catalog reports. |
+| `docs` | Brief, ADRs, decision log, data licenses, catalog reports, eval reports. |
 
 ## Add questions
 

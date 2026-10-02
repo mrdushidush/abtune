@@ -24,7 +24,9 @@ Thanks for helping. The two most useful contributions are **better questions** a
 
 2. Run `pnpm abtune lint` (lints your file together with the seed) and fix what it reports.
 
-3. Open a pull request.
+3. If you have a catalog installed, run `pnpm abtune eval`. It replays the quiz with 12 eval personas from [`data/personas/`](data/personas) and shows whether playlists still fit them. Changes to `seed.yaml` change everyone's quiz and playlists, so say in the PR what the eval showed. CI runs the persona snapshot tests (`vitest -u` updates them when a change is intended).
+
+4. Open a pull request.
 
 ### Authoring rules
 

@@ -74,11 +74,17 @@ describe("scoring and choice", () => {
   it("computes information gain × priority factor", () => {
     const x = q("x", "core", 50, { energy: 0.5, rock: 1 }, { energy: -0.5, pop: 1 });
     const bank = makeBank([x]);
+    const none = { igNorm: "none" } as const;
     // energy |1|·(1/C=1) + rock 1·1/(1+0) + pop 1·1/(1+0) = 3; × (0.5 + 0.5)
-    expect(scoreQuestion(bank, foldProfile(bank, []), x)).toBe(3);
+    expect(scoreQuestion(bank, foldProfile(bank, []), x, none)).toBe(3);
     const vibe = q("v", "vibe", 50, { energy: 1 }, { energy: -1 });
-    expect(scoreQuestion(makeBank([vibe]), foldProfile(makeBank([vibe]), []), vibe)).toBeCloseTo(
-      0.8,
+    expect(
+      scoreQuestion(makeBank([vibe]), foldProfile(makeBank([vibe]), []), vibe, none),
+    ).toBeCloseTo(0.8);
+    // §18 normalizations divide by the 3 keys (the default) or by √3.
+    expect(scoreQuestion(bank, foldProfile(bank, []), x)).toBe(1);
+    expect(scoreQuestion(bank, foldProfile(bank, []), x, { igNorm: "sqrt" })).toBeCloseTo(
+      3 / Math.sqrt(3),
     );
   });
 

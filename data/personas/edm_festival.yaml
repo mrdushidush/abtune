@@ -1,0 +1,8 @@
+id: edm_festival
+name: EDM festival
+clusters: { edm: 1, house_techno: 1, dance_pop: 0.5 }
+decades: { dec10: 1, dec20: 1 }
+scalars:
+  energy: [0.3, 1]
+  dance: [0.3, 1]
+  acoustic: [-1, -0.2]

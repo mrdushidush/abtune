@@ -26,7 +26,13 @@ beforeAll(async () => {
 
 describe("§16 #12 golden selection sequences (default packs, spicy off)", () => {
   // If you change the selection rules on purpose, update these, HANDOFF §16 #12 and DECISIONS.md.
+  // M3: IG normalized by key count after the 3-question hook (HANDOFF §18, chosen by the persona eval).
   const GOLDEN = {
+    a: "bonjovi_britney, dancefloor_carcry, classical_edm, horror_comedy, hits_gems, fast_slow, dec70_dec00, ai_handmade, english_world, simple_complex",
+    b: "bonjovi_britney, heavy_smooth, classical_edm, horror_comedy, hits_gems, simple_complex, dancefloor_carcry, ai_handmade, fast_slow, english_world",
+  };
+  // §8.3 as written: the brief's original table, still reproduced with igNorm "none".
+  const BRIEF = {
     a: "bonjovi_britney, dancefloor_carcry, classical_edm, gym_yoga, english_world, heavy_smooth, hits_gems, scifi_romance, fresh_timeless, adele_dualipa",
     b: "bonjovi_britney, heavy_smooth, classical_edm, scifi_romance, bubblegum_artpop, english_world, dancefloor_carcry, matrix_titanic, fresh_timeless, adele_dualipa",
   };
@@ -35,6 +41,12 @@ describe("§16 #12 golden selection sequences (default packs, spicy off)", () =>
     const run = runQuiz(bank, { mode: 10, packs: defaultPacks(bank) }, () => side);
     expect(run.sequence.join(", ")).toBe(GOLDEN[side]);
     expect(run.view.status).toBe("profile_ready");
+  });
+
+  it.each(["a", "b"] as const)("always answering %s, §8.3 as written", (side) => {
+    const literal = { igNorm: "none" } as const;
+    const run = runQuiz(bank, { mode: 10, packs: defaultPacks(bank) }, () => side, literal);
+    expect(run.sequence.join(", ")).toBe(BRIEF[side]);
   });
 });
 
@@ -61,7 +73,7 @@ describe("§16 #2 determinism across processes", () => {
   it("is identical on every machine (pinned digest over a frozen bank; CI runs Linux, Windows, macOS)", async () => {
     // Changes only if the engine's behavior changes. If that's intended, update and log it in DECISIONS.md.
     expect(await determinismDigest(300, "a11ce5ba5eba11ed", FROZEN_BANK_DIR)).toBe(
-      "3a8f5a73c2f753c13fb19dc4bb582ef86143032e67334477d55ba28154dc45a6",
+      "1ad50b705599e78cf3a6ec082f646fedaa69f3073064e757c6ff0e4a3c4abfbe",
     );
   }, 120_000);
 });

@@ -1,4 +1,5 @@
 import {
+  type Answerer,
   type Bank,
   type Choice,
   createRng,
@@ -7,38 +8,15 @@ import {
   MODES,
   PRIOR_WEIGHT,
   type Profile,
-  type Question,
   type Rng,
   reduceSession,
-  type SessionConfig,
-  type SessionState,
-  type SessionView,
+  runQuiz,
   SPICY_PACK,
   sessionSeed,
   viewSession,
 } from "@abtune/engine";
 
-export type Answerer = (question: Question) => Choice;
-
-export interface QuizRun {
-  readonly state: SessionState;
-  readonly view: SessionView;
-  /** Every question asked, in order (skips included). */
-  readonly sequence: readonly string[];
-}
-
-/** Answer questions until the session stops asking. */
-export function runQuiz(bank: Bank, config: Partial<SessionConfig>, answer: Answerer): QuizRun {
-  let state = createSession(bank, config);
-  const sequence: string[] = [];
-  let view = viewSession(bank, state);
-  while (view.status === "asking" && view.question) {
-    sequence.push(view.question.id);
-    state = reduceSession(bank, state, { type: "answer", choice: answer(view.question) });
-    view = viewSession(bank, state);
-  }
-  return { state, view, sequence };
-}
+export { type Answerer, type QuizRun, runQuiz } from "@abtune/engine";
 
 export const ANSWER_MIXES = {
   ab: ["a", "b"],

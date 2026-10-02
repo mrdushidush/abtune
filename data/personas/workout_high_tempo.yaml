@@ -1,0 +1,7 @@
+id: workout_high_tempo
+name: Workout high-tempo
+clusters: { edm: 1, hiphop: 0.8, dance_pop: 0.8, house_techno: 0.6, metal: 0.4 }
+scalars:
+  energy: [0.5, 1]
+  tempo: [0.3, 1]
+  dance: [0.2, 1]

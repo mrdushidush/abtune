@@ -1,0 +1,8 @@
+# Replaces the brief's French persona (owner decision 2026-10-02: Hebrew and English first).
+id: hebrew_rock_pop
+name: Israeli rock & pop in Hebrew
+clusters: { classic_rock: 1, pop: 1, alt_indie: 0.7, folk: 0.7 }
+decades: { dec70: 1, dec80: 1, dec90: 1, dec00: 0.7, dec10: 0.5 }
+languages: { lang_he: 1, lang_other: 0.3 }
+scalars:
+  acoustic: [-0.2, 1]

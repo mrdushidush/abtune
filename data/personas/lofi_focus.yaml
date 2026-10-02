@@ -1,0 +1,8 @@
+id: lofi_focus
+name: Lo-fi focus
+clusters: { chill_ambient: 1, jazz: 0.4, hiphop: 0.4 }
+decades: { dec10: 1, dec20: 1 }
+scalars:
+  energy: [-1, -0.3]
+  intensity: [-1, -0.3]
+  vocal: [-1, -0.2]

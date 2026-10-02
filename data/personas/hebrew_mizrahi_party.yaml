@@ -1,0 +1,9 @@
+id: hebrew_mizrahi_party
+name: Hebrew-mizrahi party
+clusters: { mizrahi: 1, pop: 0.6, dance_pop: 0.6 }
+decades: { dec00: 1, dec10: 1, dec20: 1 }
+languages: { lang_he: 1, lang_other: 0.3 }
+scalars:
+  energy: [0, 1]
+  dance: [0, 1]
+  valence: [0, 1]
