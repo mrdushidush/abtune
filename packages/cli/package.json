@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@abtune/bank": "workspace:*",
+    "@abtune/catalog": "workspace:*",
     "@abtune/engine": "workspace:*"
   }
 }

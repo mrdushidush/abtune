@@ -1,0 +1,767 @@
+# ABTune tag map: MusicBrainz tags/genres → genre clusters (HANDOFF §6.2.6).
+# Read by `abtune catalog build`; checked by the catalog tests against the bank's dimensions.
+#
+#   tags:        "<tag>": { <cluster>: weight in (0, 1], <scalar>: nudge in [-1, 1] }
+#                Cluster keys add genre evidence (a tag may feed several clusters).
+#                Scalar keys (complexity, intensity) nudge that feature for tagged tracks.
+#                Tag names are matched lowercased, exactly as MusicBrainz stores them.
+#   cluster_priors: per-cluster scalar priors (complexity is tag-derived only, §6.3).
+#   non_music:   tags that mark a track as not music (dropped from the catalog, §6.6).
+#   ab_genres:   fallback when a track has no mapped tags: AcousticBrainz genre classifier
+#                class → clusters, applied at reduced weight.
+#
+# Map *sound*, not identity: a tag like "israeli" or "british" is a place, not a genre, and stays
+# unmapped. Language comes from MusicBrainz work/release languages, never from tags.
+
+version: 1
+
+tags:
+  # ── classic_rock ──
+  rock: { classic_rock: 0.7, alt_indie: 0.3 }
+  classic rock: { classic_rock: 1 }
+  hard rock: { classic_rock: 1, intensity: 0.2 }
+  blues rock: { classic_rock: 0.7, blues: 0.3 }
+  southern rock: { classic_rock: 0.8, country: 0.2 }
+  arena rock: { classic_rock: 1 }
+  album rock: { classic_rock: 1 }
+  aor: { classic_rock: 1 }
+  soft rock: { classic_rock: 0.6, pop: 0.4, intensity: -0.3 }
+  pop rock: { classic_rock: 0.4, pop: 0.6 }
+  glam rock: { classic_rock: 1 }
+  glam metal: { classic_rock: 0.6, metal: 0.4 }
+  heartland rock: { classic_rock: 1 }
+  rock and roll: { classic_rock: 1 }
+  rock & roll: { classic_rock: 1 }
+  rockabilly: { classic_rock: 0.7, country: 0.3 }
+  psychedelic rock: { classic_rock: 0.8, alt_indie: 0.2, complexity: 0.3 }
+  psychedelic: { classic_rock: 0.7, alt_indie: 0.3, complexity: 0.3 }
+  acid rock: { classic_rock: 1, complexity: 0.2 }
+  progressive rock: { classic_rock: 1, complexity: 0.8 }
+  art rock: { classic_rock: 0.6, alt_indie: 0.4, complexity: 0.6 }
+  symphonic rock: { classic_rock: 0.8, classical: 0.2, complexity: 0.6 }
+  krautrock: { classic_rock: 0.4, alt_indie: 0.4, synth_newwave: 0.2, complexity: 0.5 }
+  space rock: { classic_rock: 0.7, alt_indie: 0.3, complexity: 0.4 }
+  garage rock: { classic_rock: 0.5, punk: 0.3, alt_indie: 0.2 }
+  surf rock: { classic_rock: 1 }
+  surf: { classic_rock: 1 }
+  british invasion: { classic_rock: 1 }
+  beat: { classic_rock: 1 }
+  merseybeat: { classic_rock: 1 }
+  jangle pop: { alt_indie: 0.6, classic_rock: 0.4 }
+  folk rock: { classic_rock: 0.5, folk: 0.5 }
+  country rock: { classic_rock: 0.5, country: 0.5 }
+  jazz-rock: { classic_rock: 0.4, jazz: 0.6, complexity: 0.6 }
+  stoner rock: { classic_rock: 0.5, metal: 0.5, intensity: 0.2 }
+  boogie rock: { classic_rock: 1 }
+  power pop: { classic_rock: 0.5, pop: 0.5 }
+  roots rock: { classic_rock: 0.8, folk: 0.2 }
+  rock opera: { classic_rock: 1, complexity: 0.5 }
+  instrumental rock: { classic_rock: 1 }
+  # ── alt_indie ──
+  alternative rock: { alt_indie: 1 }
+  alternative: { alt_indie: 1 }
+  indie rock: { alt_indie: 1 }
+  indie: { alt_indie: 1 }
+  indie pop: { alt_indie: 0.6, pop: 0.4 }
+  indie folk: { alt_indie: 0.4, folk: 0.6 }
+  grunge: { alt_indie: 0.7, metal: 0.1, punk: 0.2, intensity: 0.2 }
+  post-grunge: { alt_indie: 0.8, classic_rock: 0.2 }
+  britpop: { alt_indie: 0.8, pop: 0.2 }
+  shoegaze: { alt_indie: 1 }
+  dream pop: { alt_indie: 0.8, chill_ambient: 0.2 }
+  noise pop: { alt_indie: 1 }
+  noise rock: { alt_indie: 0.7, punk: 0.3, intensity: 0.3, complexity: 0.3 }
+  post-rock: { alt_indie: 0.8, chill_ambient: 0.2, complexity: 0.4 }
+  math rock: { alt_indie: 1, complexity: 0.8 }
+  slowcore: { alt_indie: 1, intensity: -0.3 }
+  sadcore: { alt_indie: 1 }
+  emo: { alt_indie: 0.5, punk: 0.5 }
+  midwest emo: { alt_indie: 0.6, punk: 0.4 }
+  college rock: { alt_indie: 1 }
+  lo-fi: { alt_indie: 0.7, chill_ambient: 0.3 }
+  lo-fi indie: { alt_indie: 1 }
+  garage rock revival: { alt_indie: 0.8, classic_rock: 0.2 }
+  indie electronic: { alt_indie: 0.5, edm: 0.2, synth_newwave: 0.3 }
+  indietronica: { alt_indie: 0.5, synth_newwave: 0.3, edm: 0.2 }
+  art pop: { alt_indie: 0.5, pop: 0.5, complexity: 0.5 }
+  baroque pop: { alt_indie: 0.5, pop: 0.5, complexity: 0.4 }
+  chamber pop: { alt_indie: 0.6, pop: 0.4, complexity: 0.4 }
+  experimental rock: { alt_indie: 1, complexity: 0.7 }
+  experimental: { alt_indie: 0.6, chill_ambient: 0.2, classical: 0.2, complexity: 0.7 }
+  avant-garde: { alt_indie: 0.5, classical: 0.3, jazz: 0.2, complexity: 0.9 }
+  neo-psychedelia: { alt_indie: 1, complexity: 0.3 }
+  psychedelic pop: { alt_indie: 0.5, pop: 0.5 }
+  bedroom pop: { alt_indie: 0.6, pop: 0.4 }
+  slacker rock: { alt_indie: 1 }
+  post-hardcore: { alt_indie: 0.4, punk: 0.6, intensity: 0.3 }
+  alternative pop: { alt_indie: 0.5, pop: 0.5 }
+  alt-pop: { alt_indie: 0.5, pop: 0.5 }
+  indie rock/pop: { alt_indie: 0.7, pop: 0.3 }
+  folk punk: { punk: 0.5, folk: 0.5 }
+  anti-folk: { folk: 0.6, alt_indie: 0.4 }
+  j-rock: { alt_indie: 0.7, classic_rock: 0.3 }
+  visual kei: { alt_indie: 0.5, metal: 0.5 }
+  # ── metal ──
+  metal: { metal: 1 }
+  heavy metal: { metal: 1 }
+  hard rock/heavy metal: { metal: 0.6, classic_rock: 0.4 }
+  thrash metal: { metal: 1, intensity: 0.3 }
+  speed metal: { metal: 1, intensity: 0.3 }
+  death metal: { metal: 1, intensity: 0.4 }
+  melodic death metal: { metal: 1, intensity: 0.3 }
+  technical death metal: { metal: 1, intensity: 0.4, complexity: 0.8 }
+  black metal: { metal: 1, intensity: 0.4 }
+  doom metal: { metal: 1, intensity: 0.1 }
+  sludge metal: { metal: 1, intensity: 0.3 }
+  power metal: { metal: 1 }
+  symphonic metal: { metal: 0.9, classical: 0.1, complexity: 0.4 }
+  gothic metal: { metal: 1 }
+  progressive metal: { metal: 1, complexity: 0.8 }
+  nu metal: { metal: 0.8, alt_indie: 0.1, hiphop: 0.1, intensity: 0.2 }
+  alternative metal: { metal: 0.7, alt_indie: 0.3 }
+  metalcore: { metal: 0.7, punk: 0.3, intensity: 0.4 }
+  deathcore: { metal: 0.8, punk: 0.2, intensity: 0.5 }
+  djent: { metal: 1, complexity: 0.6 }
+  industrial metal: { metal: 0.8, synth_newwave: 0.2, intensity: 0.3 }
+  groove metal: { metal: 1, intensity: 0.3 }
+  folk metal: { metal: 0.8, folk: 0.2 }
+  viking metal: { metal: 1 }
+  nwobhm: { metal: 1 }
+  new wave of british heavy metal: { metal: 1 }
+  stoner metal: { metal: 1 }
+  grindcore: { metal: 0.6, punk: 0.4, intensity: 0.5 }
+  post-metal: { metal: 0.8, alt_indie: 0.2, complexity: 0.4 }
+  drone metal: { metal: 0.7, chill_ambient: 0.3 }
+  mathcore: { metal: 0.6, punk: 0.4, complexity: 0.8, intensity: 0.4 }
+  rap metal: { metal: 0.6, hiphop: 0.4, intensity: 0.3 }
+  rap rock: { classic_rock: 0.3, alt_indie: 0.3, hiphop: 0.4 }
+  # ── punk ──
+  punk: { punk: 1 }
+  punk rock: { punk: 1 }
+  pop punk: { punk: 0.7, pop: 0.3, complexity: -0.3 }
+  hardcore punk: { punk: 1, intensity: 0.3 }
+  hardcore: { punk: 1, intensity: 0.3 }
+  post-punk: { punk: 0.4, alt_indie: 0.4, synth_newwave: 0.2 }
+  post-punk revival: { alt_indie: 0.7, punk: 0.3 }
+  skate punk: { punk: 1 }
+  melodic hardcore: { punk: 1, intensity: 0.2 }
+  ska punk: { punk: 0.6, reggae: 0.4 }
+  ska: { reggae: 0.7, punk: 0.3 }
+  2 tone: { reggae: 0.6, punk: 0.4 }
+  oi: { punk: 1, complexity: -0.3 }
+  street punk: { punk: 1 }
+  crust punk: { punk: 1, intensity: 0.4 }
+  anarcho-punk: { punk: 1 }
+  garage punk: { punk: 1 }
+  proto-punk: { punk: 0.6, classic_rock: 0.4 }
+  celtic punk: { punk: 0.6, folk: 0.4 }
+  horror punk: { punk: 1 }
+  riot grrrl: { punk: 1 }
+  emo pop: { punk: 0.5, pop: 0.5 }
+  # ── pop ──
+  pop: { pop: 1 }
+  teen pop: { pop: 1, complexity: -0.6 }
+  bubblegum pop: { pop: 1, complexity: -0.8 }
+  bubblegum: { pop: 1, complexity: -0.8 }
+  adult contemporary: { pop: 1, intensity: -0.2 }
+  ballad: { pop: 1, intensity: -0.3 }
+  power ballad: { pop: 0.5, classic_rock: 0.5 }
+  singer-songwriter: { pop: 0.4, folk: 0.6 }
+  pop soul: { pop: 0.5, rnb_soul: 0.5 }
+  sophisti-pop: { pop: 0.7, synth_newwave: 0.3 }
+  soft pop: { pop: 1 }
+  sunshine pop: { pop: 1 }
+  traditional pop: { pop: 0.8, jazz: 0.2 }
+  vocal pop: { pop: 1 }
+  easy listening: { pop: 0.6, chill_ambient: 0.4, intensity: -0.3 }
+  schlager: { pop: 1, complexity: -0.6 }
+  europop: { pop: 0.7, dance_pop: 0.3 }
+  j-pop: { pop: 1 }
+  c-pop: { pop: 1 }
+  mandopop: { pop: 1 }
+  cantopop: { pop: 1 }
+  city pop: { pop: 0.6, funk_disco: 0.2, synth_newwave: 0.2 }
+  chamber folk: { folk: 1 }
+  novelty: { pop: 1, complexity: -0.5 }
+  children's music: { pop: 1, complexity: -0.7 }
+  christmas music: { pop: 1 }
+  christmas: { pop: 1 }
+  musical: { soundtrack: 0.8, pop: 0.2 }
+  show tunes: { soundtrack: 0.8, pop: 0.2 }
+  cabaret: { pop: 0.5, jazz: 0.5 }
+  chanson: { folk: 0.5, pop: 0.5 }
+  french pop: { pop: 1 }
+  italian pop: { pop: 1 }
+  latin pop: { latin: 0.6, pop: 0.4 }
+  pop rap: { hiphop: 0.6, pop: 0.4 }
+  hyperpop: { pop: 0.5, edm: 0.5 }
+  # ── dance_pop ──
+  dance-pop: { dance_pop: 1, complexity: -0.4 }
+  dance pop: { dance_pop: 1, complexity: -0.4 }
+  dance: { dance_pop: 0.6, edm: 0.4 }
+  electropop: { dance_pop: 0.6, synth_newwave: 0.4 }
+  eurodance: { dance_pop: 0.7, edm: 0.3, complexity: -0.5 }
+  hi-nrg: { dance_pop: 0.6, funk_disco: 0.4 }
+  eurobeat: { dance_pop: 0.8, edm: 0.2, complexity: -0.4 }
+  italo-disco: { dance_pop: 0.4, funk_disco: 0.3, synth_newwave: 0.3 }
+  italo disco: { dance_pop: 0.4, funk_disco: 0.3, synth_newwave: 0.3 }
+  electro-pop: { dance_pop: 0.6, synth_newwave: 0.4 }
+  europop dance: { dance_pop: 1 }
+  club: { dance_pop: 0.5, edm: 0.5 }
+  # ── synth_newwave ──
+  synth-pop: { synth_newwave: 1 }
+  synthpop: { synth_newwave: 1 }
+  new wave: { synth_newwave: 1 }
+  new romantic: { synth_newwave: 1 }
+  darkwave: { synth_newwave: 1 }
+  coldwave: { synth_newwave: 1 }
+  minimal wave: { synth_newwave: 1 }
+  synthwave: { synth_newwave: 0.8, edm: 0.2 }
+  retrowave: { synth_newwave: 0.8, edm: 0.2 }
+  outrun: { synth_newwave: 0.8, edm: 0.2 }
+  electroclash: { synth_newwave: 0.6, house_techno: 0.4 }
+  industrial: { synth_newwave: 0.7, metal: 0.3, intensity: 0.3 }
+  ebm: { synth_newwave: 0.7, house_techno: 0.3 }
+  electronic body music: { synth_newwave: 0.7, house_techno: 0.3 }
+  gothic rock: { synth_newwave: 0.5, alt_indie: 0.5 }
+  goth: { synth_newwave: 0.5, alt_indie: 0.5 }
+  dark wave: { synth_newwave: 1 }
+  futurepop: { synth_newwave: 0.7, edm: 0.3 }
+  vaporwave: { synth_newwave: 0.5, chill_ambient: 0.5 }
+  chillwave: { synth_newwave: 0.5, chill_ambient: 0.5 }
+  # ── hiphop ──
+  hip hop: { hiphop: 1 }
+  hip-hop: { hiphop: 1 }
+  rap: { hiphop: 1 }
+  hip hop/rap: { hiphop: 1 }
+  gangsta rap: { hiphop: 1 }
+  trap: { hiphop: 1 }
+  trap rap: { hiphop: 1 }
+  drill: { hiphop: 1 }
+  uk drill: { hiphop: 1 }
+  grime: { hiphop: 0.8, edm: 0.2 }
+  boom bap: { hiphop: 1 }
+  east coast hip hop: { hiphop: 1 }
+  west coast hip hop: { hiphop: 1 }
+  southern hip hop: { hiphop: 1 }
+  dirty south: { hiphop: 1 }
+  crunk: { hiphop: 1 }
+  conscious hip hop: { hiphop: 1 }
+  alternative hip hop: { hiphop: 0.8, alt_indie: 0.2 }
+  abstract hip hop: { hiphop: 0.8, alt_indie: 0.2, complexity: 0.4 }
+  jazz rap: { hiphop: 0.7, jazz: 0.3 }
+  jazz hip hop: { hiphop: 0.6, jazz: 0.4 }
+  g-funk: { hiphop: 0.8, funk_disco: 0.2 }
+  hardcore hip hop: { hiphop: 1, intensity: 0.3 }
+  horrorcore: { hiphop: 1, intensity: 0.3 }
+  emo rap: { hiphop: 0.8, alt_indie: 0.2 }
+  cloud rap: { hiphop: 0.8, chill_ambient: 0.2 }
+  mumble rap: { hiphop: 1 }
+  old school hip hop: { hiphop: 1 }
+  political hip hop: { hiphop: 1 }
+  instrumental hip hop: { hiphop: 0.7, chill_ambient: 0.3 }
+  lo-fi hip hop: { hiphop: 0.4, chill_ambient: 0.6 }
+  turntablism: { hiphop: 1 }
+  uk hip hop: { hiphop: 1 }
+  french hip hop: { hiphop: 1 }
+  german hip hop: { hiphop: 1 }
+  k-rap: { hiphop: 0.6, kpop: 0.4 }
+  memphis rap: { hiphop: 1 }
+  phonk: { hiphop: 0.7, edm: 0.3 }
+  rage: { hiphop: 0.8, edm: 0.2 }
+  plugg: { hiphop: 1 }
+  afrotrap: { hiphop: 0.7, world: 0.3 }
+  # ── rnb_soul ──
+  soul: { rnb_soul: 1 }
+  r&b: { rnb_soul: 1 }
+  rnb: { rnb_soul: 1 }
+  rhythm and blues: { rnb_soul: 0.7, blues: 0.3 }
+  rhythm & blues: { rnb_soul: 0.7, blues: 0.3 }
+  contemporary r&b: { rnb_soul: 1 }
+  alternative r&b: { rnb_soul: 0.8, alt_indie: 0.2 }
+  neo soul: { rnb_soul: 1 }
+  neo-soul: { rnb_soul: 1 }
+  motown: { rnb_soul: 1 }
+  northern soul: { rnb_soul: 1 }
+  southern soul: { rnb_soul: 1 }
+  deep soul: { rnb_soul: 1 }
+  philly soul: { rnb_soul: 0.7, funk_disco: 0.3 }
+  smooth soul: { rnb_soul: 1, intensity: -0.2 }
+  blue-eyed soul: { rnb_soul: 0.7, pop: 0.3 }
+  quiet storm: { rnb_soul: 1, intensity: -0.3 }
+  new jack swing: { rnb_soul: 0.7, hiphop: 0.3 }
+  doo-wop: { rnb_soul: 1 }
+  doo wop: { rnb_soul: 1 }
+  gospel: { rnb_soul: 1 }
+  urban contemporary gospel: { rnb_soul: 1 }
+  psychedelic soul: { rnb_soul: 0.6, funk_disco: 0.4 }
+  retro soul: { rnb_soul: 1 }
+  uk garage: { house_techno: 0.6, rnb_soul: 0.4 }
+  # ── funk_disco ──
+  funk: { funk_disco: 1 }
+  disco: { funk_disco: 1 }
+  p-funk: { funk_disco: 1 }
+  funk rock: { funk_disco: 0.6, classic_rock: 0.4 }
+  funk metal: { funk_disco: 0.4, metal: 0.6 }
+  boogie: { funk_disco: 1 }
+  post-disco: { funk_disco: 0.7, dance_pop: 0.3 }
+  nu-disco: { funk_disco: 0.6, house_techno: 0.4 }
+  nu disco: { funk_disco: 0.6, house_techno: 0.4 }
+  electro-funk: { funk_disco: 0.7, synth_newwave: 0.3 }
+  go-go: { funk_disco: 1 }
+  afrobeat: { funk_disco: 0.4, world: 0.6 }
+  funk soul: { funk_disco: 0.5, rnb_soul: 0.5 }
+  soul jazz: { jazz: 0.6, funk_disco: 0.2, rnb_soul: 0.2 }
+  jazz-funk: { jazz: 0.5, funk_disco: 0.5 }
+  # ── house_techno ──
+  house: { house_techno: 1 }
+  deep house: { house_techno: 1 }
+  tech house: { house_techno: 1 }
+  progressive house: { house_techno: 0.6, edm: 0.4 }
+  acid house: { house_techno: 1 }
+  chicago house: { house_techno: 1 }
+  french house: { house_techno: 0.7, funk_disco: 0.3 }
+  disco house: { house_techno: 0.6, funk_disco: 0.4 }
+  vocal house: { house_techno: 0.7, dance_pop: 0.3 }
+  garage house: { house_techno: 1 }
+  afro house: { house_techno: 0.8, world: 0.2 }
+  tropical house: { house_techno: 0.5, dance_pop: 0.5 }
+  electro house: { house_techno: 0.4, edm: 0.6 }
+  minimal techno: { house_techno: 1, complexity: 0.2 }
+  techno: { house_techno: 1 }
+  detroit techno: { house_techno: 1 }
+  acid techno: { house_techno: 1 }
+  hard techno: { house_techno: 1, intensity: 0.3 }
+  dub techno: { house_techno: 0.7, chill_ambient: 0.3 }
+  minimal: { house_techno: 1 }
+  microhouse: { house_techno: 1 }
+  electro: { house_techno: 0.6, synth_newwave: 0.4 }
+  breakbeat: { house_techno: 0.5, edm: 0.5 }
+  big beat: { edm: 0.6, house_techno: 0.4 }
+  idm: { house_techno: 0.4, chill_ambient: 0.4, edm: 0.2, complexity: 0.6 }
+  intelligent dance music: { house_techno: 0.4, chill_ambient: 0.4, edm: 0.2, complexity: 0.6 }
+  # ── edm ──
+  electronic: { edm: 0.5, house_techno: 0.3, synth_newwave: 0.2 }
+  electronica: { edm: 0.5, chill_ambient: 0.3, house_techno: 0.2 }
+  electronic dance music: { edm: 1 }
+  edm: { edm: 1 }
+  trance: { edm: 1 }
+  progressive trance: { edm: 1 }
+  uplifting trance: { edm: 1 }
+  vocal trance: { edm: 0.8, dance_pop: 0.2 }
+  psytrance: { edm: 1 }
+  psychedelic trance: { edm: 1 }
+  goa trance: { edm: 1 }
+  hard trance: { edm: 1, intensity: 0.2 }
+  drum and bass: { edm: 1 }
+  "drum & bass": { edm: 1 }
+  drum n bass: { edm: 1 }
+  dnb: { edm: 1 }
+  liquid funk: { edm: 0.8, chill_ambient: 0.2 }
+  jungle: { edm: 1 }
+  neurofunk: { edm: 1, intensity: 0.3 }
+  dubstep: { edm: 1, intensity: 0.2 }
+  brostep: { edm: 1, intensity: 0.4 }
+  riddim: { edm: 1, intensity: 0.3 }
+  future bass: { edm: 0.8, dance_pop: 0.2 }
+  big room: { edm: 1 }
+  big room house: { edm: 1 }
+  hardstyle: { edm: 1, intensity: 0.4 }
+  hardcore techno: { edm: 0.6, house_techno: 0.4, intensity: 0.5 }
+  happy hardcore: { edm: 1 }
+  gabber: { edm: 0.6, house_techno: 0.4, intensity: 0.5 }
+  moombahton: { edm: 0.7, latin: 0.3 }
+  trap edm: { edm: 1 }
+  electronic trap: { edm: 0.7, hiphop: 0.3 }
+  complextro: { edm: 1 }
+  melodic dubstep: { edm: 1 }
+  uk bass: { edm: 0.7, house_techno: 0.3 }
+  bass music: { edm: 1 }
+  footwork: { edm: 0.6, house_techno: 0.4 }
+  2-step: { house_techno: 0.6, rnb_soul: 0.4 }
+  speed garage: { house_techno: 1 }
+  # ── chill_ambient ──
+  ambient: { chill_ambient: 1, intensity: -0.3 }
+  dark ambient: { chill_ambient: 1 }
+  ambient pop: { chill_ambient: 0.6, pop: 0.4 }
+  chillout: { chill_ambient: 1, intensity: -0.3 }
+  chill out: { chill_ambient: 1, intensity: -0.3 }
+  chill: { chill_ambient: 1 }
+  downtempo: { chill_ambient: 1 }
+  trip hop: { chill_ambient: 0.7, hiphop: 0.3 }
+  trip-hop: { chill_ambient: 0.7, hiphop: 0.3 }
+  lounge: { chill_ambient: 0.7, jazz: 0.3 }
+  chillhop: { chill_ambient: 0.6, hiphop: 0.4 }
+  lofi: { chill_ambient: 0.6, hiphop: 0.4 }
+  new age: { chill_ambient: 1, intensity: -0.4 }
+  drone: { chill_ambient: 1 }
+  space ambient: { chill_ambient: 1 }
+  ambient techno: { chill_ambient: 0.6, house_techno: 0.4 }
+  psybient: { chill_ambient: 0.7, edm: 0.3 }
+  glitch: { chill_ambient: 0.5, house_techno: 0.5, complexity: 0.4 }
+  illbient: { chill_ambient: 0.7, hiphop: 0.3 }
+  nu jazz: { jazz: 0.5, chill_ambient: 0.5 }
+  acid jazz: { jazz: 0.6, funk_disco: 0.4 }
+  sleep: { chill_ambient: 1 }
+  minimalism: { classical: 0.6, chill_ambient: 0.4, complexity: 0.3 }
+  # ── folk ──
+  folk: { folk: 1 }
+  contemporary folk: { folk: 1 }
+  american folk: { folk: 1 }
+  british folk: { folk: 1 }
+  folk pop: { folk: 0.6, pop: 0.4 }
+  traditional folk: { folk: 1 }
+  freak folk: { folk: 0.6, alt_indie: 0.4 }
+  psychedelic folk: { folk: 0.7, alt_indie: 0.3 }
+  neofolk: { folk: 0.8, alt_indie: 0.2 }
+  americana: { folk: 0.5, country: 0.5 }
+  acoustic: { folk: 1 }
+  celtic: { folk: 0.7, world: 0.3 }
+  irish folk: { folk: 1 }
+  scottish folk: { folk: 1 }
+  sea shanty: { folk: 1 }
+  protest song: { folk: 1 }
+  stomp and holler: { folk: 0.7, alt_indie: 0.3 }
+  folktronica: { folk: 0.5, chill_ambient: 0.3, edm: 0.2 }
+  # ── country ──
+  country: { country: 1 }
+  contemporary country: { country: 1 }
+  country pop: { country: 0.7, pop: 0.3 }
+  bro-country: { country: 1 }
+  outlaw country: { country: 1 }
+  alt-country: { country: 0.7, alt_indie: 0.3 }
+  alternative country: { country: 0.7, alt_indie: 0.3 }
+  bluegrass: { country: 0.7, folk: 0.3 }
+  honky tonk: { country: 1 }
+  honky-tonk: { country: 1 }
+  western swing: { country: 0.7, jazz: 0.3 }
+  nashville sound: { country: 1 }
+  traditional country: { country: 1 }
+  red dirt: { country: 1 }
+  texas country: { country: 1 }
+  country rap: { country: 0.5, hiphop: 0.5 }
+  cowpunk: { country: 0.5, punk: 0.5 }
+  # ── blues ──
+  blues: { blues: 1 }
+  electric blues: { blues: 1 }
+  chicago blues: { blues: 1 }
+  delta blues: { blues: 1 }
+  country blues: { blues: 1 }
+  acoustic blues: { blues: 1 }
+  modern blues: { blues: 1 }
+  texas blues: { blues: 1 }
+  jump blues: { blues: 0.7, jazz: 0.3 }
+  piano blues: { blues: 1 }
+  boogie-woogie: { blues: 0.7, jazz: 0.3 }
+  soul blues: { blues: 0.5, rnb_soul: 0.5 }
+  british blues: { blues: 0.7, classic_rock: 0.3 }
+  # ── jazz ──
+  jazz: { jazz: 1 }
+  vocal jazz: { jazz: 1 }
+  smooth jazz: { jazz: 1, complexity: -0.4 }
+  cool jazz: { jazz: 1 }
+  bebop: { jazz: 1, complexity: 0.7 }
+  hard bop: { jazz: 1, complexity: 0.6 }
+  post-bop: { jazz: 1, complexity: 0.6 }
+  modal jazz: { jazz: 1, complexity: 0.6 }
+  free jazz: { jazz: 1, complexity: 0.9 }
+  avant-garde jazz: { jazz: 1, complexity: 0.9 }
+  jazz fusion: { jazz: 1, complexity: 0.7 }
+  fusion: { jazz: 1, complexity: 0.6 }
+  swing: { jazz: 1 }
+  big band: { jazz: 1 }
+  dixieland: { jazz: 1 }
+  ragtime: { jazz: 1 }
+  latin jazz: { jazz: 0.6, latin: 0.4 }
+  bossa nova: { latin: 0.6, jazz: 0.4 }
+  contemporary jazz: { jazz: 1 }
+  jazz pop: { jazz: 0.5, pop: 0.5 }
+  crossover jazz: { jazz: 0.7, pop: 0.3 }
+  spiritual jazz: { jazz: 1, complexity: 0.6 }
+  third stream: { jazz: 0.5, classical: 0.5, complexity: 0.7 }
+  stride: { jazz: 1 }
+  # ── classical ──
+  classical: { classical: 1 }
+  baroque: { classical: 1, complexity: 0.5 }
+  romantic: { classical: 1 }
+  romanticism: { classical: 1 }
+  classical period: { classical: 1 }
+  modern classical: { classical: 1, complexity: 0.6 }
+  contemporary classical: { classical: 1, complexity: 0.8 }
+  neoclassical: { classical: 0.8, chill_ambient: 0.2 }
+  neo-classical: { classical: 0.8, chill_ambient: 0.2 }
+  opera: { classical: 1 }
+  orchestral: { classical: 0.7, soundtrack: 0.3 }
+  symphony: { classical: 1, complexity: 0.5 }
+  chamber music: { classical: 1, complexity: 0.4 }
+  piano: { classical: 0.6, chill_ambient: 0.4 }
+  choral: { classical: 1 }
+  renaissance: { classical: 1 }
+  medieval: { classical: 0.7, folk: 0.3 }
+  early music: { classical: 1 }
+  impressionism: { classical: 1, complexity: 0.4 }
+  concerto: { classical: 1, complexity: 0.5 }
+  sonata: { classical: 1, complexity: 0.5 }
+  string quartet: { classical: 1, complexity: 0.5 }
+  art song: { classical: 1 }
+  lied: { classical: 1 }
+  post-minimalism: { classical: 0.7, chill_ambient: 0.3, complexity: 0.4 }
+  modern composition: { classical: 1, complexity: 0.8 }
+  serialism: { classical: 1, complexity: 0.9 }
+  # ── soundtrack ──
+  soundtrack: { soundtrack: 1 }
+  film score: { soundtrack: 1 }
+  film soundtrack: { soundtrack: 1 }
+  score: { soundtrack: 1 }
+  video game music: { soundtrack: 1 }
+  video game: { soundtrack: 1 }
+  game soundtrack: { soundtrack: 1 }
+  chiptune: { soundtrack: 0.5, synth_newwave: 0.5 }
+  anime: { soundtrack: 0.6, pop: 0.4 }
+  television music: { soundtrack: 1 }
+  tv soundtrack: { soundtrack: 1 }
+  cinematic: { soundtrack: 1 }
+  epic: { soundtrack: 1 }
+  trailer music: { soundtrack: 1 }
+  bollywood: { soundtrack: 0.5, world: 0.5 }
+  filmi: { soundtrack: 0.5, world: 0.5 }
+  # ── reggae ──
+  reggae: { reggae: 1 }
+  roots reggae: { reggae: 1 }
+  dub: { reggae: 0.8, chill_ambient: 0.2 }
+  dancehall: { reggae: 1 }
+  rocksteady: { reggae: 1 }
+  lovers rock: { reggae: 1 }
+  reggae fusion: { reggae: 0.7, pop: 0.3 }
+  ragga: { reggae: 1 }
+  ragga jungle: { reggae: 0.4, edm: 0.6 }
+  soca: { reggae: 0.5, latin: 0.5 }
+  calypso: { reggae: 0.5, world: 0.5 }
+  # ── latin ──
+  latin: { latin: 1 }
+  reggaeton: { latin: 1 }
+  reggaetón: { latin: 1 }
+  latin trap: { latin: 0.6, hiphop: 0.4 }
+  urbano latino: { latin: 1 }
+  latin urban: { latin: 1 }
+  salsa: { latin: 1 }
+  bachata: { latin: 1 }
+  merengue: { latin: 1 }
+  cumbia: { latin: 1 }
+  tango: { latin: 0.8, world: 0.2 }
+  mambo: { latin: 1 }
+  cha-cha-chá: { latin: 1 }
+  bolero: { latin: 1 }
+  son cubano: { latin: 1 }
+  samba: { latin: 1 }
+  mpb: { latin: 1 }
+  música popular brasileira: { latin: 1 }
+  sertanejo: { latin: 0.7, country: 0.3 }
+  forró: { latin: 1 }
+  axé: { latin: 1 }
+  funk carioca: { latin: 0.6, hiphop: 0.4 }
+  baile funk: { latin: 0.6, hiphop: 0.4 }
+  regional mexicano: { latin: 1 }
+  ranchera: { latin: 1 }
+  mariachi: { latin: 1 }
+  norteño: { latin: 1 }
+  banda: { latin: 1 }
+  corridos: { latin: 1 }
+  corridos tumbados: { latin: 0.7, hiphop: 0.3 }
+  latin rock: { latin: 0.5, classic_rock: 0.5 }
+  rock en español: { latin: 0.5, classic_rock: 0.3, alt_indie: 0.2 }
+  vallenato: { latin: 1 }
+  nueva canción: { latin: 0.6, folk: 0.4 }
+  tropical: { latin: 1 }
+  dembow: { latin: 1 }
+  # ── world ──
+  world: { world: 1 }
+  world music: { world: 1 }
+  world fusion: { world: 1 }
+  afropop: { world: 0.6, pop: 0.4 }
+  afrobeats: { world: 0.5, dance_pop: 0.3, rnb_soul: 0.2 }
+  amapiano: { world: 0.5, house_techno: 0.5 }
+  highlife: { world: 1 }
+  soukous: { world: 1 }
+  mbalax: { world: 1 }
+  gnawa: { world: 1 }
+  desert blues: { world: 0.6, blues: 0.4 }
+  flamenco: { world: 0.8, latin: 0.2 }
+  fado: { world: 1 }
+  rebetiko: { world: 1 }
+  laïko: { world: 1 }
+  klezmer: { world: 1 }
+  balkan: { world: 1 }
+  balkan brass: { world: 1 }
+  turbo-folk: { world: 0.6, dance_pop: 0.4 }
+  turkish pop: { world: 0.5, pop: 0.5 }
+  turkish folk: { world: 0.6, folk: 0.4 }
+  arabic: { world: 1 }
+  arabic pop: { world: 0.5, pop: 0.3, mizrahi: 0.2 }
+  raï: { world: 1 }
+  rai: { world: 1 }
+  dabke: { world: 0.6, mizrahi: 0.4 }
+  qawwali: { world: 1 }
+  indian classical: { world: 0.6, classical: 0.4, complexity: 0.6 }
+  hindustani classical: { world: 0.6, classical: 0.4, complexity: 0.6 }
+  carnatic: { world: 0.6, classical: 0.4, complexity: 0.6 }
+  bhangra: { world: 0.7, dance_pop: 0.3 }
+  persian pop: { world: 0.6, pop: 0.4 }
+  chalga: { world: 0.6, dance_pop: 0.4 }
+  enka: { world: 0.6, pop: 0.4 }
+  traditional: { world: 0.6, folk: 0.4 }
+  zouk: { world: 0.6, latin: 0.4 }
+  kompa: { world: 0.6, latin: 0.4 }
+  kizomba: { world: 0.6, latin: 0.4 }
+  zydeco: { world: 0.4, folk: 0.3, blues: 0.3 }
+  cajun: { folk: 0.6, country: 0.4 }
+  polka: { world: 0.5, folk: 0.5 }
+  # ── mizrahi ──
+  mizrahi: { mizrahi: 1 }
+  mizrahit: { mizrahi: 1 }
+  mizrahi music: { mizrahi: 1 }
+  musika mizrahit: { mizrahi: 1 }
+  muzika mizrahit: { mizrahi: 1 }
+  mediterranean: { mizrahi: 0.5, world: 0.5 }
+  israeli mediterranean: { mizrahi: 1 }
+  yemenite: { mizrahi: 0.6, world: 0.4 }
+  piyyut: { mizrahi: 0.6, world: 0.4 }
+  middle eastern: { world: 0.6, mizrahi: 0.4 }
+  # ── kpop ──
+  k-pop: { kpop: 1 }
+  kpop: { kpop: 1 }
+  korean pop: { kpop: 1 }
+  k-ballad: { kpop: 0.7, pop: 0.3 }
+  k-indie: { kpop: 0.5, alt_indie: 0.5 }
+  k-r&b: { kpop: 0.5, rnb_soul: 0.5 }
+  k-hip hop: { kpop: 0.4, hiphop: 0.6 }
+  korean hip hop: { kpop: 0.4, hiphop: 0.6 }
+  korean r&b: { kpop: 0.5, rnb_soul: 0.5 }
+  trot: { kpop: 0.6, world: 0.4 }
+  j-pop/k-pop: { kpop: 0.5, pop: 0.5 }
+  # ── compound and variant spellings (from the catalog-2026.09 report's unmapped tags) ──
+  pop/rock: { pop: 0.5, classic_rock: 0.5 }
+  classic pop and rock: { classic_rock: 0.6, pop: 0.4 }
+  contemporary pop/rock: { pop: 0.6, alt_indie: 0.4 }
+  alternative pop/rock: { alt_indie: 0.7, pop: 0.3 }
+  alternative/indie rock: { alt_indie: 1 }
+  rock and indie: { alt_indie: 0.6, classic_rock: 0.4 }
+  acoustic rock: { classic_rock: 0.5, folk: 0.5, intensity: -0.2 }
+  electronic rock: { alt_indie: 0.6, edm: 0.4 }
+  industrial rock: { metal: 0.5, alt_indie: 0.3, synth_newwave: 0.2, intensity: 0.3 }
+  electro-industrial: { synth_newwave: 0.7, metal: 0.3, intensity: 0.3 }
+  gothic: { synth_newwave: 0.5, alt_indie: 0.3, metal: 0.2 }
+  jazz rock: { classic_rock: 0.4, jazz: 0.6, complexity: 0.6 }
+  singer/songwriter: { pop: 0.4, folk: 0.6 }
+  chanson française: { folk: 0.5, pop: 0.5 }
+  underground hip hop: { hiphop: 1 }
+  experimental hip hop: { hiphop: 0.8, alt_indie: 0.2, complexity: 0.4 }
+  alternative dance: { alt_indie: 0.5, edm: 0.5 }
+  indie dance: { alt_indie: 0.5, edm: 0.5 }
+  dance and electronica: { edm: 0.6, house_techno: 0.4 }
+  breaks: { house_techno: 0.5, edm: 0.5 }
+  elektro: { house_techno: 0.6, synth_newwave: 0.4 }
+  euro house: { house_techno: 0.6, dance_pop: 0.4 }
+  vgm: { soundtrack: 1 }
+  game: { soundtrack: 1 }
+  film composer: { soundtrack: 1 }
+  cinematic classical: { soundtrack: 0.6, classical: 0.4 }
+  jazz and blues: { jazz: 0.6, blues: 0.4 }
+  folk music: { folk: 1 }
+  psychadelic: { classic_rock: 0.7, alt_indie: 0.3, complexity: 0.3 }
+  psychedelic funk: { funk_disco: 0.7, classic_rock: 0.3 }
+  triphop: { chill_ambient: 0.7, hiphop: 0.3 }
+  death-doom metal: { metal: 1, intensity: 0.3 }
+  melodic death doom: { metal: 1, intensity: 0.3 }
+  melodic death-doom metal: { metal: 1, intensity: 0.3 }
+  # Israeli electronic scene (Hebrew-pool report): psytrance spellings and house/techno subgenres.
+  psy-trance: { edm: 1 }
+  goa: { edm: 1 }
+  progressive psytrance: { edm: 1 }
+  psychill: { chill_ambient: 0.6, edm: 0.4 }
+  glitch hop edm: { edm: 0.7, hiphop: 0.3 }
+  melodic house: { house_techno: 1 }
+  melodic techno: { house_techno: 1 }
+  bass house: { house_techno: 0.6, edm: 0.4 }
+  # Sound genres of the Hebrew pool. Identity tags (hebrew, israeli, jewish) stay unmapped.
+  orthodox pop: { pop: 0.7, world: 0.3 }
+  oriental metal: { metal: 0.8, world: 0.2 }
+  oriental rock: { classic_rock: 0.6, mizrahi: 0.4 }
+  middle eastern music: { world: 0.6, mizrahi: 0.4 }
+
+cluster_priors:
+  metal: { intensity: 0.4, complexity: 0.2 }
+  punk: { intensity: 0.3, complexity: -0.5 }
+  pop: { complexity: -0.3 }
+  dance_pop: { complexity: -0.4 }
+  kpop: { complexity: -0.3 }
+  country: { complexity: -0.2 }
+  edm: { complexity: -0.2 }
+  reggae: { complexity: -0.1 }
+  house_techno: { complexity: -0.1 }
+  alt_indie: { complexity: 0.1 }
+  funk_disco: { complexity: 0.1 }
+  blues: { complexity: 0.1 }
+  chill_ambient: { complexity: 0.1 }
+  world: { complexity: 0.2 }
+  soundtrack: { complexity: 0.4 }
+  jazz: { complexity: 0.6 }
+  classical: { complexity: 0.7 }
+
+non_music:
+  - audiobook
+  - audio book
+  - spoken word
+  - speech
+  - interview
+  - interviews
+  - lecture
+  - comedy
+  - stand-up comedy
+  - standup comedy
+  - stand-up
+  - sketch comedy
+  - poetry
+  - spoken poetry
+  - radio drama
+  - radio play
+  - audio drama
+  - hörspiel
+  - hörbuch
+  - podcast
+  - documentary
+  - sermon
+  - sound effects
+  - sound effect
+  - field recording
+  - field recordings
+  - nature sounds
+  - white noise
+  - noise generator
+  - rain sounds
+  - asmr
+  - guided meditation
+  - hypnosis
+  - self-help
+  - language course
+  - language instruction
+  - prank calls
+  - ringtone
+
+ab_genres:
+  genre_dortmund__alternative: { alt_indie: 1 }
+  genre_dortmund__blues: { blues: 1 }
+  genre_dortmund__electronic: { edm: 0.5, house_techno: 0.5 }
+  genre_dortmund__folkcountry: { folk: 0.5, country: 0.5 }
+  genre_dortmund__funksoulrnb: { rnb_soul: 0.6, funk_disco: 0.4 }
+  genre_dortmund__jazz: { jazz: 1 }
+  genre_dortmund__pop: { pop: 1 }
+  genre_dortmund__raphiphop: { hiphop: 1 }
+  genre_dortmund__rock: { classic_rock: 0.6, alt_indie: 0.4 }
+  genre_rosamerica__cla: { classical: 1 }
+  genre_rosamerica__dan: { dance_pop: 0.5, edm: 0.5 }
+  genre_rosamerica__hip: { hiphop: 1 }
+  genre_rosamerica__jaz: { jazz: 1 }
+  genre_rosamerica__pop: { pop: 1 }
+  genre_rosamerica__rhy: { rnb_soul: 1 }
+  genre_rosamerica__roc: { classic_rock: 0.6, alt_indie: 0.4 }

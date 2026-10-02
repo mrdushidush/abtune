@@ -1,0 +1,246 @@
+// The MusicBrainz tables the catalog reads. Dump files are headerless Postgres COPY text, so
+// column order must match admin/sql/CreateTables.sql for the dump's SCHEMA_SEQUENCE.
+
+/** Schema the column lists below were taken from (musicbrainz-server master, 2026-10-01). */
+export const MB_SCHEMA_SEQUENCE = 31;
+
+export interface MbTable {
+  readonly name: string;
+  /** core = mbdump.tar.bz2 (CC0); derived = mbdump-derived.tar.bz2 (tags, CC BY-NC-SA). */
+  readonly dump: "core" | "derived";
+  readonly columns: readonly string[];
+}
+
+const L_COLUMNS = [
+  "id",
+  "link",
+  "entity0",
+  "entity1",
+  "edits_pending",
+  "last_updated",
+  "link_order",
+  "entity0_credit",
+  "entity1_credit",
+] as const;
+
+const TAG_COLUMNS = (entity: string) => [entity, "tag", "count", "last_updated"];
+
+export const MB_TABLES: readonly MbTable[] = [
+  {
+    name: "recording",
+    dump: "core",
+    columns: [
+      "id",
+      "gid",
+      "name",
+      "artist_credit",
+      "length",
+      "comment",
+      "edits_pending",
+      "last_updated",
+      "video",
+    ],
+  },
+  { name: "recording_gid_redirect", dump: "core", columns: ["gid", "new_id", "created"] },
+  // recording_first_release_date is not in the dumps (excluded from replication), so years come
+  // from track → medium → release → release events.
+  {
+    name: "track",
+    dump: "core",
+    columns: [
+      "id",
+      "gid",
+      "recording",
+      "medium",
+      "position",
+      "number",
+      "name",
+      "artist_credit",
+      "length",
+      "edits_pending",
+      "last_updated",
+      "is_data_track",
+    ],
+  },
+  {
+    name: "medium",
+    dump: "core",
+    columns: [
+      "id",
+      "release",
+      "position",
+      "format",
+      "name",
+      "edits_pending",
+      "last_updated",
+      "track_count",
+      "gid",
+    ],
+  },
+  {
+    name: "release_country",
+    dump: "core",
+    columns: ["release", "country", "date_year", "date_month", "date_day"],
+  },
+  {
+    name: "release_unknown_country",
+    dump: "core",
+    columns: ["release", "date_year", "date_month", "date_day"],
+  },
+  {
+    name: "release",
+    dump: "core",
+    columns: [
+      "id",
+      "gid",
+      "name",
+      "artist_credit",
+      "release_group",
+      "status",
+      "packaging",
+      "language",
+      "script",
+      "barcode",
+      "comment",
+      "edits_pending",
+      "quality",
+      "last_updated",
+    ],
+  },
+  {
+    name: "release_group",
+    dump: "core",
+    columns: [
+      "id",
+      "gid",
+      "name",
+      "artist_credit",
+      "type",
+      "comment",
+      "edits_pending",
+      "last_updated",
+    ],
+  },
+  {
+    name: "release_group_secondary_type",
+    dump: "core",
+    columns: ["id", "name", "parent", "child_order", "description", "gid"],
+  },
+  {
+    name: "release_group_secondary_type_join",
+    dump: "core",
+    columns: ["release_group", "secondary_type", "created"],
+  },
+  {
+    name: "artist",
+    dump: "core",
+    columns: [
+      "id",
+      "gid",
+      "name",
+      "sort_name",
+      "begin_date_year",
+      "begin_date_month",
+      "begin_date_day",
+      "end_date_year",
+      "end_date_month",
+      "end_date_day",
+      "type",
+      "area",
+      "gender",
+      "comment",
+      "edits_pending",
+      "last_updated",
+      "ended",
+      "begin_area",
+      "end_area",
+    ],
+  },
+  {
+    name: "artist_credit",
+    dump: "core",
+    columns: ["id", "name", "artist_count", "ref_count", "created", "edits_pending", "gid"],
+  },
+  {
+    name: "artist_credit_name",
+    dump: "core",
+    columns: ["artist_credit", "position", "artist", "name", "join_phrase"],
+  },
+  {
+    name: "area",
+    dump: "core",
+    columns: [
+      "id",
+      "gid",
+      "name",
+      "type",
+      "edits_pending",
+      "last_updated",
+      "begin_date_year",
+      "begin_date_month",
+      "begin_date_day",
+      "end_date_year",
+      "end_date_month",
+      "end_date_day",
+      "ended",
+      "comment",
+    ],
+  },
+  { name: "iso_3166_1", dump: "core", columns: ["area", "code"] },
+  { name: "l_area_area", dump: "core", columns: L_COLUMNS },
+  { name: "l_recording_work", dump: "core", columns: L_COLUMNS },
+  {
+    name: "link",
+    dump: "core",
+    columns: [
+      "id",
+      "link_type",
+      "begin_date_year",
+      "begin_date_month",
+      "begin_date_day",
+      "end_date_year",
+      "end_date_month",
+      "end_date_day",
+      "attribute_count",
+      "created",
+      "ended",
+    ],
+  },
+  {
+    name: "link_type",
+    dump: "core",
+    columns: [
+      "id",
+      "parent",
+      "child_order",
+      "gid",
+      "entity_type0",
+      "entity_type1",
+      "name",
+      "description",
+      "link_phrase",
+      "reverse_link_phrase",
+      "long_link_phrase",
+      "last_updated",
+      "is_deprecated",
+      "has_dates",
+      "entity0_cardinality",
+      "entity1_cardinality",
+    ],
+  },
+  {
+    name: "work_language",
+    dump: "core",
+    columns: ["work", "language", "edits_pending", "created"],
+  },
+  {
+    name: "language",
+    dump: "core",
+    columns: ["id", "iso_code_2t", "iso_code_2b", "iso_code_1", "name", "frequency", "iso_code_3"],
+  },
+  { name: "isrc", dump: "core", columns: ["id", "recording", "isrc", "edits_pending", "created"] },
+  { name: "tag", dump: "derived", columns: ["id", "name", "ref_count"] },
+  { name: "recording_tag", dump: "derived", columns: TAG_COLUMNS("recording") },
+  { name: "release_group_tag", dump: "derived", columns: TAG_COLUMNS("release_group") },
+  { name: "artist_tag", dump: "derived", columns: TAG_COLUMNS("artist") },
+];

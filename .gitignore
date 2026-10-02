@@ -9,5 +9,7 @@ coverage/
 Thumbs.db
 .vite/
 # Catalog artifacts are built or downloaded, never committed (the 5k test fixture lives elsewhere).
-data/catalog/
+data/catalog/*
+!data/catalog/.gitkeep
 data/dumps/
+data/build/

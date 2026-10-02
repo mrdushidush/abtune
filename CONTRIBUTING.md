@@ -37,6 +37,10 @@ The linter enforces most of these (full rules: [HANDOFF §7–§8](docs/HANDOFF.
 - **Fun/vibe questions map to sonic feel only** (energy, mood, texture, tempo), never to demographic stereotypes.
 - **No answer may map a political, religious, ethnic, national or other identity choice to a genre or language.** Mark such questions `sensitive: political` (or similar): they may then only touch scalar dims, with |v| ≤ 0.4. Reviewers enforce the spirit of this rule beyond what lint can check.
 
+## Improving genre mapping (no code needed)
+
+[`data/tag_map.yaml`](data/tag_map.yaml) maps MusicBrainz tags to ABTune's 24 genre clusters, for example `synth-pop: { synth_newwave: 1 }` or `progressive rock: { classic_rock: 1, complexity: 0.8 }`. Each catalog report ends with an "Unmapped tags" table listing the most common tags the map doesn't cover yet. Map tags by **sound**, never by place or identity: `israeli` or `british` stay unmapped. The catalog tests check the map against the bank's dimensions (`pnpm test`).
+
 ## Code
 
 - Node 24+, pnpm 10. `pnpm install`, then `pnpm test`, `pnpm typecheck`, `pnpm lint`.

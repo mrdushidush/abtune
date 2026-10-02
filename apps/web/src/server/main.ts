@@ -1,6 +1,7 @@
 import path from "node:path";
 import { formatDiagnostic } from "@abtune/bank";
 import { loadBankFromDisk } from "@abtune/bank/node";
+import { findCatalog } from "@abtune/catalog";
 import { serve } from "@hono/node-server";
 import pkg from "../../package.json" with { type: "json" };
 import { createApp } from "./app.ts";
@@ -18,14 +19,28 @@ if (!result.bank || result.errors > 0) {
   process.exit(1);
 }
 
+const installed = await findCatalog(
+  path.join(repoRoot, "data/catalog"),
+  process.env.CATALOG_PATH || undefined,
+);
+const catalog = installed
+  ? {
+      version: installed.manifest.catalog_version,
+      kind: installed.manifest.kind,
+      tracks: installed.manifest.tracks,
+    }
+  : null;
+
 const app = createApp({
   bank: result.bank,
+  catalog,
   version: pkg.version,
   staticRoot: path.relative(process.cwd(), staticDir) || ".",
 });
 
 serve({ fetch: app.fetch, port, hostname }, (info) => {
   console.log(
-    `ABTune ${pkg.version} on http://${info.address}:${info.port} (${result.bank?.questions.length} questions)`,
+    `ABTune ${pkg.version} on http://${info.address}:${info.port} (${result.bank?.questions.length} questions, ` +
+      `catalog: ${catalog ? `${catalog.version} ${catalog.kind}, ${catalog.tracks} tracks` : "none; run `abtune catalog fetch`"})`,
   );
 });

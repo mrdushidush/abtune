@@ -7,6 +7,14 @@ export interface AppOptions {
   readonly version: string;
   /** Built SPA directory (relative to cwd or absolute). Omit to serve the API only. */
   readonly staticRoot?: string;
+  /** The installed music catalog, if any (`abtune catalog fetch` or a full build). */
+  readonly catalog?: CatalogInfo | null;
+}
+
+export interface CatalogInfo {
+  readonly version: string;
+  readonly kind: string;
+  readonly tracks: number;
 }
 
 export function packCounts(bank: Bank): Record<string, number> {
@@ -16,7 +24,7 @@ export function packCounts(bank: Bank): Record<string, number> {
   return counts;
 }
 
-export function createApp({ bank, version, staticRoot }: AppOptions): Hono {
+export function createApp({ bank, version, staticRoot, catalog = null }: AppOptions): Hono {
   const app = new Hono();
 
   app.get("/api/health", (c) =>
@@ -25,6 +33,7 @@ export function createApp({ bank, version, staticRoot }: AppOptions): Hono {
       version,
       questions: bank.questions.length,
       packs: packCounts(bank),
+      catalog,
     }),
   );
 

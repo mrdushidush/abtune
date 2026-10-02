@@ -18,7 +18,18 @@ describe("API", async () => {
       version: "9.9.9",
       questions: 153,
       packs: { core: 40, context: 6, deep: 56, vibe: 42, spicy: 9 },
+      catalog: null,
     });
+  });
+
+  it("reports the installed catalog", async () => {
+    const withCatalog = createApp({
+      bank,
+      version: "9.9.9",
+      catalog: { version: "catalog-2026.10", kind: "dev-sample", tracks: 50000 },
+    });
+    const body = (await (await withCatalog.request("/api/health")).json()) as { catalog: unknown };
+    expect(body.catalog).toEqual({ version: "catalog-2026.10", kind: "dev-sample", tracks: 50000 });
   });
 
   it("returns JSON 404 for unknown API routes", async () => {

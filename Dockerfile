@@ -11,6 +11,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/engine/package.json packages/engine/
 COPY packages/bank/package.json packages/bank/
 COPY packages/cli/package.json packages/cli/
+COPY packages/catalog/package.json packages/catalog/
 COPY apps/web/package.json apps/web/
 
 FROM manifests AS build
@@ -20,13 +21,17 @@ RUN pnpm --filter @abtune/web build
 
 FROM manifests AS runtime
 ENV NODE_ENV=production HOST=0.0.0.0 PORT=8787
-RUN pnpm install --frozen-lockfile --prod --filter "@abtune/web..."
+RUN pnpm install --frozen-lockfile --prod --filter "@abtune/web..." --filter "@abtune/cli..."
 # Node 24 runs the TypeScript sources directly (type stripping); no server bundle step.
 COPY packages/engine/src packages/engine/src
 COPY packages/bank/src packages/bank/src
+COPY packages/catalog/src packages/catalog/src
+COPY packages/cli/src packages/cli/src
 COPY apps/web/src/server apps/web/src/server
 COPY data/questions data/questions
 COPY --from=build /app/apps/web/dist apps/web/dist
+# Catalogs are mounted here (compose) and written by `abtune catalog fetch`.
+RUN mkdir -p data/catalog && chown node:node data/catalog
 USER node
 EXPOSE 8787
 HEALTHCHECK --interval=10s --timeout=3s --start-period=10s --retries=3 \

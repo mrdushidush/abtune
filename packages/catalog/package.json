@@ -1,0 +1,23 @@
+{
+  "name": "@abtune/catalog",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ABTune music catalog: open-data pipeline (MusicBrainz, ListenBrainz, AcousticBrainz), dev sample, fixture.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./build": "./src/build.ts",
+    "./report": "./src/report.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@abtune/bank": "workspace:*",
+    "@abtune/engine": "workspace:*",
+    "@duckdb/node-api": "1.5.6-r.1",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.5"
+  }
+}

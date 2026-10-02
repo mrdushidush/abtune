@@ -1,0 +1,321 @@
+{
+  "name": "abtune-catalog",
+  "catalog_version": "catalog-2026.09",
+  "schema_version": 1,
+  "kind": "fixture",
+  "tracks": 5000,
+  "digest": "5b0b8f1f6a5dfc75b0ea383a6a7171ca989911da0a390b00d49a2887cf3c184e",
+  "created_at": "2026-10-02T07:05:16.378Z",
+  "license": {
+    "id": "CC-BY-NC-SA-3.0-US",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/3.0/us/",
+    "reason": "Genre clusters are derived from MusicBrainz tags (supplementary data, CC BY-NC-SA 3.0 US). All other inputs (MusicBrainz core and canonical data, ListenBrainz, AcousticBrainz) are CC0.",
+    "attribution": "Contains data from MusicBrainz (https://musicbrainz.org), ListenBrainz (https://listenbrainz.org) and AcousticBrainz (https://acousticbrainz.org), MetaBrainz Foundation."
+  },
+  "sources": [
+    {
+      "source": "mb-core",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/data/fullexport/20260930-002222/mbdump.tar.bz2",
+      "sha256": "4342c77212a8807e351e619b49162bc796e19419628bad3c9e791dbdd8e5f587",
+      "dumpDate": "2026-09-30"
+    },
+    {
+      "source": "mb-derived",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/data/fullexport/20260930-002222/mbdump-derived.tar.bz2",
+      "sha256": "e1fb2f376e5d45c5d5a0be8cbe9f978218c4be14c0304fb0ffc10316f8c641ab",
+      "dumpDate": "2026-09-30"
+    },
+    {
+      "source": "canonical",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/canonical_data/musicbrainz-canonical-dump-20260917-080002/musicbrainz-canonical-dump-20260917-080002.tar.zst",
+      "sha256": "04a30bd748013851145c352f5a4c73f1bc3742a15a87eda413a50abd7610e1ed",
+      "dumpDate": "2026-09-17"
+    },
+    {
+      "source": "lb-stats",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/listenbrainz/fullexport/listenbrainz-dump-2663-20260915-000002-full/listenbrainz-statistics-dump-20260915-000002.tar.zst",
+      "sha256": "be24cf7773f23c0fe32420ae27429547cd87aba55b5aad76724b216d1565b4e3",
+      "dumpDate": "2026-09-15"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-0.tar.zst",
+      "sha256": "494f3751a447f6e9d7e6af13e8bc00cb66aaf47ab9f7bcfb2e9a5f5ccc162f02",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-1.tar.zst",
+      "sha256": "c7d477b2f5143f2d52f69cfd58845c8731360a9b9fb899b3d58cf96c50b20877",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-2.tar.zst",
+      "sha256": "2c5530e1dcec4445a4f5a3ecc315f0ae28ded27676d6fdf66e9bddb73cf04ab2",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-3.tar.zst",
+      "sha256": "3146b2b3b3337ad2144e7b114e20960e0a629ff3e01b68db1238237147cc7a6d",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-4.tar.zst",
+      "sha256": "3c8459cb2fcad6f00317819b616dcb650a9dc8fca8ff7366c7d6398963e5e448",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-5.tar.zst",
+      "sha256": "d1fc7b763ff67ca0e5cce0cb902f8c100dc8b52e2f11e81295373b8d8d2d0321",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-6.tar.zst",
+      "sha256": "9da244ae35782c63888bf82c367048d4ecbcb6800d178d33ddc01a8c05aca661",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-7.tar.zst",
+      "sha256": "4d2922e0e118082760143c04ad6de4467178f4a860781c8dec8664b080250600",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-8.tar.zst",
+      "sha256": "5e5e29c3ce9cf72a1f419f2aadc222ceb3767a35c237dab4a9f16eff7ddbc093",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-9.tar.zst",
+      "sha256": "ab4ba594a90ac130c3e0f0ca3f22d2d0453edd446dec04e59adbe23b0b31f80e",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-10.tar.zst",
+      "sha256": "77f95d3dbe69b090c74ea62f4595a1cecaa288a05174706596cb3c4daaa63753",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-11.tar.zst",
+      "sha256": "89694d3faac3371364723c75917695333c3b4be35ed96e6c3ad08c1b6ca18c47",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-12.tar.zst",
+      "sha256": "cd290ff555aff9efbd4aafeae26acc25bd2dde3746de4c2be36556c49c6891a9",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-13.tar.zst",
+      "sha256": "87f835d9b417d19a4e35924824986b916b1002064e97cfdab39b24444c9937ac",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-14.tar.zst",
+      "sha256": "105b3f48501128f1e45fba278fedd5bd8dc7a5b43ccabd88bed7bd9d777e9eca",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-15.tar.zst",
+      "sha256": "d50bbbe1e97f947f5e3195df35031cd55651275a6050ac40036e78c26ea828ba",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-16.tar.zst",
+      "sha256": "1b0ab7b83eeece55593521ab0dd08a09b9608371cdb7737ef623398dd954726d",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-17.tar.zst",
+      "sha256": "396b964d8a0a43896aa92615c0dc72d9c18c61f04d996c9d0de3cdb79b4e703f",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-18.tar.zst",
+      "sha256": "0fb4c3357ffdc3ae66b81c1b945bc7c8b165a2b0415d51a969d07157e923ea78",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-19.tar.zst",
+      "sha256": "8b29e8cca2c12ad177365b6886ff0abafe2e409c88379b51fd3ca1dd18f1a82e",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-20.tar.zst",
+      "sha256": "9e73d633d8ad6aea29fd1aabc8537e04b66c49b0642f359e6ce7b3eb01664277",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-21.tar.zst",
+      "sha256": "c8e68738a18ac0ca3f8f7a436694ebd9559878217a34397de2f9732ccf3c2ef3",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-22.tar.zst",
+      "sha256": "61be87dbcae28e824450dd938e32a1755f03046b11940004254726b6d7c56f6c",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-23.tar.zst",
+      "sha256": "e4d3efd928433b0d6cc58e1e75bb468b8b43f31aaa3108b208ec2ad525caedfb",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-24.tar.zst",
+      "sha256": "cadb02374688d5907177beb247401875bdbde3585e76d6f4652b3188aa36b7b8",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-25.tar.zst",
+      "sha256": "3dc0da839a0647b797bfb89beefb3f46e2212b79cbb660ea235e1c2be92bd5bb",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-26.tar.zst",
+      "sha256": "67592477cee0c41cb935aaf5dcb139f6f5901654a16d3aada2ca6374bb9b1fce",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-27.tar.zst",
+      "sha256": "06f9cfe025ba8f9b3adb9154338330aac2e7c728f441821fde1baff57c33c325",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-28.tar.zst",
+      "sha256": "07e1deb12e5781ea1c86aec6e95f15446755115ed6a4821f7400124c3bbfffab",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-highlevel",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-highlevel-json-20220623/acousticbrainz-highlevel-json-20220623-29.tar.zst",
+      "sha256": "12d4d186bdb3a82fd76ecb12a91315cb636b042d71832bf78e000c2e26a3defa",
+      "dumpDate": "2022-06-23"
+    },
+    {
+      "source": "ab-rhythm",
+      "url": "https://data.metabrainz.org/pub/musicbrainz/acousticbrainz/dumps/acousticbrainz-lowlevel-features-20220623/acousticbrainz-lowlevel-features-20220623-rhythm.tar.zst",
+      "sha256": "5f813ff49c2ac1f35cca3947e081178758cddbd9b5292163dff58bdf3a025fad",
+      "dumpDate": "2022-06-23"
+    }
+  ],
+  "popularity": {
+    "api": true,
+    "snapshot": "lb-popularity-api"
+  },
+  "config": {
+    "target": 2000000,
+    "candidates": 3500000,
+    "pools": [
+      {
+        "name": "he",
+        "countries": [
+          "IL"
+        ],
+        "languages": [
+          "heb"
+        ],
+        "script": "Hebrew",
+        "min": 30000
+      },
+      {
+        "name": "he_lang",
+        "countries": [],
+        "languages": [
+          "heb"
+        ],
+        "min": 18000
+      }
+    ],
+    "dedupe": {
+      "minListeners": 20,
+      "minShare": 0.2
+    },
+    "api": true,
+    "minLengthMs": 30000,
+    "version": "catalog-2026.09",
+    "tag_map_sha256": "05ee52ad9659cc3cb1cc04b4c8fd20812e8f111400c3d916f751fae5bf915202"
+  },
+  "dimensions": {
+    "genres": [
+      "classic_rock",
+      "alt_indie",
+      "metal",
+      "punk",
+      "pop",
+      "dance_pop",
+      "hiphop",
+      "rnb_soul",
+      "funk_disco",
+      "house_techno",
+      "edm",
+      "chill_ambient",
+      "synth_newwave",
+      "folk",
+      "country",
+      "blues",
+      "jazz",
+      "classical",
+      "soundtrack",
+      "reggae",
+      "latin",
+      "world",
+      "mizrahi",
+      "kpop"
+    ],
+    "decades": [
+      "dec50",
+      "dec60",
+      "dec70",
+      "dec80",
+      "dec90",
+      "dec00",
+      "dec10",
+      "dec20"
+    ],
+    "languages": [
+      "lang_en",
+      "lang_he",
+      "lang_fr",
+      "lang_es",
+      "lang_other"
+    ]
+  },
+  "files": [
+    {
+      "name": "tracks.jsonl.gz",
+      "bytes": 1113413,
+      "sha256": "62abb7ac6093fb67bbc2bb94ec6da281320cf8283f8fba2823e28e8e48d2f8ce"
+    }
+  ],
+  "derived_from": {
+    "catalog_version": "catalog-2026.09",
+    "digest": "06651393e80eea278925ba183d6a36ef73ba0996cd5e09213082a2d0ff24a3a0",
+    "tracks": 2000000
+  }
+}

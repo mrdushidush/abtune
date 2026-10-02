@@ -5,6 +5,7 @@
 coverage
 data/catalog
 data/dumps
+data/build
 .env
 .env.*
 *.log

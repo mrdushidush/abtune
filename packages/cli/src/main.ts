@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { catalog, catalogHelp } from "./commands/catalog.ts";
 import { lint, lintHelp } from "./commands/lint.ts";
 import { schema, schemaHelp } from "./commands/schema.ts";
 import { sim, simHelp } from "./commands/sim.ts";
@@ -6,6 +7,7 @@ import { sim, simHelp } from "./commands/sim.ts";
 type Command = { run: (args: readonly string[]) => Promise<number>; help: string };
 
 const commands: Record<string, Command> = {
+  catalog: { run: catalog, help: catalogHelp },
   lint: { run: lint, help: lintHelp },
   schema: { run: schema, help: schemaHelp },
   sim: { run: sim, help: simHelp },
