@@ -53,7 +53,8 @@ describe("§16 #4 constraints on the fixture", () => {
         ),
       ).toEqual([]);
     }
-  });
+    // ~50 s alone; the full suite runs it next to other catalog-loading tests.
+  }, 180_000);
 });
 
 describe("§16 #2 playlist determinism", () => {
