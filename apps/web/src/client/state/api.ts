@@ -67,17 +67,21 @@ export function stepRequest(
 
 export { MORE_LENGTH };
 
-export type ApiResult<T> =
+export type ApiResult<T, E = ApiError> =
   | { readonly ok: true; readonly data: T }
-  | { readonly ok: false; readonly status: number; readonly error: ApiError | null };
+  | { readonly ok: false; readonly status: number; readonly error: E | null };
 
-async function call<T>(url: string, init?: RequestInit): Promise<ApiResult<T>> {
+/** Status 0 = the server couldn't be reached. */
+export async function call<T, E = ApiError>(
+  url: string,
+  init?: RequestInit,
+): Promise<ApiResult<T, E>> {
   try {
     const res = await fetch(url, init);
     const body = (await res.json().catch(() => null)) as unknown;
     return res.ok
       ? { ok: true, data: body as T }
-      : { ok: false, status: res.status, error: (body as ApiError) ?? null };
+      : { ok: false, status: res.status, error: (body as E) ?? null };
   } catch {
     return { ok: false, status: 0, error: null };
   }

@@ -14,7 +14,7 @@ import type { Dimensions } from "./types.ts";
 export const MORE_LENGTH = 25;
 
 /** A follow-up's seed: the playlist's seed, what it is for, and a counter. */
-export function followUpSeed(seed: string, what: "more" | "swap", n: number): string {
+export function followUpSeed(seed: string, what: "more" | "swap" | "backfill", n: number): string {
   return sha256Hex(`${seed}:${what}:${n}`).slice(0, 16);
 }
 
@@ -60,6 +60,20 @@ export function editStep(
     seed: followUpSeed(first.seed, "more", n),
     length: MORE_LENGTH,
     swap: false,
+  };
+}
+
+/**
+ * The `n`th replacement for a song a destination doesn't have (Spotify backfill, HANDOFF §11.1):
+ * like a swap, one song by an artist not on the list yet, from the first playlist's taste. The
+ * caller also passes `sameCellAs` (the missing song) to the generator.
+ */
+export function backfillStep(first: PlaylistStep, n: number): PlaylistStep {
+  return {
+    taste: first.taste,
+    seed: followUpSeed(first.seed, "backfill", n),
+    length: 1,
+    swap: true,
   };
 }
 

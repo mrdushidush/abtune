@@ -29,6 +29,7 @@ RUN pnpm install --frozen-lockfile --prod --filter "@abtune/web..." --filter "@a
 COPY packages/engine/src packages/engine/src
 COPY packages/bank/src packages/bank/src
 COPY packages/catalog/src packages/catalog/src
+COPY packages/connectors/src packages/connectors/src
 COPY packages/eval/src packages/eval/src
 COPY packages/cli/src packages/cli/src
 COPY apps/web/src/server apps/web/src/server
@@ -37,8 +38,9 @@ COPY apps/web/src/api-types.ts apps/web/src/api-types.ts
 COPY data/questions data/questions
 COPY data/personas data/personas
 COPY --from=build /app/apps/web/dist apps/web/dist
-# Catalogs are mounted here (compose) and written by `abtune catalog fetch`.
-RUN mkdir -p data/catalog && chown node:node data/catalog
+# Catalogs are mounted here (compose) and written by `abtune catalog fetch`; Spotify connections
+# (encrypted) are kept in data/spotify.
+RUN mkdir -p data/catalog data/spotify && chown node:node data/catalog data/spotify
 USER node
 EXPOSE 8787
 HEALTHCHECK --interval=10s --timeout=3s --start-period=10s --retries=3 \

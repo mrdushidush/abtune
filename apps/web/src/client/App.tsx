@@ -15,8 +15,12 @@ import {
 } from "./state/app.ts";
 import { useHealth } from "./state/hooks.ts";
 import { shareCodeOf } from "./state/share.ts";
+import { takeOutcome } from "./state/spotify.ts";
 
 const reducer = (s: AppState, a: AppAction) => appReducer(bank, s, a);
+
+/** Back from Spotify's sign-in (`?spotify=…`): read once, and removed from the address bar. */
+const signInOutcome = takeOutcome();
 
 /**
  * Setup → quiz → result (HANDOFF §4.1). The screen is derived from the session, never stored. A
@@ -26,6 +30,8 @@ export function App() {
   const [state, dispatch] = useReducer(reducer, bank, loadState);
   const [health, refreshHealth] = useHealth();
   const [shared, setShared] = useState(() => shareCodeOf(location.hash));
+  const [spotify, setSpotify] = useState(signInOutcome);
+  const spotifyProps = { spotifyOutcome: spotify, onSpotifySeen: () => setSpotify(null) };
   const screen = shared ? "shared" : screenOf(bank, state);
 
   useEffect(() => {
@@ -52,6 +58,7 @@ export function App() {
         health={health}
         refreshHealth={refreshHealth}
         hasOwn={state.session !== null}
+        {...spotifyProps}
         onLeave={() => {
           history.replaceState(null, "", location.pathname + location.search);
           setShared(null);
@@ -76,6 +83,7 @@ export function App() {
       health={health}
       refreshHealth={refreshHealth}
       dispatch={dispatch}
+      {...spotifyProps}
     />
   );
 }

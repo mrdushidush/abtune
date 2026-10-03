@@ -5,6 +5,20 @@ import { mkdir, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { EXPORT_FORMATS, type ExportPlaylist, exportPlaylist } from "@abtune/connectors";
 import {
+  type Connection,
+  catalogBackfill,
+  isSpotifyError,
+  MatchCache,
+  missingSettings,
+  playlistDescription,
+  pushPlaylist,
+  SpotifyClient,
+  type SpotifySettings,
+  StoredTokens,
+  spotifyConfig,
+  TokenStore,
+} from "@abtune/connectors/spotify";
+import {
   type AnswerEvent,
   addTweak,
   archetypeName,
@@ -19,6 +33,7 @@ import {
   defaultPacks,
   encodeShare,
   engineVersion,
+  firstStep,
   languageLabel,
   MORE_LENGTH,
   P_SCALE,
@@ -55,6 +70,8 @@ export interface ServerOptions {
   readonly version?: string;
   /** Where relative export paths resolve (default: the process's working directory). */
   readonly cwd?: string;
+  /** Spotify settings from `.env`, as the web app's: push uses the connection made there. */
+  readonly spotify?: SpotifySettings;
 }
 
 export const INSTRUCTIONS = `ABTune turns this-or-that answers into a music taste profile and a playlist of songs people know, from an open catalog.
@@ -64,7 +81,7 @@ To make a playlist from a description ("music for a rainy Sunday", "my dad likes
 2. For each question the description says something about, pick the side that fits: a, b, or both. Skip the rest; a skip adds nothing.
 3. submit_answers with those answers. It returns a session_id and the profile.
 4. generate_playlist with the session_id (optionally length, tweaks, deeper_cuts).
-5. export_playlist (m3u, csv, xspf or json), or give the user the share link.
+5. push_to_spotify (once Spotify is connected in the web app), export_playlist (m3u, csv, xspf or json), or give the user the share link.
 
 To let the user play the quiz card by card instead: start_quiz, then answer each card.
 Answers stay in this process. Share links carry only the quantized profile, never the answers.`;
@@ -606,19 +623,127 @@ export function createServer(opts: ServerOptions): McpServer {
     },
   );
 
+  const matchCache = new MatchCache();
   server.registerTool(
     "push_to_spotify",
     {
-      title: "Push to Spotify",
+      title: "Save to Spotify",
       description:
-        "Create the playlist in the user's Spotify account (needs Spotify set up in the web app).",
-      inputSchema: { playlist_id: z.string(), name: z.string().optional() },
+        "Create a generated playlist in the user's Spotify account, private unless `public` is true. Songs Spotify doesn't have are swapped for similar ones (same genre and decade). Needs Spotify set up and connected once in the ABTune web app (its Save to Spotify button).",
+      inputSchema: {
+        playlist_id: z.string(),
+        name: z.string().max(100).optional(),
+        public: z.boolean().optional(),
+        account: z
+          .string()
+          .optional()
+          .describe("Spotify user id or display name, when several accounts are connected"),
+      },
     },
-    async ({ playlist_id }) => {
-      if (!playlists.has(playlist_id)) return fail(`No playlist "${playlist_id}".`);
-      return fail(
-        "Spotify isn't connected: the Spotify connector (milestone M5) isn't built yet. Use export_playlist instead; the CSV imports into playlist-transfer tools, and the share link opens the playlist in the web app.",
-      );
+    async ({ playlist_id, name, public: isPublic, account }) => {
+      const p = playlists.get(playlist_id);
+      if (!p) return fail(`No playlist "${playlist_id}". Make one with generate_playlist.`);
+      const webApp = `the ABTune web app (${base})`;
+      const settings = opts.spotify;
+      const missing = settings ? missingSettings(settings) : ["SPOTIFY_CLIENT_ID"];
+      if (!settings || missing.length > 0)
+        return fail(
+          `Spotify isn't set up (${missing.join(", ")} missing in .env). Open ${webApp}, press "Save to Spotify" and follow the setup, then connect once; this server reads the same .env. Meanwhile, export_playlist (CSV) imports into playlist-transfer tools.`,
+        );
+      const store = new TokenStore(settings.tokenFile, settings.secret);
+      let all: { entry: string; connection: Connection }[];
+      try {
+        all = await store.all();
+      } catch (err) {
+        return fail(
+          `Can't read the Spotify connections (${store.file}): ${(err as Error).message}`,
+        );
+      }
+      const label = (c: Connection) => c.display_name ?? c.user_id;
+      const want = account?.trim().toLowerCase();
+      const pick = want
+        ? all.filter(
+            (e) =>
+              e.connection.user_id.toLowerCase() === want ||
+              e.connection.display_name?.toLowerCase() === want,
+          )
+        : all;
+      const chosen = pick[0];
+      if (!chosen)
+        return fail(
+          want
+            ? `No connected Spotify account "${account}". Connected: ${all.map((e) => label(e.connection)).join(", ") || "none"}.`
+            : `No Spotify account is connected. Open ${webApp}, press "Save to Spotify" and connect once, then try again.`,
+        );
+      if (new Set(pick.map((e) => e.connection.user_id)).size > 1)
+        return fail(
+          `Several Spotify accounts are connected: ${pick.map((e) => `${label(e.connection)} (${e.connection.user_id})`).join(", ")}. Say which one with "account".`,
+        );
+      const conn = chosen.connection;
+      let catalog: Awaited<ReturnType<CatalogHandle["get"]>>;
+      try {
+        catalog = await opts.catalog.get();
+      } catch (err) {
+        return fail((err as Error).message);
+      }
+      const cfg = spotifyConfig(settings);
+      try {
+        const report = await pushPlaylist(
+          new SpotifyClient(cfg, new StoredTokens(cfg, store, chosen.entry, conn)),
+          {
+            name: name ?? p.title,
+            description: playlistDescription(p.description),
+            public: isPublic ?? false,
+            songs: p.tracks.map((t) => ({
+              track_id: t.track_id,
+              title: t.title,
+              artist: t.artist,
+              isrcs: t.isrcs,
+            })),
+            backfill: catalogBackfill(
+              catalog,
+              firstStep(dims, p.data.taste, p.data.tweaks, p.data.seed, p.data.length),
+            ),
+            cache: matchCache,
+            account: conn.user_id,
+          },
+        );
+        const lines = [
+          `Saved "${report.playlist.name}" to ${label(conn)}'s Spotify (${isPublic ? "public" : "private"}): ${report.added} of ${report.requested} songs.`,
+          `${report.matched} found as is (${report.byIsrc} by ISRC), ${report.replaced.length} swapped for similar songs${report.missing.length ? `, ${report.missing.length} missing` : ""}.`,
+          ...report.replaced.map(
+            (r) =>
+              `  ${r.position + 1}. ${r.missing.title} — ${r.missing.artist} → ${r.replacement.title} — ${r.replacement.artist}`,
+          ),
+          `Open: ${report.playlist.url}`,
+        ];
+        return text(lines.join("\n"), {
+          playlist_url: report.playlist.url,
+          name: report.playlist.name,
+          account: conn.user_id,
+          requested: report.requested,
+          added: report.added,
+          matched: report.matched,
+          replaced: report.replaced.length,
+          missing: report.missing.length,
+        });
+      } catch (err) {
+        if (!isSpotifyError(err)) throw err;
+        const why: Partial<Record<typeof err.kind, string>> = {
+          not_connected: `Spotify needs the user to connect again: open ${webApp} and press "Save to Spotify".`,
+          unauthorized: `Spotify didn't accept the sign-in: open ${webApp} and connect again.`,
+          forbidden:
+            "Spotify refused: this account may not be on the Spotify app's User Management list, or the app owner's Premium has lapsed.",
+          quota_exceeded:
+            "This Spotify app's request quota is used up for now. Try later, or use export_playlist (CSV).",
+          rate_limited: `Spotify asked to slow down${err.retryAfter ? ` (try again in ${err.retryAfter} s)` : ""}.`,
+          no_matches: "None of these songs are on Spotify.",
+        };
+        const partial = err.partial
+          ? ` The playlist was created but not filled completely: ${err.partial.url}`
+          : "";
+        return fail(`${why[err.kind] ?? `Spotify failed: ${err.message}`}${partial}`);
+      }
     },
   );
 

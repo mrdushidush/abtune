@@ -1,8 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    // Export runs in browsers too: no Node or DOM typings in src.
+    // Export runs in browsers too: no Node or DOM typings in src (Spotify is checked separately).
     "types": []
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/spotify"]
 }

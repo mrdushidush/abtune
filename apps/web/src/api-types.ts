@@ -78,6 +78,8 @@ export interface PlaylistResponse {
 
 export type ApiErrorCode =
   | "bad_request"
+  /** A POST whose Origin isn't this server. */
+  | "cross_site"
   | "too_large"
   | "not_found"
   | "no_catalog"
@@ -95,3 +97,90 @@ export interface ApiError {
 
 /** Longest playlist the API generates (the UI offers 25 / 50 / 100). */
 export const MAX_API_LENGTH = 100;
+
+/** A `.env` setting Spotify needs that is missing or invalid. */
+export type SpotifySetting = "SPOTIFY_CLIENT_ID" | "TOKEN_ENCRYPTION_KEY" | "SPOTIFY_REDIRECT_URI";
+
+/** GET /api/spotify: setup and connection state for this browser. */
+export interface SpotifyStatus {
+  readonly configured: boolean;
+  readonly missing: readonly SpotifySetting[];
+  /** Exactly what to register in the Spotify dashboard. */
+  readonly redirect_uri: string;
+  /** Where the app must be open to sign in (the redirect URI's origin: cookies are per host). */
+  readonly app_origin: string;
+  readonly connected: { readonly user_id: string; readonly display_name: string | null } | null;
+}
+
+/**
+ * POST /api/spotify/push. Track ids and the first playlist's request (taste + seed, for
+ * replacements): never answers, like every other request (HANDOFF §13).
+ */
+export interface SpotifyPushRequest {
+  readonly name: string;
+  readonly description: string;
+  /** Default false: a private playlist. */
+  readonly public?: boolean;
+  /** The playlist on screen, in order. */
+  readonly tracks: readonly string[];
+  readonly request: PlaylistRequest;
+}
+
+export interface SpotifyPushSong {
+  readonly track_id: string;
+  readonly title: string;
+  readonly artist: string;
+}
+
+export interface SpotifyPushResponse {
+  readonly playlist_url: string;
+  readonly name: string;
+  readonly requested: number;
+  readonly added: number;
+  /** Found on the first pass (by ISRC or by title and artist). */
+  readonly matched: number;
+  readonly by_isrc: number;
+  readonly with_isrc: number;
+  readonly with_isrc_matched: number;
+  /** Songs Spotify doesn't have, and what took their place. */
+  readonly replaced: readonly {
+    readonly position: number;
+    readonly missing: SpotifyPushSong;
+    readonly replacement: SpotifyPushSong;
+  }[];
+  /** Songs nothing could replace (the playlist is that much shorter). */
+  readonly missing: readonly SpotifyPushSong[];
+}
+
+export type SpotifyErrorCode =
+  | "not_configured"
+  | "not_connected"
+  | "unauthorized"
+  | "forbidden"
+  | "rate_limited"
+  | "quota_exceeded"
+  | "no_matches"
+  | "network"
+  | "spotify_error"
+  /** A push from this browser is still running. */
+  | "busy";
+
+export interface SpotifyApiError {
+  readonly error: SpotifyErrorCode | ApiErrorCode;
+  readonly message?: string;
+  /** Seconds, on rate_limited. */
+  readonly retry_after?: number;
+  /** When the playlist was created but filling it failed part way. */
+  readonly playlist_url?: string;
+  readonly engine_version?: string;
+  readonly catalog_version?: string;
+}
+
+/** `?spotify=` on the page the sign-in returns to. */
+export type SpotifyOutcome =
+  | "connected"
+  | "denied"
+  | "not_allowed"
+  | "not_configured"
+  | "expired"
+  | "error";

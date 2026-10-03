@@ -1,10 +1,12 @@
+import { type SpotifySettings, unconfiguredSpotify } from "@abtune/connectors/spotify";
 import { type Bank, engineVersion } from "@abtune/engine";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { type Context, Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import type { ApiError, Health } from "../api-types.ts";
-import { type CatalogSlot, catalogHealth } from "./catalog.ts";
+import { type CatalogSlot, catalogHealth, readyCatalog } from "./catalog.ts";
 import { buildPlaylist, parsePlaylistRequest, UnknownTrackError } from "./playlist.ts";
+import { mountSpotify } from "./spotify.ts";
 
 export interface AppOptions {
   readonly bank: Bank;
@@ -13,6 +15,8 @@ export interface AppOptions {
   readonly staticRoot?: string;
   /** The installed music catalog, if any (`abtune catalog fetch` or a full build). */
   readonly catalog?: CatalogSlot | null;
+  /** Spotify settings from `.env` (HANDOFF §11.1). Omitted: Spotify isn't set up. */
+  readonly spotify?: SpotifySettings;
 }
 
 /** A playlist request is a taste vector and a few strings: well under this. */
@@ -28,7 +32,13 @@ export function packCounts(bank: Bank): Record<string, number> {
 const fail = (c: Context, status: 400 | 404 | 409 | 413 | 503, body: ApiError) =>
   c.json(body, status);
 
-export function createApp({ bank, version, staticRoot, catalog = null }: AppOptions): Hono {
+export function createApp({
+  bank,
+  version,
+  staticRoot,
+  catalog = null,
+  spotify = unconfiguredSpotify(),
+}: AppOptions): Hono {
   const app = new Hono();
   const engine = engineVersion(bank);
 
@@ -59,30 +69,14 @@ export function createApp({ bank, version, staticRoot, catalog = null }: AppOpti
       }
       const parsed = parsePlaylistRequest(body, bank.dimensions);
       if (!parsed.ok) return fail(c, 400, { error: "bad_request", message: parsed.message });
-      if (!catalog) {
-        return fail(c, 503, {
-          error: "no_catalog",
-          message: "No music catalog is installed. Run `abtune catalog fetch`.",
-        });
-      }
-      const state = catalog.state;
-      if (state.status === "loading") {
-        c.header("Retry-After", "2");
-        return fail(c, 503, { error: "catalog_loading", message: "The catalog is still loading." });
-      }
-      if (state.status === "error") {
-        return fail(c, 503, { error: "catalog_error", message: "The catalog failed to load." });
-      }
       const req = parsed.value;
-      if (req.engine_version !== engine || req.catalog_version !== catalog.info.version) {
-        return fail(c, 409, {
-          error: "version_mismatch",
-          engine_version: engine,
-          catalog_version: catalog.info.version,
-        });
+      const ready = readyCatalog(catalog, req, engine);
+      if (!ready.ok) {
+        if (ready.body.error === "catalog_loading") c.header("Retry-After", "2");
+        return c.json(ready.body, ready.status);
       }
       try {
-        return c.json(await buildPlaylist(state.catalog, req, engine));
+        return c.json(await buildPlaylist(ready.catalog, req, engine));
       } catch (err) {
         if (err instanceof UnknownTrackError)
           return fail(c, 400, { error: "bad_request", message: "previous has unknown track ids." });
@@ -90,6 +84,8 @@ export function createApp({ bank, version, staticRoot, catalog = null }: AppOpti
       }
     },
   );
+
+  mountSpotify(app, { settings: spotify, bank, catalog, engine });
 
   app.all("/api/*", (c) => fail(c, 404, { error: "not_found" }));
 

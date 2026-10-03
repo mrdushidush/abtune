@@ -1,0 +1,5 @@
+{
+  "extends": "../../tsconfig.base.json",
+  // The Spotify connector runs on the server only (Node crypto and fs).
+  "include": ["src/spotify"]
+}

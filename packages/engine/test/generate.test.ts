@@ -368,6 +368,32 @@ describe("popularity tiers, the familiarity window and pages", () => {
     expect(first).not.toContain(pick);
     expect(first.map((i) => cat.artist[i])).not.toContain(cat.artist[pick]);
   });
+
+  it("backfills a track from its own (primary cluster, decade) cell", () => {
+    const first = generate(cat, wantPopularity(0.6), { length: 25, seed: SEED }).tracks.map(
+      (t) => t.index,
+    );
+    const cellOf = (i: number) => `${cat.primary[i]}:${cat.decade[i]}`;
+    let found = 0;
+    for (const missing of first.slice(0, 5)) {
+      const out = generate(cat, wantPopularity(0.6), {
+        length: 1,
+        seed: "0000000000000002",
+        previous: first,
+        newArtistsOnly: true,
+        sameCellAs: missing,
+      });
+      for (const t of out.tracks) {
+        expect(first).not.toContain(t.index);
+        expect(cellOf(t.index)).toBe(cellOf(missing));
+        found++;
+      }
+    }
+    expect(found).toBeGreaterThan(0);
+    expect(() =>
+      generate(cat, wantPopularity(0.6), { length: 1, seed: SEED, sameCellAs: cat.n }),
+    ).toThrow(/not a track index/);
+  });
 });
 
 describe("archetypes and titles", () => {

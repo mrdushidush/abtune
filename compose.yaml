@@ -12,6 +12,8 @@ services:
         required: false
     volumes:
       - ./data/catalog:/app/data/catalog:ro
+      # Spotify connections, encrypted with TOKEN_ENCRYPTION_KEY (shared with the MCP server).
+      - ./data/spotify:/app/data/spotify
     restart: unless-stopped
 
   # One-off: download, verify and install the prebuilt dev catalog into ./data/catalog.

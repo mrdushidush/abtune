@@ -5,6 +5,17 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadBankFromDisk } from "@abtune/bank/node";
+import {
+  authorizeUrl,
+  entryKey,
+  exchangeCode,
+  newConnectionId,
+  pkcePair,
+  type SpotifySettings,
+  spotifyConfig,
+  TokenStore,
+} from "@abtune/connectors/spotify";
+import { FakeSpotify } from "@abtune/connectors/spotify/fake";
 import type { Bank } from "@abtune/engine";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
@@ -181,5 +192,87 @@ describe("MCP server", () => {
     const spotify = await call("push_to_spotify", { playlist_id: "p1" });
     expect(spotify.isError).toBe(true);
     expect(spotify.content[0]?.text).toMatch(/export_playlist/);
+  });
+});
+
+describe("push_to_spotify", () => {
+  it("pushes with the connection the web app stored, and picks among several accounts", async () => {
+    const all = await (await catalog.get()).meta(
+      Array.from({ length: (await catalog.get()).columns.n }, (_, i) => i),
+    );
+    const fake = new FakeSpotify(
+      all.map((m, i) => ({
+        id: `sp${i}`,
+        name: m.title,
+        artists: [m.artist_credit],
+        ...(m.isrcs[0] ? { isrc: m.isrcs[0] } : {}),
+      })),
+    );
+    const settings: SpotifySettings = {
+      clientId: fake.clientId,
+      redirectUri: "http://127.0.0.1:8787/callback",
+      secret: "mcp-test-secret-mcp-test-secret-0123456789",
+      tokenFile: path.join(out, "spotify", "tokens.json"),
+      accountsBase: "https://accounts.test",
+      apiBase: "https://api.test/v1",
+      fetch: fake.fetch,
+      sleep: async () => {},
+    };
+    const cfg = spotifyConfig(settings);
+    const store = new TokenStore(settings.tokenFile, settings.secret);
+    /** What the web app's sign-in leaves in the store. */
+    const connect = async (user: { id: string; display_name: string }, at: number) => {
+      fake.user = user;
+      const { verifier, challenge } = pkcePair();
+      const res = await fake.handle(new Request(authorizeUrl(cfg, { state: "s", challenge })));
+      const code = new URL(res.headers.get("location") as string).searchParams.get("code");
+      const tokens = await exchangeCode(cfg, code as string, verifier);
+      await store.write(entryKey(newConnectionId()), {
+        ...tokens,
+        user_id: user.id,
+        display_name: user.display_name,
+        connected_at: at,
+      });
+    };
+
+    const server = createServer({ bank, catalog, spotify: settings, cwd: out });
+    const [a, b] = InMemoryTransport.createLinkedPair();
+    const c = new Client({ name: "test", version: "1.0.0" });
+    await Promise.all([server.connect(a), c.connect(b)]);
+    const run = async (name: string, args: Record<string, unknown>) =>
+      (await c.callTool({ name, arguments: args })) as Result;
+
+    const sub = ok(
+      await run("submit_answers", {
+        answers: [
+          { id: "bonjovi_britney", choice: "a" },
+          { id: "dec80_dec90", choice: "a" },
+        ],
+      }),
+    );
+    const p = ok(await run("generate_playlist", { session_id: sub.structuredContent.session_id }));
+    const playlist_id = p.structuredContent.playlist_id as string;
+
+    const none = await run("push_to_spotify", { playlist_id });
+    expect(none.isError).toBe(true);
+    expect(none.content[0]?.text).toMatch(/No Spotify account is connected/);
+
+    await connect({ id: "alice", display_name: "Alice" }, 1);
+    const pushed = ok(await run("push_to_spotify", { playlist_id, name: "Rainy" }));
+    expect(pushed.structuredContent).toMatchObject({ name: "Rainy", added: 25, account: "alice" });
+    const [made] = [...fake.playlists.values()];
+    expect(made).toMatchObject({ owner: "alice", public: false, name: "Rainy" });
+    expect(made?.items).toHaveLength(25);
+    expect(made?.description).toMatch(/Made with ABTune$/);
+
+    await connect({ id: "bob", display_name: "Bob" }, 2);
+    const which = await run("push_to_spotify", { playlist_id });
+    expect(which.isError).toBe(true);
+    expect(which.content[0]?.text).toMatch(/Several Spotify accounts/);
+    expect(which.content[0]?.text).toMatch(/Alice \(alice\)/);
+    expect(which.content[0]?.text).toMatch(/Bob \(bob\)/);
+    ok(await run("push_to_spotify", { playlist_id, account: "bob" }));
+    expect([...fake.playlists.values()].map((x) => x.owner).sort()).toEqual(["alice", "bob"]);
+    await c.close();
   });
 });

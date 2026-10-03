@@ -2,10 +2,13 @@
 // ABTune MCP server over stdio (HANDOFF §12). Add it to Claude Code with
 //   claude mcp add abtune -- node /path/to/abtune/packages/mcp/src/main.ts
 // Environment: QUESTIONS_DIR, CATALOG_PATH (default: the best catalog under data/catalog),
-// APP_BASE_URL (where share links point; default http://127.0.0.1:8787).
+// APP_BASE_URL (where share links point; default http://127.0.0.1:8787), and the Spotify settings
+// (push_to_spotify uses the connection made in the web app). The repo's `.env` is read too.
+import { existsSync } from "node:fs";
 import path from "node:path";
 import { formatDiagnostic } from "@abtune/bank";
 import { loadBankFromDisk } from "@abtune/bank/node";
+import { spotifySettings } from "@abtune/connectors/spotify";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import pkg from "../package.json" with { type: "json" };
 import { CatalogHandle } from "./playlist.ts";
@@ -16,6 +19,9 @@ console.log = console.error;
 console.info = console.error;
 
 const repoRoot = path.resolve(import.meta.dirname, "../../..");
+// The web app's `.env` (Spotify settings, APP_BASE_URL); variables already set win.
+const envFile = path.join(repoRoot, ".env");
+if (existsSync(envFile)) process.loadEnvFile(envFile);
 const questionsDir = process.env.QUESTIONS_DIR ?? path.join(repoRoot, "data/questions");
 const result = await loadBankFromDisk(["*.yaml"], { cwd: questionsDir });
 if (!result.bank || result.errors > 0) {
@@ -33,6 +39,7 @@ const server = createServer({
   bank,
   catalog,
   version: pkg.version,
+  spotify: spotifySettings(process.env, repoRoot),
   ...(process.env.APP_BASE_URL ? { appBaseUrl: process.env.APP_BASE_URL } : {}),
 });
 await server.connect(new StdioServerTransport());

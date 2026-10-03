@@ -1,6 +1,6 @@
 # Self-hosting ABTune
 
-> This covers the music catalog (M1) and the web app (M4). Spotify setup (M5), the AI layer (M7) and the full walkthrough (M9) come later.
+> This covers the music catalog (M1), the web app (M4) and Spotify (M5). The AI layer (M7) and the full walkthrough (M9) come later.
 
 ## Quick start: Docker and the dev catalog
 
@@ -31,6 +31,37 @@ The server starts listening at once and loads the catalog's columns in the backg
 | full (2M) | 7.7 s | ~230 MB of columns | p50 257 ms, p95 522 ms (generation plus track lookup) |
 
 The quiz runs entirely in the browser. The server receives only the quantized taste profile, the seed and the playlist length, never the answers, and it logs no request bodies. Sessions and 👍/👎 feedback stay in the browser's local storage.
+
+## Saving playlists to Spotify
+
+Export (M3U, CSV, XSPF, JSON) always works without an account. To save playlists straight into Spotify, each ABTune install uses **its own Spotify app**: Spotify's Development Mode allows 5 users per app, and the account that owns the app needs **Spotify Premium**. The "Save to Spotify" button walks you through this; the same steps:
+
+1. Open the [Spotify developer dashboard](https://developer.spotify.com/dashboard) and create an app. Its name must not start with "Spot" (Spotify's rules). Tick **Web API**.
+2. Add the redirect URI **exactly**: `http://127.0.0.1:8787/callback`. Spotify doesn't accept `localhost`; use the loopback IP, with your port if you changed `ABTUNE_PORT`. Behind a reverse proxy, use your `https://…/callback` instead and set `SPOTIFY_REDIRECT_URI` to it.
+3. Under **User Management**, add the Spotify accounts that will use it (up to 4 besides you).
+4. Put the app's Client ID and a token key in `.env`:
+
+   ```sh
+   SPOTIFY_CLIENT_ID=<the app's Client ID>
+   TOKEN_ENCRYPTION_KEY=<32+ random characters>   # node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
+   ```
+
+5. Restart: `docker compose up -d` (or restart `pnpm --filter @abtune/web start`). The server log says `Spotify: redirect http://127.0.0.1:8787/callback` when it's set up, or lists what's missing.
+6. Open the app **at `http://127.0.0.1:8787`** (the redirect URI's address), press **Save to Spotify**, then **Connect Spotify**. After Spotify's consent screen you come back to your playlist and can save it.
+
+**What happens on save:** each song is looked up by ISRC, then by title and artist. Songs Spotify doesn't have are replaced by similar ones (same genre and decade, a new artist), so you get the full length; the sheet lists the swaps. Playlists are private unless you tick "Show it on my Spotify profile". A 50-song save takes about 50–80 Spotify requests.
+
+**What's stored:** the refresh token, encrypted with `TOKEN_ENCRYPTION_KEY`, in `data/spotify/tokens.json`. The browser keeps only an HttpOnly cookie that names its connection, and never sees a token. Nothing about Spotify's tracks is written to disk (matches are cached in memory for an hour). **Disconnect** deletes the connection; to revoke ABTune's access on Spotify's side too, visit [spotify.com/account/apps](https://www.spotify.com/account/apps/). If you change `TOKEN_ENCRYPTION_KEY`, stored connections can't be opened anymore: just connect again.
+
+**From Claude Code:** the MCP server's `push_to_spotify` uses the connection made in the web app (it reads the same `.env` and `data/spotify/`), so connect once in the browser first.
+
+| Problem | Fix |
+|---|---|
+| "Spotify won't let this account use the app" / 403 | Add the account under User Management in the dashboard; check that the app owner's Premium is active |
+| `INVALID_CLIENT: Invalid redirect URI` on Spotify's page | The redirect URI in the dashboard and `SPOTIFY_REDIRECT_URI` must match character for character |
+| "This Spotify app has used up its request quota" | Spotify's per-developer quota; wait, or export the CSV meanwhile |
+| Connect sends you to `127.0.0.1` and your quiz is gone | Your session is saved per address. Use `http://127.0.0.1:8787` from the start; the sheet offers a link that reopens the playlist there |
+| Linux: sign-in fails with a permission error in the log | `data/spotify` must be writable by the container's `node` user (uid 1000): `sudo chown 1000:1000 data/spotify` |
 
 ## Building the full catalog (~2M tracks)
 

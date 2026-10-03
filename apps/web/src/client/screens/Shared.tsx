@@ -9,10 +9,11 @@ import {
   traits,
 } from "@abtune/engine";
 import { useEffect, useMemo, useState } from "react";
-import type { PlaylistTrackOut } from "../../api-types.ts";
+import type { PlaylistTrackOut, SpotifyOutcome } from "../../api-types.ts";
 import { PersonalityCard } from "../components/PersonalityCard.tsx";
 import { ExportMenu } from "../components/ResultActions.tsx";
 import { ShareButton } from "../components/ShareSheet.tsx";
+import { SpotifyButton } from "../components/SpotifySheet.tsx";
 import type { CardInput } from "../lib/card-image.ts";
 import { download } from "../lib/download.ts";
 import { postPlaylist } from "../state/api.ts";
@@ -34,6 +35,8 @@ export function Shared({
   refreshHealth,
   hasOwn,
   onLeave,
+  spotifyOutcome,
+  onSpotifySeen,
 }: {
   bank: Bank;
   code: string;
@@ -42,6 +45,9 @@ export function Shared({
   /** The visitor has their own quiz in progress or finished. */
   hasOwn: boolean;
   onLeave: () => void;
+  /** Back from Spotify's sign-in: reopen the Spotify sheet. */
+  spotifyOutcome: SpotifyOutcome | null;
+  onSpotifySeen: () => void;
 }) {
   const data = useMemo<ShareData | null>(() => {
     try {
@@ -176,6 +182,16 @@ export function Shared({
         </header>
 
         <div className="flex flex-wrap gap-2">
+          <SpotifyButton
+            tracks={ready ? tracks : []}
+            request={ready?.request ?? null}
+            title={title.title}
+            description={description}
+            shareCode={code}
+            onExportCsv={() => onExport("csv")}
+            outcome={spotifyOutcome}
+            onOutcomeSeen={onSpotifySeen}
+          />
           <ExportMenu onExport={onExport} disabled={!ready} />
           <ShareButton code={ready ? code : null} card={card} name={name} />
         </div>

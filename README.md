@@ -2,7 +2,7 @@
 
 **A/B test your taste.** Answer a fast run of this-or-that questions (*Bon Jovi or Britney? 80s or 90s? Cats or dogs?*) and get a playlist that sounds like you, built from an open catalog of ~2M songs. Push it to Spotify or export it, and share your music-personality card.
 
-> **Status: pre-alpha.** Done: M0 (scaffold, CI, question-bank lint), M1 (the open-data music catalog), M2 (the deterministic quiz engine), M3 (the playlist generator and persona eval), M4 (the web UI: quiz, personality card, playlist, export) M6 (share links and the card image) and M8 (the MCP server). Next: M5, Spotify (it needs a Spotify developer app), and M7, the optional AI layer. The build brief is [`docs/HANDOFF.md`](docs/HANDOFF.md).
+> **Status: pre-alpha.** Done: M0 (scaffold, CI, question-bank lint), M1 (the open-data music catalog), M2 (the deterministic quiz engine), M3 (the playlist generator and persona eval), M4 (the web UI: quiz, personality card, playlist, export), M5 (save to Spotify with your own Spotify app; tested against a stand-in, the check with a real app is pending), M6 (share links and the card image) and M8 (the MCP server). Next: M7, the optional AI layer. The build brief is [`docs/HANDOFF.md`](docs/HANDOFF.md).
 
 ## Run it
 
@@ -28,7 +28,7 @@ pnpm install
 claude mcp add abtune -- node /path/to/abtune/packages/mcp/src/main.ts
 ```
 
-Then ask, for example, *"make me a playlist for a rainy Sunday and export it as CSV"*. Claude reads the questions, answers the ones your description covers, builds the playlist from your installed catalog, and exports it or gives you a share link that opens it in the web app. Tools: `list_questions`, `start_quiz` / `answer` (play card by card), `submit_answers`, `get_profile`, `generate_playlist` (from a session, a share link or a profile; with tweaks, reshuffles and deeper cuts), `export_playlist` and `push_to_spotify` (after M5). It needs a catalog (`abtune catalog fetch`); `CATALOG_PATH` picks one, and `APP_BASE_URL` sets where share links point (default `http://127.0.0.1:8787`). Answers stay in the MCP server's process.
+Then ask, for example, *"make me a playlist for a rainy Sunday and export it as CSV"*. Claude reads the questions, answers the ones your description covers, builds the playlist from your installed catalog, and exports it or gives you a share link that opens it in the web app. Tools: `list_questions`, `start_quiz` / `answer` (play card by card), `submit_answers`, `get_profile`, `generate_playlist` (from a session, a share link or a profile; with tweaks, reshuffles and deeper cuts), `export_playlist` and `push_to_spotify` (after connecting Spotify once in the web app). It needs a catalog (`abtune catalog fetch`); `CATALOG_PATH` picks one, and `APP_BASE_URL` sets where share links point (default `http://127.0.0.1:8787`). Answers stay in the MCP server's process.
 
 ## The music catalog
 
@@ -66,7 +66,7 @@ Node runs the TypeScript sources directly (type stripping), so there is no build
 | `packages/engine` | Pure, deterministic core: profile math, question selection, seeds, playlist generation, archetypes. The quiz runs in the browser; generation runs on the server. |
 | `packages/bank` | Question bank YAML: schema, parsing, merging, lint. |
 | `packages/catalog` | Catalog pipeline (DuckDB): downloads, extraction, canonicalization, features, dev sample, fixture. |
-| `packages/connectors` | Playlist destinations: file export (M3U, CSV, XSPF, JSON); Spotify in M5. |
+| `packages/connectors` | Playlist destinations: file export (M3U, CSV, XSPF, JSON) and Spotify (PKCE sign-in, encrypted token store, matching, backfill). |
 | `packages/eval` | Persona eval harness: persona bot, playlist metrics, weight tuning, reports. |
 | `packages/cli` | The `abtune` command. |
 | `packages/mcp` | The MCP server (stdio): quiz, playlists, share links and export as tools. |

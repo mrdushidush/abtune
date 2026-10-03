@@ -111,6 +111,90 @@ export const t = {
       "This link was made with another version of ABTune or its music catalog, so some songs may differ.",
     shortened: "Some of the changes made to this playlist could not be repeated here.",
   },
+  spotify: {
+    button: "Save to Spotify",
+    title: "Save to Spotify",
+    close: "Close",
+    checking: "Checking Spotify…",
+    serverDown: "Can't reach the ABTune server.",
+    retry: "Try again",
+    copy: "Copy",
+    copied: "Copied",
+    // Setup wizard (HANDOFF §11.1): the server has no Spotify app yet.
+    setupTitle: "Set up Spotify (once)",
+    setupIntro:
+      "ABTune saves playlists through your own Spotify app. It takes about 5 minutes, and the account that creates the app needs Spotify Premium.",
+    stepDashboard: "Open the Spotify developer dashboard and create an app.",
+    dashboard: "Open the dashboard ↗",
+    stepApp: "Name it anything that doesn't start with “Spot”, and tick Web API.",
+    stepRedirect: "Add this redirect URI, exactly as shown:",
+    stepUsers:
+      "Under User Management, add the Spotify accounts of the people who will use this ABTune (up to 4 besides you).",
+    stepEnv: "Add these lines to the .env file next to compose.yaml:",
+    clientIdHint: "Paste your app's Client ID (from its Settings page) after SPOTIFY_CLIENT_ID=.",
+    stepRestart: "Restart ABTune so it reads them:",
+    restartCommand: "docker compose up -d",
+    restartOther: "Without Docker: stop and start pnpm --filter @abtune/web start.",
+    checkAgain: "Done, check again",
+    stillMissing: (names: string) => `Still missing or invalid: ${names}.`,
+    // Opened at another address than the redirect URI's.
+    wrongHost: (origin: string) =>
+      `Spotify sign-in only works at ${origin}, the address registered with Spotify.`,
+    openThere: "Open this playlist there",
+    // Not connected yet.
+    connectIntro: "Connect your Spotify account to save this playlist there.",
+    connectScope:
+      "ABTune can only create playlists and add songs to them. It can't see your library or what you listen to.",
+    connect: "Connect Spotify",
+    outcome: {
+      connected: "",
+      denied: "Spotify sign-in was cancelled.",
+      not_allowed:
+        "Spotify won't let this account use the app yet. The app's owner adds it under User Management in the Spotify dashboard, and their Premium must be active.",
+      not_configured: "Spotify isn't set up on this server yet.",
+      expired: "That sign-in took too long or came back to another browser. Try again.",
+      error: "Spotify sign-in didn't work. Try again.",
+    },
+    // Connected.
+    connectedAs: (name: string) => `Connected as ${name}`,
+    disconnect: "Disconnect",
+    disconnected:
+      "Disconnected. To remove ABTune's access completely, visit spotify.com/account/apps.",
+    name: "Playlist name",
+    public: "Show it on my Spotify profile",
+    save: (n: number) => `Save ${n} songs`,
+    backfillNote:
+      "Songs Spotify doesn't have are swapped for similar ones, so you get all of them.",
+    saving: (n: number) => `Finding ${n} songs on Spotify…`,
+    done: "Saved to Spotify",
+    doneCount: (n: number, name: string) => `${n} songs in “${name}”.`,
+    matchLine: (found: number, swapped: number) =>
+      swapped === 0
+        ? `All ${found} found on Spotify.`
+        : `${found} found on Spotify · ${swapped} swapped for similar songs.`,
+    missingLine: (n: number) =>
+      `${n} song${n === 1 ? "" : "s"} couldn't be found or replaced, so the playlist is shorter.`,
+    open: "Open in Spotify ↗",
+    swaps: "What was swapped",
+    errors: {
+      quota_exceeded:
+        "This Spotify app has used up its request quota for now. Try again later, or export the playlist instead.",
+      rate_limited: (s: number | null) =>
+        s
+          ? `Spotify asked to slow down. Try again in about ${s} seconds.`
+          : "Spotify asked to slow down. Try again in a minute.",
+      forbidden:
+        "Spotify refused. This account may not be on the app's User Management list, or the app owner's Premium has lapsed.",
+      not_connected: "Your Spotify sign-in has expired. Connect again.",
+      no_matches: "None of these songs are on Spotify.",
+      network: "Spotify didn't answer. Try again?",
+      busy: "This playlist is still being saved.",
+      stale: "ABTune was updated on the server. Reload the page to continue.",
+      other: "Saving to Spotify didn't work. Try again?",
+      partial: "The playlist was created, but not every song made it in:",
+    },
+    exportInstead: "Export CSV instead",
+  },
   footerNoCatalog: "No catalog installed yet",
   catalogLine: (version: string, tracks: number) =>
     `${version} · ${tracks.toLocaleString("en-US")} songs`,

@@ -66,6 +66,11 @@ export interface GenerateOptions {
   readonly previous?: readonly number[];
   /** Only artists not in `previous` (swapping one track). */
   readonly newArtistsOnly?: boolean;
+  /**
+   * Only from the (primary cluster, decade) cell of this track index: a replacement for a song a
+   * destination doesn't have (Spotify backfill, HANDOFF §11.1).
+   */
+  readonly sameCellAs?: number;
 }
 
 /** The relaxation ladder: (relax level, tier ceiling) pairs, strictest first. */
@@ -89,6 +94,7 @@ export function generate(
     params = DEFAULT_GENERATOR_PARAMS,
     previous = [],
     newArtistsOnly = false,
+    sameCellAs,
   }: GenerateOptions,
 ): GeneratedPlaylist {
   if (!Number.isInteger(length) || length < 1 || length > MAX_LENGTH) {
@@ -105,6 +111,8 @@ export function generate(
   // "Hidden gems" all the way down: the score alone picks from the whole long tail.
   const size = params.familiarityPool > 0 && ceiling < TIER_TAIL ? windowSize(t, params) : null;
   let summary: CellSummary[] = [];
+  const only = sameCellAs === undefined ? -1 : cellId(columns, sameCellAs);
+  const inCell = (c: Cell) => only < 0 || c.id === only;
 
   let lastKey = "";
   for (const { relax, maxTier } of ladder(ceiling)) {
@@ -126,12 +134,12 @@ export function generate(
     const before = picks.tracks.length;
     const firstSlots = fillCells(
       ctx,
-      plan.cells.filter((c) => c.kept),
+      plan.cells.filter((c) => c.kept && inCell(c)),
       length,
     );
     fillCells(
       ctx,
-      plan.cells.filter((c) => !c.kept),
+      plan.cells.filter((c) => !c.kept && inCell(c)),
       length,
     );
     if (relax === 0 && maxTier === ceiling) {
@@ -162,6 +170,17 @@ export function generate(
     };
   });
   return { tracks, cells: summary, warnings };
+}
+
+/** The `planCells` id of track `index`'s (primary cluster, decade) cell. */
+function cellId(columns: CatalogColumns, index: number): number {
+  if (!Number.isInteger(index) || index < 0 || index >= columns.n)
+    throw new Error(`generate: sameCellAs ${index} is not a track index`);
+  const G = columns.dimensions.genres.length;
+  const D = columns.dimensions.decades.length;
+  const g = columns.primary[index] as number;
+  const d = columns.decade[index] as number;
+  return (g === NONE ? G : g) * (D + 1) + (d === NONE ? D : d);
 }
 
 /**

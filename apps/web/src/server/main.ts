@@ -1,8 +1,10 @@
+import { existsSync } from "node:fs";
 import path from "node:path";
 import { formatDiagnostic } from "@abtune/bank";
 import { loadBankFromDisk } from "@abtune/bank/node";
 import { findCatalog } from "@abtune/catalog";
 import { loadCatalog } from "@abtune/catalog/reader";
+import { missingSettings, spotifySettings } from "@abtune/connectors/spotify";
 import { naturalShares, warmFamiliarity } from "@abtune/engine";
 import { serve } from "@hono/node-server";
 import pkg from "../../package.json" with { type: "json" };
@@ -10,6 +12,10 @@ import { createApp } from "./app.ts";
 import { type CatalogSlot, catalogInfo, catalogSlot } from "./catalog.ts";
 
 const repoRoot = path.resolve(import.meta.dirname, "../../../..");
+// `.env` at the repo root when run with Node directly (Docker passes it as the environment).
+// Variables already set win.
+const envFile = path.join(repoRoot, ".env");
+if (existsSync(envFile)) process.loadEnvFile(envFile);
 const questionsDir = process.env.QUESTIONS_DIR ?? path.join(repoRoot, "data/questions");
 const staticDir = process.env.STATIC_DIR ?? path.resolve(import.meta.dirname, "../../dist/client");
 const port = Number(process.env.PORT ?? 8787);
@@ -51,16 +57,20 @@ if (installed) {
   });
 }
 
+const spotify = spotifySettings(process.env, repoRoot);
 const app = createApp({
   bank,
   catalog,
+  spotify,
   version: pkg.version,
   staticRoot: path.relative(process.cwd(), staticDir) || ".",
 });
+const spotifyMissing = missingSettings(spotify);
 
 serve({ fetch: app.fetch, port, hostname }, (info) => {
   console.log(
     `ABTune ${pkg.version} on http://${info.address}:${info.port} (${bank.questions.length} questions, ` +
-      `catalog: ${catalog ? `${catalog.info.version} ${catalog.info.kind}, ${catalog.info.tracks} tracks, loading` : "none; run `abtune catalog fetch`"})`,
+      `catalog: ${catalog ? `${catalog.info.version} ${catalog.info.kind}, ${catalog.info.tracks} tracks, loading` : "none; run `abtune catalog fetch`"}; ` +
+      `Spotify: ${spotifyMissing.length ? `not set up (${spotifyMissing.join(", ")})` : `redirect ${spotify.redirectUri}`})`,
   );
 });

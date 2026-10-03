@@ -13,11 +13,17 @@ import {
   viewSession,
 } from "@abtune/engine";
 import { useMemo, useState } from "react";
-import type { PlaylistRequest, PlaylistResponse, PlaylistTrackOut } from "../../api-types.ts";
+import type {
+  PlaylistRequest,
+  PlaylistResponse,
+  PlaylistTrackOut,
+  SpotifyOutcome,
+} from "../../api-types.ts";
 import { PersonalityCard } from "../components/PersonalityCard.tsx";
 import { PlaylistRows, SkeletonRows } from "../components/PlaylistRows.tsx";
 import { ExportMenu, Feedback, TweakBar } from "../components/ResultActions.tsx";
 import { ShareButton } from "../components/ShareSheet.tsx";
+import { SpotifyButton } from "../components/SpotifySheet.tsx";
 import type { CardInput } from "../lib/card-image.ts";
 import { download } from "../lib/download.ts";
 import { MORE_LENGTH, postPlaylist } from "../state/api.ts";
@@ -162,6 +168,8 @@ export function Result({
   health,
   refreshHealth,
   dispatch,
+  spotifyOutcome,
+  onSpotifySeen,
 }: {
   bank: Bank;
   session: SessionState;
@@ -169,6 +177,9 @@ export function Result({
   health: HealthState;
   refreshHealth: () => void;
   dispatch: (a: AppAction) => void;
+  /** Back from Spotify's sign-in: reopen the Spotify sheet. */
+  spotifyOutcome: SpotifyOutcome | null;
+  onSpotifySeen: () => void;
 }) {
   const view = useMemo(() => viewSession(bank, session), [bank, session]);
   const taste = useMemo(() => tasteVector(bank, view.profile), [bank, view.profile]);
@@ -302,6 +313,16 @@ export function Result({
         </header>
 
         <div className="flex flex-wrap gap-2">
+          <SpotifyButton
+            tracks={pending === null ? shown : []}
+            request={ready?.request ?? null}
+            title={title.title}
+            description={description}
+            shareCode={shareCode}
+            onExportCsv={() => onExport("csv")}
+            outcome={spotifyOutcome}
+            onOutcomeSeen={onSpotifySeen}
+          />
           <ExportMenu onExport={onExport} disabled={!ready} />
           <ShareButton code={shareCode} card={card} name={name} />
           <button
