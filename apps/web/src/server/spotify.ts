@@ -48,6 +48,18 @@ const STATE_COOKIE = "abtune_spotify_state";
 const LOGIN_TTL_MS = 10 * 60 * 1000;
 const PUSH_BODY_MAX = 32 * 1024;
 
+const SITE = "http://x";
+
+/**
+ * Path, query and hash of a URL on SITE. The URL parser resolves `/.//evil.example` and
+ * `/%2e//evil.example` to the path `//evil.example`, which a browser reads as another host, so
+ * leading slashes collapse to one.
+ */
+function sitePath(u: URL): string {
+  if (u.origin !== SITE) return "/";
+  return `${u.pathname.replace(/^\/+/, "/")}${u.search}${u.hash}`;
+}
+
 /** A same-site path to come back to: never another origin. */
 export function safeReturn(raw: string | undefined): string {
   if (
@@ -58,14 +70,18 @@ export function safeReturn(raw: string | undefined): string {
     raw.includes("\\")
   )
     return "/";
-  return raw;
+  try {
+    return sitePath(new URL(raw, SITE));
+  } catch {
+    return "/";
+  }
 }
 
 /** `/path?x#h` + `spotify=outcome` → `/path?x&spotify=outcome#h`. */
 export function withOutcome(ret: string, outcome: SpotifyOutcome): string {
-  const u = new URL(ret, "http://x");
+  const u = new URL(ret, SITE);
   u.searchParams.set("spotify", outcome);
-  return `${u.pathname}${u.search}${u.hash}`;
+  return sitePath(u);
 }
 
 const STATUS: Record<SpotifyErrorCode, 401 | 403 | 409 | 422 | 429 | 502 | 503> = {

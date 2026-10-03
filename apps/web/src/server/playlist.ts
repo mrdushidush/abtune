@@ -139,6 +139,8 @@ export class UnknownTrackError extends Error {
 export interface PlaylistAi {
   readonly runtime: AiRuntime | null;
   readonly rerank: boolean;
+  /** The request's: a client that leaves stops its rerank. */
+  readonly signal?: AbortSignal;
 }
 
 const NO_AI: PlaylistAi = { runtime: null, rerank: false };
@@ -159,6 +161,7 @@ async function fromShortlist(
   catalog: LoadedCatalog,
   req: PlaylistRequest,
   rerank: AiRuntime | null,
+  signal?: AbortSignal,
 ): Promise<Picked> {
   const columns = catalog.columns;
   const short = generate(columns, req.taste, {
@@ -170,19 +173,24 @@ async function fromShortlist(
   let failure: AiFailureCode = "off";
   if (rerank) {
     const meta = await catalog.meta(short.tracks.map((t) => t.index));
-    const r = await runTask(rerank, rerankTask(), {
-      dims: columns.dimensions,
-      taste: req.taste,
-      n: Math.min(req.length, short.tracks.length),
-      title: req.context?.title ?? null,
-      blurb: req.context?.blurb ?? null,
-      songs: meta.map((m) => ({
-        title: m.title,
-        artist: m.artist_credit,
-        year: m.year,
-        genre: m.primary_cluster ? clusterLabel(m.primary_cluster) : null,
-      })),
-    });
+    const r = await runTask(
+      rerank,
+      rerankTask(),
+      {
+        dims: columns.dimensions,
+        taste: req.taste,
+        n: Math.min(req.length, short.tracks.length),
+        title: req.context?.title ?? null,
+        blurb: req.context?.blurb ?? null,
+        songs: meta.map((m) => ({
+          title: m.title,
+          artist: m.artist_credit,
+          year: m.year,
+          genre: m.primary_cluster ? clusterLabel(m.primary_cluster) : null,
+        })),
+      },
+      signal,
+    );
     if (r.ok) {
       chosen = chooseFromShortlist(columns, short.tracks, r.value.order, req.length);
       notes = r.value.notes;
@@ -217,7 +225,7 @@ export async function buildPlaylist(
   if (previous.some((i) => i < 0)) throw new UnknownTrackError();
   const rerank = req.rerank && ai.rerank ? ai.runtime : null;
   let picked: Picked;
-  if (req.picks || rerank) picked = await fromShortlist(catalog, req, rerank);
+  if (req.picks || rerank) picked = await fromShortlist(catalog, req, rerank, ai.signal);
   else {
     const out = generate(catalog.columns, req.taste, {
       length: req.length,

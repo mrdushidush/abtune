@@ -1,9 +1,14 @@
 // The ABTune MCP server (HANDOFF §12, M8). Tools for an MCP host (Claude Code): read the bank,
 // play the quiz or answer it in one go, build, share and export playlists. Answers stay in this
 // process; share links carry only the quantized profile (HANDOFF §13).
-import { mkdir, stat, writeFile } from "node:fs/promises";
+import { lstat, mkdir, realpath, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { EXPORT_FORMATS, type ExportPlaylist, exportPlaylist } from "@abtune/connectors";
+import {
+  EXPORT_FORMATS,
+  type ExportFormat,
+  type ExportPlaylist,
+  exportPlaylist,
+} from "@abtune/connectors";
 import {
   type Connection,
   catalogBackfill,
@@ -69,7 +74,10 @@ export interface ServerOptions {
   /** Where the web app runs, for share links (default http://127.0.0.1:8787). */
   readonly appBaseUrl?: string;
   readonly version?: string;
-  /** Where relative export paths resolve (default: the process's working directory). */
+  /**
+   * The export folder: relative export paths resolve here, and no export is written outside it
+   * (EXPORT_DIR; default: the process's working directory).
+   */
   readonly cwd?: string;
   /** Spotify settings from `.env`, as the web app's: push uses the connection made there. */
   readonly spotify?: SpotifySettings;
@@ -155,6 +163,20 @@ const tasteSchema = z.object({
   genres: z.array(z.number().int()).nullable(),
   languages: z.array(z.number().int()).nullable(),
 });
+
+/** The extensions each export format may be saved with. */
+const EXPORT_EXTS: Record<ExportFormat, readonly string[]> = {
+  m3u: [".m3u8", ".m3u"],
+  csv: [".csv"],
+  xspf: [".xspf"],
+  json: [".json"],
+};
+
+/** `file` is `dir` or inside it (both absolute). */
+function inside(dir: string, file: string): boolean {
+  const rel = path.relative(dir, file);
+  return rel !== ".." && !rel.startsWith(`..${path.sep}`) && !path.isAbsolute(rel);
+}
 
 interface Playlist {
   readonly id: string;
@@ -587,14 +609,15 @@ export function createServer(opts: ServerOptions): McpServer {
     {
       title: "Export a playlist",
       description:
-        "Export a generated playlist as M3U, CSV (for playlist-transfer tools), XSPF or JSON. Writes a file when `path` is given (a file or an existing folder); otherwise returns the content.",
+        "Export a generated playlist as M3U, CSV (for playlist-transfer tools), XSPF or JSON. Writes a file when `path` is given (a file or a folder inside the export folder, with the format's extension); otherwise returns the content. An existing file is replaced only with `overwrite`.",
       inputSchema: {
         playlist_id: z.string(),
         format: z.enum(EXPORT_FORMATS as unknown as [string, ...string[]]),
         path: z.string().optional(),
+        overwrite: z.boolean().optional().describe("Replace the file if it exists."),
       },
     },
-    async ({ playlist_id, format, path: target }) => {
+    async ({ playlist_id, format, path: target, overwrite }) => {
       const p = playlists.get(playlist_id);
       if (!p) return fail(`No playlist "${playlist_id}". Make one with generate_playlist.`);
       const payload: ExportPlaylist = {
@@ -616,7 +639,8 @@ export function createServer(opts: ServerOptions): McpServer {
           length_ms: t.length_ms,
         })),
       };
-      const file = exportPlaylist(format as (typeof EXPORT_FORMATS)[number], payload);
+      const fmt = format as ExportFormat;
+      const file = exportPlaylist(fmt, payload);
       if (!target) return text(file.content, { filename: file.filename, mime: file.mime });
       let out = path.resolve(cwd, target);
       const isDir =
@@ -626,8 +650,30 @@ export function createServer(opts: ServerOptions): McpServer {
           () => false,
         ));
       if (isDir) out = path.join(out, file.filename);
+      // The host's model picks the path, and a share link's title and blurb reach that model: a
+      // file stays in the export folder, keeps its format's extension and replaces nothing unasked.
+      if (!inside(cwd, out)) return fail(`Exports are saved inside ${cwd}; ${out} is outside it.`);
+      const exts = EXPORT_EXTS[fmt];
+      if (!exts.includes(path.extname(out).toLowerCase()))
+        return fail(`A ${fmt} export is saved as ${exts.join(" or ")}, not ${path.basename(out)}.`);
       await mkdir(path.dirname(out), { recursive: true });
-      await writeFile(out, file.content, "utf8");
+      // A link inside the folder can still point out of it.
+      if (!inside(await realpath(cwd), await realpath(path.dirname(out))))
+        return fail(`Exports are saved inside ${cwd}; ${path.dirname(out)} leads outside it.`);
+      if (
+        await lstat(out).then(
+          (s) => s.isSymbolicLink(),
+          () => false,
+        )
+      )
+        return fail(`${out} is a link; export to a regular file.`);
+      try {
+        await writeFile(out, file.content, { encoding: "utf8", flag: overwrite ? "w" : "wx" });
+      } catch (err) {
+        if ((err as NodeJS.ErrnoException).code === "EEXIST")
+          return fail(`${out} already exists. Pass overwrite: true to replace it.`);
+        throw err;
+      }
       return text(`Wrote ${p.tracks.length} songs to ${out}`, {
         path: out,
         filename: path.basename(out),

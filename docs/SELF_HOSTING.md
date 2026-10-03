@@ -30,6 +30,8 @@ The server starts listening at once and loads the catalog's columns in the backg
 | dev sample (50k) | 0.4 s | small | instant |
 | full (2M) | 7.7 s | ~230 MB of columns | p50 257 ms, p95 522 ms (generation plus track lookup) |
 
+The server answers only to loopback names (`127.0.0.1`, `localhost`), IP addresses and the host names in `APP_BASE_URL` and `SPOTIFY_REDIRECT_URI`; any other `Host` gets 403 `unknown_host`, which stops DNS-rebinding pages. Behind a reverse proxy, set `APP_BASE_URL` to your public URL. Model calls (AI layer) run one at a time with up to 4 waiting; more get the classic playlist with a "busy" notice.
+
 The quiz runs entirely in the browser. The server receives only the quantized taste profile, the seed and the playlist length, never the answers, and it logs no request bodies. Sessions and 👍/👎 feedback stay in the browser's local storage.
 
 ## Saving playlists to Spotify

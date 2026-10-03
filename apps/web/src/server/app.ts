@@ -4,6 +4,7 @@ import { type Bank, engineVersion } from "@abtune/engine";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { type Context, Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
+import { secureHeaders } from "hono/secure-headers";
 import type { ApiError, Health } from "../api-types.ts";
 import { aiHealth, mountAi, type ServerAi } from "./ai.ts";
 import { type CatalogSlot, catalogHealth, readyCatalog } from "./catalog.ts";
@@ -21,7 +22,50 @@ export interface AppOptions {
   readonly spotify?: SpotifySettings;
   /** The AI layer (HANDOFF §10). Omitted: off. */
   readonly ai?: ServerAi;
+  /**
+   * Host names this server answers to besides loopback and IP addresses: APP_BASE_URL's and
+   * SPOTIFY_REDIRECT_URI's (a reverse proxy's public name).
+   */
+  readonly hosts?: readonly string[];
 }
+
+/**
+ * A host a browser may reach this server by. DNS rebinding points a site's own name at this
+ * machine, so its pages would pass the Origin check; it needs a name the attacker controls, so
+ * loopback names, IP addresses and the configured hosts are safe.
+ */
+export function knownHost(hostname: string, hosts: ReadonlySet<string>): boolean {
+  const h = hostname.toLowerCase();
+  return (
+    h === "localhost" ||
+    h.endsWith(".localhost") ||
+    /^\d{1,3}(\.\d{1,3}){3}$/.test(h) ||
+    h.startsWith("[") ||
+    hosts.has(h)
+  );
+}
+
+/** Security headers, with a strict CSP: the built SPA has no inline script or style. */
+const SECURITY_HEADERS = secureHeaders({
+  contentSecurityPolicy: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'"],
+    styleSrc: ["'self'"],
+    // The favicon is a data: URL; the share card preview is a blob: URL.
+    imgSrc: ["'self'", "data:", "blob:"],
+    connectSrc: ["'self'"],
+    objectSrc: ["'none'"],
+    baseUri: ["'none'"],
+    formAction: ["'self'"],
+    frameAncestors: ["'none'"],
+  },
+  xFrameOptions: "DENY",
+  // Not no-referrer: under it browsers send `Origin: null` on same-origin POSTs, which the
+  // cross-site check refuses.
+  referrerPolicy: "same-origin",
+  // HTTPS, and so HSTS, is the reverse proxy's business.
+  strictTransportSecurity: false,
+});
 
 /** A playlist request is a taste vector and a few strings: well under this. */
 export const MAX_BODY_BYTES = 16 * 1024;
@@ -33,7 +77,7 @@ export function packCounts(bank: Bank): Record<string, number> {
   return counts;
 }
 
-const fail = (c: Context, status: 400 | 404 | 409 | 413 | 503, body: ApiError) =>
+const fail = (c: Context, status: 400 | 403 | 404 | 409 | 413 | 503, body: ApiError) =>
   c.json(body, status);
 
 export function createApp({
@@ -43,9 +87,22 @@ export function createApp({
   catalog = null,
   spotify = unconfiguredSpotify(),
   ai = { settings: AI_OFF, runtime: null },
+  hosts = [],
 }: AppOptions): Hono {
   const app = new Hono();
   const engine = engineVersion(bank);
+  const known = new Set(hosts.map((h) => h.toLowerCase()));
+
+  app.use("*", async (c, next) => {
+    const host = new URL(c.req.url).hostname;
+    if (!knownHost(host, known))
+      return fail(c, 403, {
+        error: "unknown_host",
+        message: `This server doesn't answer to ${host}. Set APP_BASE_URL to the address you open it at.`,
+      });
+    await next();
+  });
+  app.use("*", SECURITY_HEADERS);
 
   app.get("/api/health", (c) =>
     c.json({
@@ -86,6 +143,7 @@ export function createApp({
           await buildPlaylist(ready.catalog, req, engine, {
             runtime: ai.runtime,
             rerank: ai.settings.rerank,
+            signal: c.req.raw.signal,
           }),
         );
       } catch (err) {

@@ -6,9 +6,10 @@ import {
   MAX_TITLE_CHARS,
   type TasteVector,
 } from "@abtune/engine";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   AiCache,
+  AiGate,
   type AiRuntime,
   aiSettings,
   answerLines,
@@ -284,6 +285,39 @@ describe("guardrails (HANDOFF §10.4)", () => {
       cached: false,
       value: { adjust: EMPTY_ADJUST, title: null, blurb: null },
     });
+  });
+
+  it("the gate runs one call at a time, lets a few wait and turns the rest away", async () => {
+    const release: (() => void)[] = [];
+    const empty = '{"scalar_deltas":[],"genre_boosts":[],"decade_boosts":[],"title":"","blurb":""}';
+    const mock = new MockProvider({
+      tweak: () => new Promise<string>((resolve) => release.push(() => resolve(empty))),
+    });
+    const rt = { ...runtime(mock), gate: new AiGate(1, 2) };
+    const ask = (request: string, signal?: AbortSignal) =>
+      runTask(rt, tweakTask(), { dims: DIMS, taste: TASTE, request }, signal);
+    const first = ask("first");
+    const second = ask("second");
+    const leaving = new AbortController();
+    const third = ask("third", leaving.signal);
+    // One running and two waiting: a fourth is turned away at once.
+    expect(await ask("fourth")).toEqual({ ok: false, failure: "busy" });
+    // A caller that leaves while waiting gives up its place without reaching the model.
+    leaving.abort();
+    expect(await third).toEqual({ ok: false, failure: "timeout" });
+    await vi.waitFor(() => expect(release).toHaveLength(1));
+    release[0]?.();
+    expect((await first).ok).toBe(true);
+    await vi.waitFor(() => expect(release).toHaveLength(2));
+    release[1]?.();
+    expect((await second).ok).toBe(true);
+    expect(mock.calls.map((c) => c.user.includes('"second"'))).toEqual([false, true]);
+    expect(rt.lines).toEqual(["AI tweak: busy", "AI tweak: timeout"]);
+    // Both slots are free again.
+    const again = ask("again");
+    await vi.waitFor(() => expect(release).toHaveLength(3));
+    release[2]?.();
+    expect((await again).ok).toBe(true);
   });
 
   it("rerank keeps only real, distinct shortlist numbers", async () => {

@@ -2,7 +2,8 @@
 // ABTune MCP server over stdio (HANDOFF §12). Add it to Claude Code with
 //   claude mcp add abtune -- node /path/to/abtune/packages/mcp/src/main.ts
 // Environment: QUESTIONS_DIR, CATALOG_PATH (default: the best catalog under data/catalog),
-// APP_BASE_URL (where share links point; default http://127.0.0.1:8787), and the Spotify settings
+// APP_BASE_URL (where share links point; default http://127.0.0.1:8787), EXPORT_DIR (the only folder
+// export_playlist writes to; default: the working directory) and the Spotify settings
 // (push_to_spotify uses the connection made in the web app). The repo's `.env` is read too.
 import { existsSync } from "node:fs";
 import path from "node:path";
@@ -41,6 +42,7 @@ const server = createServer({
   version: pkg.version,
   spotify: spotifySettings(process.env, repoRoot),
   ...(process.env.APP_BASE_URL ? { appBaseUrl: process.env.APP_BASE_URL } : {}),
+  ...(process.env.EXPORT_DIR ? { cwd: path.resolve(process.env.EXPORT_DIR) } : {}),
 });
 await server.connect(new StdioServerTransport());
 // Start loading the catalog now (the full one takes ~8 s), so it's usually ready by the time a

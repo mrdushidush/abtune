@@ -108,6 +108,8 @@ export type ApiErrorCode =
   | "bad_request"
   /** A POST whose Origin isn't this server. */
   | "cross_site"
+  /** A Host this server doesn't answer to (DNS rebinding); APP_BASE_URL names one more. */
+  | "unknown_host"
   | "too_large"
   | "not_found"
   | "no_catalog"
@@ -120,7 +122,7 @@ export type ApiErrorCode =
   | "ai_failed";
 
 /** Why an AI call gave nothing (HANDOFF §10.4): the classic result is used, with a notice. */
-export type AiFailureCode = "off" | "timeout" | "unreachable" | "invalid" | "oversized";
+export type AiFailureCode = "off" | "timeout" | "unreachable" | "invalid" | "oversized" | "busy";
 
 /** One answer for T1, as the quiz logged it. Sensitive ones only with the opt-in (HANDOFF §13). */
 export interface AiAnswer {

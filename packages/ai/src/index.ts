@@ -1,6 +1,6 @@
 import { type AiSettings, aiEnabled } from "./config.ts";
 import { openaiCompat } from "./provider.ts";
-import { AiCache, type AiRuntime } from "./run.ts";
+import { AiCache, AiGate, type AiRuntime } from "./run.ts";
 
 export * from "./config.ts";
 export * from "./describe.ts";
@@ -23,6 +23,7 @@ export function createAiRuntime(
     provider: openaiCompat(settings),
     timeoutMs: settings.timeoutMs,
     cache: new AiCache(),
+    gate: new AiGate(),
     log,
   };
 }

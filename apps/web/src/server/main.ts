@@ -62,7 +62,17 @@ const spotify = spotifySettings(process.env, repoRoot);
 const { settings: aiConfig, problems: aiProblems } = aiSettings(process.env);
 for (const p of aiProblems) console.error(`AI: ${p.setting} ${p.message}; the AI layer is off.`);
 const ai = { settings: aiConfig, runtime: createAiRuntime(aiConfig) };
+/** The host names in these URLs (unset or invalid ones skipped). */
+const hostsOf = (...urls: (string | undefined)[]) =>
+  urls.flatMap((u) => {
+    try {
+      return u ? [new URL(u).hostname] : [];
+    } catch {
+      return [];
+    }
+  });
 const app = createApp({
+  hosts: hostsOf(process.env.APP_BASE_URL, spotify.redirectUri),
   bank,
   catalog,
   spotify,

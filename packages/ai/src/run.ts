@@ -27,7 +27,9 @@ export type AiFailure =
   /** The answer wasn't valid JSON for the schema, twice. */
   | "invalid"
   /** The answer was larger than any valid one. */
-  | "oversized";
+  | "oversized"
+  /** Too many calls were already running or waiting (AiGate). */
+  | "busy";
 
 export type AiResult<O> =
   | { readonly ok: true; readonly value: O; readonly cached: boolean }
@@ -65,10 +67,57 @@ export class AiCache {
   }
 }
 
+/**
+ * How many model calls run at once, and how many may wait. Each one holds a local GPU for
+ * seconds (rerank: up to ~25 s), so a burst of requests queues briefly and then gets `busy`
+ * instead of piling up minutes of work.
+ */
+export class AiGate {
+  readonly running: number;
+  readonly waiting: number;
+  private active = 0;
+  private readonly line: (() => void)[] = [];
+  constructor(running = 1, waiting = 4) {
+    this.running = running;
+    this.waiting = waiting;
+  }
+
+  /** Take a slot: false when the line is full, or when `signal` aborts while waiting. */
+  enter(signal?: AbortSignal): Promise<boolean> {
+    if (this.active < this.running) {
+      this.active++;
+      return Promise.resolve(true);
+    }
+    if (this.line.length >= this.waiting || signal?.aborted) return Promise.resolve(false);
+    return new Promise((resolve) => {
+      const go = () => {
+        signal?.removeEventListener("abort", quit);
+        resolve(true);
+      };
+      const quit = () => {
+        const at = this.line.indexOf(go);
+        if (at >= 0) this.line.splice(at, 1);
+        resolve(false);
+      };
+      this.line.push(go);
+      signal?.addEventListener("abort", quit, { once: true });
+    });
+  }
+
+  /** Give the slot back: the next caller in line gets it. */
+  leave(): void {
+    const next = this.line.shift();
+    if (next) next();
+    else this.active--;
+  }
+}
+
 export interface AiRuntime {
   readonly provider: AiProvider;
   readonly timeoutMs: number;
   readonly cache: AiCache;
+  /** Limits concurrent calls; none: unlimited. */
+  readonly gate?: AiGate;
   /** Failures, by kind only: never a prompt or an answer (HANDOFF §13). */
   readonly log?: (line: string) => void;
 }
@@ -123,7 +172,7 @@ export async function runTask<I, O>(
   if (hit !== undefined) return { ok: true, value: hit as O, cached: true };
   const pending = inflight.get(key);
   if (pending) return (await pending) as AiResult<O>;
-  const run = (async (): Promise<AiResult<O>> => {
+  const ask = async (): Promise<AiResult<O>> => {
     const limit = rt.timeoutMs * Math.max(1, task.timeoutFactor?.(input) ?? 1);
     for (let attempt = 0; attempt < 2; attempt++) {
       const timeout = AbortSignal.timeout(limit);
@@ -165,6 +214,19 @@ export async function runTask<I, O>(
     }
     rt.log?.(`AI ${task.name}: invalid`);
     return { ok: false, failure: "invalid" };
+  };
+  const run = (async (): Promise<AiResult<O>> => {
+    // The time limit starts once the call runs, not while it waits for the gate.
+    if (rt.gate && !(await rt.gate.enter(signal))) {
+      const failure: AiFailure = signal?.aborted ? "timeout" : "busy";
+      rt.log?.(`AI ${task.name}: ${failure}`);
+      return { ok: false, failure };
+    }
+    try {
+      return await ask();
+    } finally {
+      rt.gate?.leave();
+    }
   })();
   inflight.set(key, run as Promise<AiResult<unknown>>);
   try {

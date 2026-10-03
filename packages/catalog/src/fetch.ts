@@ -24,6 +24,14 @@ export interface FetchOptions {
   readonly log?: (line: string) => void;
 }
 
+/**
+ * One part of a path in the sample archive (its folder, or a file in it): letters, digits, `.`,
+ * `_` and `-`, not starting with a dot. That rules out `..`, and `\` and `C:`, which Windows
+ * reads as path syntax, so nothing lands outside the staging folder or names another folder to
+ * replace.
+ */
+const SAFE_PART = /^[A-Za-z0-9_-][A-Za-z0-9._-]*$/;
+
 const hexIn = (text: string) => /^\s*([0-9a-f]{64})/i.exec(text)?.[1]?.toLowerCase();
 
 export async function fetchSample(
@@ -76,11 +84,7 @@ export async function fetchSample(
   for await (const entry of readTar(createReadStream(tarFile, { highWaterMark: 1 << 20 }))) {
     if (entry.type !== "file") continue;
     const parts = entry.name.split("/");
-    if (
-      parts.length !== 2 ||
-      parts.some((p) => p === "" || p === "." || p === "..") ||
-      path.isAbsolute(entry.name)
-    ) {
+    if (parts.length !== 2 || !parts.every((p) => SAFE_PART.test(p))) {
       throw new Error(`unexpected path in sample archive: ${entry.name}`);
     }
     top ??= parts[0];
@@ -100,6 +104,7 @@ export async function fetchSample(
     await readFile(path.join(stagedDir, "manifest.json"), "utf8"),
   ) as CatalogManifest;
   for (const f of manifest.files) {
+    if (!SAFE_PART.test(f.name)) throw new Error(`unexpected file in sample manifest: ${f.name}`);
     const got = await sha256File(path.join(stagedDir, f.name));
     if (got !== f.sha256) throw new Error(`${f.name}: sha256 ${got}, manifest says ${f.sha256}`);
   }

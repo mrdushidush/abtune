@@ -433,6 +433,25 @@ describe("AI layer on the server", async () => {
       expect(r.body.rerank).toBe("off");
       expect(s.mock.calls).toHaveLength(0);
     });
+
+    it("a client that leaves stops its rerank", async () => {
+      // A model that never answers and a minute's time limit: only the client's abort ends it.
+      const s = server({ rerank: { hang: true } }, {}, 60_000);
+      const leave = new AbortController();
+      const started = Date.now();
+      const res = s.app.request("/api/playlist", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...firstRequest(taste), rerank: true }),
+        signal: leave.signal,
+      });
+      await vi.waitFor(() => expect(s.mock.calls).toHaveLength(1));
+      leave.abort();
+      const body = (await (await res).json()) as PlaylistResponse;
+      expect(body.rerank).toBe("timeout");
+      expect(Date.now() - started).toBeLessThan(10_000);
+      expect(s.mock.calls[0]?.signal.aborted).toBe(true);
+    });
   });
   describe("in the browser", () => {
     /** A finished 10-answer session with AI on (always A; the spicy pack adds the political card). */

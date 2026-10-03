@@ -157,6 +157,22 @@ describe("Spotify routes", async () => {
     expect(safeReturn("https://evil.example")).toBe("/");
     expect(safeReturn("/#s=abc")).toBe("/#s=abc");
     expect(withOutcome("/?x=1#s=abc", "connected")).toBe("/?x=1&spotify=connected#s=abc");
+    // Paths the URL parser turns into `//host`, which a browser would follow off-site.
+    for (const raw of ["/.//evil.example", "/%2e//evil.example", "/a/..//evil.example"]) {
+      expect(safeReturn(raw)).not.toMatch(/^\/\//);
+      expect(withOutcome(raw, "connected")).toMatch(/^\/[^/\\]/);
+    }
+  });
+
+  it("never bounces a sign-in to another host", async () => {
+    const app = createApp({ bank, version: "9.9.9" });
+    for (const ret of ["/.//evil.example", "/%2e//evil.example/x", "/\t/evil.example"]) {
+      const login = await app.request(
+        `${ORIGIN}/api/spotify/login?return=${encodeURIComponent(ret)}`,
+      );
+      const location = login.headers.get("location") as string;
+      expect(new URL(location, ORIGIN).origin).toBe(ORIGIN);
+    }
   });
 
   it("reports an unconfigured server, and Connect bounces back", async () => {

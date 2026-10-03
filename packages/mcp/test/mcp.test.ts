@@ -239,6 +239,30 @@ describe("MCP server", () => {
     expect(m3u.content[0]?.text.startsWith("#EXTM3U")).toBe(true);
   });
 
+  it("writes exports only inside the export folder, with the format's extension", async () => {
+    const sub = ok(
+      await call("submit_answers", { answers: [{ id: "dec80_dec90", choice: "a" }], length: 5 }),
+    );
+    const p = ok(
+      await call("generate_playlist", { session_id: sub.structuredContent.session_id as string }),
+    );
+    const id = p.structuredContent.playlist_id as string;
+    const save = (target: string, extra: Record<string, unknown> = {}) =>
+      call("export_playlist", { playlist_id: id, format: "csv", path: target, ...extra });
+    const outside = path.join(path.dirname(out), `${path.basename(out)}-escape.csv`);
+    for (const target of ["../escape.csv", outside, "notes.txt", "run.bat", "list.csv.bat"]) {
+      const r = await save(target);
+      expect(r.isError, target).toBe(true);
+    }
+    await expect(readFile(outside, "utf8")).rejects.toThrow();
+    ok(await save("mine.csv"));
+    const again = await save("mine.csv");
+    expect(again.isError).toBe(true);
+    expect(again.content[0]?.text).toMatch(/overwrite/);
+    ok(await save("mine.csv", { overwrite: true }));
+    ok(await call("export_playlist", { playlist_id: id, format: "m3u", path: "mine.m3u" }));
+  });
+
   it("explains what went wrong", async () => {
     const bad = await call("submit_answers", { answers: [{ id: "no_such_card", choice: "a" }] });
     expect(bad.isError).toBe(true);

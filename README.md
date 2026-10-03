@@ -28,7 +28,7 @@ pnpm install
 claude mcp add abtune -- node /path/to/abtune/packages/mcp/src/main.ts
 ```
 
-Then ask, for example, *"make me a playlist for a rainy Sunday and export it as CSV"*. Claude reads the questions, answers the ones your description covers, builds the playlist from your installed catalog, and exports it or gives you a share link that opens it in the web app. Tools: `list_questions`, `start_quiz` / `answer` (play card by card), `submit_answers`, `get_profile`, `generate_playlist` (from a session, a share link or a profile; with tweaks, reshuffles and deeper cuts), `export_playlist` and `push_to_spotify` (after connecting Spotify once in the web app). It needs a catalog (`abtune catalog fetch`); `CATALOG_PATH` picks one, and `APP_BASE_URL` sets where share links point (default `http://127.0.0.1:8787`). Answers stay in the MCP server's process.
+Then ask, for example, *"make me a playlist for a rainy Sunday and export it as CSV"*. Claude reads the questions, answers the ones your description covers, builds the playlist from your installed catalog, and exports it or gives you a share link that opens it in the web app. Tools: `list_questions`, `start_quiz` / `answer` (play card by card), `submit_answers`, `get_profile`, `generate_playlist` (from a session, a share link or a profile; with tweaks, reshuffles and deeper cuts), `export_playlist` and `push_to_spotify` (after connecting Spotify once in the web app). It needs a catalog (`abtune catalog fetch`); `CATALOG_PATH` picks one, and `APP_BASE_URL` sets where share links point (default `http://127.0.0.1:8787`). `export_playlist` writes only inside the server's working folder (or `EXPORT_DIR`), and replaces a file only when asked. Answers stay in the MCP server's process.
 
 ## The music catalog
 
