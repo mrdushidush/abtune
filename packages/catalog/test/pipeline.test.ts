@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadBankFromDisk } from "@abtune/bank/node";
@@ -17,6 +17,14 @@ const REPO = fileURLToPath(new URL("../../../", import.meta.url));
 let dims: Dimensions;
 let dumps: string;
 let root: string;
+let ilArtistsFile: string;
+
+/** The curated Israeli list: Omer Adam with a pinned song (and one that doesn't exist), Arik Einstein. */
+const IL_ARTISTS = `version: 1
+artists:
+  - { name: Omer Adam, mbid: ${uuid(4, 2)}, tier: 1, songs: [Shir, No Such Song] }
+  - { name: Arik Einstein, mbid: ${uuid(4, 4)}, tier: 2 }
+`;
 
 /** Popularity API stand-in: deterministic counts from the MBID text. */
 const fakeApi: typeof fetch = async (_url, init) => {
@@ -52,6 +60,7 @@ async function build(name: string, api: boolean): Promise<BuildResult> {
       }),
     },
     tagMapFile: path.join(REPO, "data/tag_map.yaml"),
+    ilArtistsFile,
     apiCacheDir: path.join(root, `api-${name}`),
     fetchImpl: fakeApi,
     reportFile: path.join(root, `report-${name}.md`),
@@ -82,6 +91,8 @@ describe("catalog pipeline on synthetic dumps", () => {
     if (!bank.bank) throw new Error("bank failed to load");
     dims = bank.bank.dimensions;
     ({ dumps, root } = await writeSyntheticDumps());
+    ilArtistsFile = path.join(root, "il_artists.yaml");
+    await writeFile(ilArtistsFile, IL_ARTISTS);
     a = await build("a", false);
     tracks = await rows(a);
   }, 240_000);
@@ -151,6 +162,61 @@ describe("catalog pipeline on synthetic dumps", () => {
     const titles = new Set(tracks.map((t) => t.title));
     for (const t of ["Medley", "Airport Bit", "Karaoke Version of Always", "Intro"])
       expect(titles.has(t)).toBe(false);
+  });
+
+  it("represents a song by a full-length recording, not a snippet that soaked up the listens", () => {
+    expect(byId(uuid(1, 16))).toBeUndefined();
+    expect(byId(uuid(1, 17))).toMatchObject({ title: "Umbrella", length_ms: 240_000 });
+  });
+
+  it("ranks an artist's songs by proxy listeners and Various-Artists compilations", () => {
+    expect(byId(uuid(1, 19))).toMatchObject({
+      title: "The Hit",
+      release_groups: 2,
+      comps: 2,
+      va_comps: 2,
+      artist_rank: 1,
+      market: "intl",
+    });
+    expect(byId(uuid(1, 18))).toMatchObject({ title: "Album Cut", va_comps: 0, artist_rank: 2 });
+    expect(byId(uuid(1, 20))).toMatchObject({ title: "B-Side", artist_rank: 3 });
+    expect(Number(byId(uuid(1, 18))?.proxy_listeners)).toBeGreaterThan(
+      Number(byId(uuid(1, 19))?.proxy_listeners),
+    );
+  });
+
+  it("puts curated Israeli artists' top songs in the hits view, pins first", () => {
+    expect(byId(uuid(1, 6))).toMatchObject({
+      title: "Shir",
+      market: "il",
+      artist_rank: 1,
+      tier: 0,
+    });
+    expect(byId(uuid(1, 8))).toMatchObject({ title: "Ani Ve'Ata", market: "il", tier: 0 });
+    // Hebrew, unplaced artist, not curated: Israeli market, but not a hit.
+    expect(byId(uuid(1, 14))).toMatchObject({ market: "il", tier: 2 });
+    const info = a.steps.find((s) => s.step === "hits")?.info as {
+      unmatchedPins: string[];
+      curatedArtists: number;
+    };
+    expect(info.curatedArtists).toBe(2);
+    expect(info.unmatchedPins).toEqual([`${uuid(4, 2)}: No Such Song`]);
+  });
+
+  it("marks tiers: hits, deep cuts by artists with a hit, the rest", () => {
+    for (const t of tracks) {
+      expect([0, 1, 2]).toContain(t.tier);
+      expect(Number(t.hit_pct)).toBeGreaterThanOrEqual(0);
+      expect(Number(t.hit_pct)).toBeLessThanOrEqual(1);
+    }
+    const artistOf = (t: Record<string, unknown>) => (t.artist_mbids as string[])[0];
+    const hitArtists = new Set(tracks.filter((t) => t.tier === 0).map(artistOf));
+    expect(hitArtists.size).toBeGreaterThan(0);
+    for (const t of tracks) {
+      if (t.tier === 0) expect(Number(t.artist_rank)).toBeLessThanOrEqual(3);
+      if (t.tier === 1) expect(hitArtists.has(artistOf(t))).toBe(true);
+      if (t.tier === 2) expect(hitArtists.has(artistOf(t))).toBe(false);
+    }
   });
 
   it("maps tags to clusters and keeps every scalar in [-1, 1]", () => {

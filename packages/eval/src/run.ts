@@ -22,7 +22,7 @@ import {
   tasteVector,
 } from "@abtune/engine";
 import { personaAnswerer } from "./answerer.ts";
-import { fitTables, type PlaylistMetrics, playlistMetrics } from "./metrics.ts";
+import { fitTables, type PlaylistMetrics, playlistMetrics, type Recognition } from "./metrics.ts";
 import type { Persona } from "./persona.ts";
 
 export interface EvalSettings {
@@ -37,8 +37,18 @@ export interface EvalSettings {
   readonly select: SelectOptions;
 }
 
-/** HANDOFF §16 #5: the recorded minimum of fit(100 q) − fit(10 q) on the full catalog (set in M3). */
-export const FIT_MARGIN = 0.35;
+/**
+ * HANDOFF §16 #5: the recorded minimum of fit(100 q) − fit(10 q) on the full catalog. Set at 0.35 in
+ * M3; re-recorded at 0.30 on 2026-10-03 for hit-first playlists (owner decision D1: recognition over fit).
+ */
+export const FIT_MARGIN = 0.3;
+
+/**
+ * Owner decision D1 (2026-10-03): recognition is guarded like fit. Recorded minimums over every
+ * persona playlist on the full catalog: canon hits per 100 tracks, and the share of signature songs.
+ */
+export const CANON_MIN = 7;
+export const SIG_MIN = 0.65;
 
 export const DEFAULT_EVAL: EvalSettings = {
   modes: MODES,
@@ -101,20 +111,28 @@ export function runPersonaQuizzes(
   return out;
 }
 
+const METRIC_KEYS = [
+  "cluster",
+  "decade",
+  "language",
+  "scalar",
+  "fit",
+  "fit2",
+  "diversity",
+  "artistSpread",
+  "popularity",
+  "year",
+  "hits",
+  "sig",
+  "canon",
+  "hebrew",
+] as const satisfies readonly (keyof PlaylistMetrics)[];
+
 function meanMetrics(ms: readonly PlaylistMetrics[]): PlaylistMetrics {
-  const avg = (f: (m: PlaylistMetrics) => number) =>
-    ms.length ? ms.reduce((a, m) => a + f(m), 0) / ms.length : 0;
-  return {
-    cluster: avg((m) => m.cluster),
-    decade: avg((m) => m.decade),
-    language: avg((m) => m.language),
-    scalar: avg((m) => m.scalar),
-    fit: avg((m) => m.fit),
-    diversity: avg((m) => m.diversity),
-    artistSpread: avg((m) => m.artistSpread),
-    popularity: avg((m) => m.popularity),
-    year: avg((m) => m.year),
-  };
+  const out = {} as Record<keyof PlaylistMetrics, number>;
+  for (const k of METRIC_KEYS)
+    out[k] = ms.length ? ms.reduce((a, m) => a + m[k], 0) / ms.length : 0;
+  return out;
 }
 
 /** Generate and score every (persona, mode) × salt playlist. */
@@ -123,6 +141,7 @@ export function evaluateQuizzes(
   columns: CatalogColumns,
   quizzes: readonly PersonaQuiz[],
   settings: EvalSettings,
+  recog?: Recognition,
 ): PersonaModeResult[] {
   const tables = new Map<string, ReturnType<typeof fitTables>>();
   return quizzes.map(({ persona, mode, state, view }) => {
@@ -145,7 +164,7 @@ export function evaluateQuizzes(
         salt,
         seed,
         tracks,
-        metrics: playlistMetrics(columns, t, tracks),
+        metrics: playlistMetrics(columns, t, tracks, recog),
         violations: checkPlaylist(columns, tracks, settings.length, settings.generator).length,
         warnings: out.warnings,
       });
@@ -176,6 +195,12 @@ export interface EvalSummary {
   readonly margin: number;
   /** Mean fit over every playlist. */
   readonly meanFit: number;
+  /** Over every playlist (owner decision D1): hits-view share, signature share, canon per 100. */
+  readonly hits: number;
+  readonly sig: number;
+  readonly canon: number;
+  /** Mean Hebrew share of the Hebrew personas' playlists (ids starting with "hebrew_"). */
+  readonly hebrewShare: number;
 }
 
 export function summarize(results: readonly PersonaModeResult[]): EvalSummary {
@@ -190,7 +215,15 @@ export function summarize(results: readonly PersonaModeResult[]): EvalSummary {
     };
   });
   const fits = byMode.map((m) => m.metrics.fit);
+  const all = meanMetrics(results.map((r) => r.metrics));
+  const he = meanMetrics(
+    results.filter((r) => r.persona.id.startsWith("hebrew_")).map((r) => r.metrics),
+  );
   return {
+    hits: all.hits,
+    sig: all.sig,
+    canon: all.canon,
+    hebrewShare: he.hebrew,
     byMode,
     monotone: fits.every((f, i) => i === 0 || f > (fits[i - 1] as number)),
     margin: fits.length > 1 ? (fits.at(-1) as number) - (fits[0] as number) : 0,

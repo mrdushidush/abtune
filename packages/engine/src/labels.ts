@@ -36,6 +36,31 @@ const LANGUAGE_LABELS: Readonly<Record<string, string>> = {
   lang_other: "Other languages",
 };
 
+/** A scalar axis for display: its name and what each end means. */
+export interface ScalarLabel {
+  readonly name: string;
+  /** The −1 end. */
+  readonly low: string;
+  /** The +1 end. */
+  readonly high: string;
+}
+
+const SCALAR_LABELS: Readonly<Record<string, ScalarLabel>> = {
+  energy: { name: "Energy", low: "Calm", high: "Energetic" },
+  valence: { name: "Mood", low: "Dark", high: "Bright" },
+  dance: { name: "Dance", low: "Still", high: "Danceable" },
+  acoustic: { name: "Texture", low: "Electric", high: "Organic" },
+  intensity: { name: "Intensity", low: "Gentle", high: "Intense" },
+  tempo: { name: "Tempo", low: "Slow", high: "Fast" },
+  mainstream: { name: "Popularity", low: "Deep cuts", high: "Hits" },
+  vocal: { name: "Vocals", low: "Instrumental", high: "Vocal" },
+  complexity: { name: "Complexity", low: "Simple", high: "Complex" },
+};
+
+export function scalarLabel(key: string): ScalarLabel {
+  return SCALAR_LABELS[key] ?? { name: fallback(key), low: "Low", high: "High" };
+}
+
 function fallback(key: string): string {
   return key
     .split("_")

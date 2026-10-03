@@ -13,7 +13,10 @@ export const CONFIDENCE = {
   modelWithoutArtist: 0.45,
 } as const;
 
-/** Scalars that are quantile-scaled to [-1, 1] over the final catalog (mainstream is a percentile). */
+/**
+ * Scalars that are quantile-scaled to [-1, 1] over the final catalog. `mainstream` is instead the
+ * hit key's percentile within the song's market (stage "hits").
+ */
 export const SCALED_DIMS = [...AB_DIMS, "complexity"] as const;
 
 /** Average rank of x among n rows (ties share their mean rank) mapped into (-1, 1). */
@@ -60,11 +63,9 @@ export async function buildCatalogTable(db: Db, version: string): Promise<void> 
     -- was the slowest part of the build.
     CREATE OR REPLACE TABLE sel_scaled AS
       SELECT song,
-             ${SCALED_DIMS.map((d) => `${quantile(`raw_${d}`)} AS ${d}`).join(",\n             ")},
-             round(2 * percent_rank() OVER (ORDER BY listeners, listens, gid) - 1, 4)::FLOAT AS mainstream,
-             round(percent_rank() OVER (ORDER BY listeners, listens, gid), 6)::DOUBLE AS popularity_pct
+             ${SCALED_DIMS.map((d) => `${quantile(`raw_${d}`)} AS ${d}`).join(",\n             ")}
       FROM (
-        SELECT s.song, s.listeners, s.listens, s.gid, ${SCALED_DIMS.map((d) => `r.raw_${d}`).join(", ")}
+        SELECT s.song, ${SCALED_DIMS.map((d) => `r.raw_${d}`).join(", ")}
         FROM sel s JOIN sel_raw r USING (song)
       );
 
@@ -73,16 +74,20 @@ export async function buildCatalogTable(db: Db, version: string): Promise<void> 
              s.year::SMALLINT AS year, s.decade, s.isrcs, s.language,
              coalesce(sc.clusters, MAP {}::MAP(VARCHAR, FLOAT)) AS clusters, g.primary_cluster,
              ${SCALED_DIMS.map((d) => `q.${d}`).join(", ")},
-             q.mainstream,
+             round(2 * h.popularity_pct - 1, 4)::FLOAT AS mainstream,
              r.feature_source, round(r.confidence, 3)::FLOAT AS feature_confidence,
-             s.listeners, s.listens, q.popularity_pct,
+             s.listeners, s.listens, h.popularity_pct,
              ${lit(version)} AS catalog_version,
              s.artist_country, s.language_iso, s.length_ms, s.version_type, g.genre_source,
              ${SCALED_DIMS.map((d) => `round(r.raw_${d}, 4)::FLOAT AS raw_${d}`).join(", ")},
-             round(r.raw_bpm, 1)::FLOAT AS raw_bpm, s.via AS selected_via
+             round(r.raw_bpm, 1)::FLOAT AS raw_bpm, s.via AS selected_via,
+             h.proxy_listeners::INTEGER AS proxy_listeners, h.release_groups::INTEGER AS release_groups,
+             h.comps::INTEGER AS comps, h.va_comps::INTEGER AS va_comps, h.market, h.artist_rank,
+             h.hit_pct, h.tier
       FROM sel s
       JOIN sel_raw r USING (song)
       JOIN sel_scaled q USING (song)
+      JOIN sel_hits h USING (song)
       JOIN cand_genre g USING (song)
       LEFT JOIN sel_clusters sc USING (song);
   `);
@@ -131,6 +136,14 @@ export const CATALOG_COLUMNS = [
   "raw_complexity",
   "raw_bpm",
   "selected_via",
+  "proxy_listeners",
+  "release_groups",
+  "comps",
+  "va_comps",
+  "market",
+  "artist_rank",
+  "hit_pct",
+  "tier",
 ] as const;
 
 /** sha256 over the rows' JSON in track_id order: identical content ⇔ identical digest. */

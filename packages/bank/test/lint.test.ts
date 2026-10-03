@@ -134,7 +134,27 @@ describe("authoring rules (§8.4)", () => {
       "sensitive-fx",
       `questions:\n${question("q_s2", "    sensitive: political\n", "{ energy: 0.5 }")}`,
     ],
+    ["family", `questions:\n${question("q_f1", "    family: ghost\n")}`],
+    ["family", `questions:\n${question("q_f2", "    family: q_f2\n")}`],
+    [
+      "family",
+      `questions:\n${question("q_f3", "    family: q_one\n")}${question("q_f4", "    family: q_f3\n")}`,
+    ],
+    [
+      "family",
+      `packs:\n  deep: { weight: 1, default: true }\nquestions:\n${question("q_f5", "    family: q_one\n").replace("pack: core", "pack: deep")}`,
+    ],
+    [
+      "family",
+      `questions:\n${question("q_f6", '    family: q_one\n    unlock_if: { any: ["q_one=a"] }\n')}`,
+    ],
   ];
+
+  it("accepts a variant of a canonical question in the same pack", () => {
+    const r = lintPack(`questions:\n${question("q_v", "    family: q_one\n")}`);
+    expect(r.diagnostics).toEqual([]);
+    expect(r.bank?.questions.find((x) => x.id === "q_v")?.family).toBe("q_one");
+  });
 
   it.each(cases)("%s", (rule, pack) => {
     const r = lintPack(pack);

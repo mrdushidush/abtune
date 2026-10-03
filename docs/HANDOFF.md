@@ -27,7 +27,7 @@ Building a Spotify playlist by hand is tedious, but listening to a playlist that
 |---|----------|-------|
 | 1 | Audience | **Self-host first** (open source on GitHub), hosted version later |
 | 2 | Destinations v1 | **Spotify (bring-your-own Client ID) + file export** (M3U, CSV, XSPF, JSON). Apple Music in v2 |
-| 3 | Question flow | **Branching state machine**, deterministic: same answers → same path → same playlist |
+| 3 | Question flow | **Branching state machine**, deterministic: same answers → same path → same playlist. **Amended by the owner on 2026-10-03 (D7):** each session gets a random quiz seed, so retakes vary; same seed + same answers → same path → same playlist |
 | 4 | Scoring | **Hand-authored effect weights as the base**, AI as an optional creative layer |
 | 5 | Question bank | YAML, community-extensible via PRs. 153-question seed provided (lint-clean) |
 | 6 | Political / polarizing questions | **Opt-in "spicy" pack**. Sensitive answers are never stored server-side |
@@ -389,6 +389,8 @@ Session state is only `{config, answer_log, seed_salt}`. Everything else is deri
    ```
 
 4. Pick the max score. **Tie-break by `id`, lexicographic.** No randomness.
+
+   **Amended 2026-10-03 (owner decision D7, see DECISIONS.md):** a session may carry a random quiz seed. With one, the card is a seeded draw (weighted by score) among the slot's questions scoring within a band of the best (vibe 60%, main 10%, hook and spicy 0), and a question family (`family:`, interchangeable variants) is asked once, as a seeded variant that avoids the previous session's cards. Without a seed, the rule above holds exactly, and only canonical questions are asked.
 5. Stop when answered (non-skip) count == mode, or the eligible pool is empty. In that case finish early with a friendly "you've exhausted the bank" message.
 
 ### 8.4 Authoring rules (enforced by `lint`)
@@ -655,6 +657,8 @@ SPICY_PACK_DEFAULT=off
     - Always answering **B**: `bonjovi_britney, heavy_smooth, classical_edm, horror_comedy, hits_gems, simple_complex, dancefloor_carcry, ai_handmade, fast_slow, english_world`
 
     The original table above is still reproduced with `igNorm: "none"` (§8.3 as written), and a test pins both.
+
+    **2026-10-03:** the bank grew past the seed (`more.yaml`, `il.yaml`), so both tables are pinned on a frozen copy of the seed as of M3 (`packages/cli/test/fixtures/m3-bank/`), with no quiz seed. The live bank's first cards are a snapshot test instead.
 
 ---
 

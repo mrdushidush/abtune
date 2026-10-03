@@ -51,6 +51,9 @@ export async function loadMusicBrainz(db: Db, raw: string): Promise<void> {
       SELECT id::INTEGER AS id, gid::UUID AS gid, pg_unescape(name) AS name, release_group::INTEGER AS release_group,
              status::INTEGER AS status, language::INTEGER AS language
       FROM ${src("release")};
+    CREATE OR REPLACE TABLE mb_release_group AS
+      SELECT id::INTEGER AS id, artist_credit::INTEGER AS artist_credit, type::INTEGER AS type
+      FROM ${src("release_group")};
     CREATE OR REPLACE TABLE mb_rg_secondary AS
       SELECT j.release_group::INTEGER AS release_group, lower(t.name) AS type
       FROM ${src("release_group_secondary_type_join")} j JOIN ${src("release_group_secondary_type")} t ON t.id = j.secondary_type;

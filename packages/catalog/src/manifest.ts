@@ -2,7 +2,7 @@
 import type { SourceId } from "./sources.ts";
 
 /** Bump when tracks.parquet columns or their meaning change. */
-export const CATALOG_SCHEMA_VERSION = 1;
+export const CATALOG_SCHEMA_VERSION = 2;
 
 export interface CatalogLicense {
   readonly id: string;

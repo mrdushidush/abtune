@@ -58,6 +58,7 @@ export function lintBank(merged: MergedBank, options: LintOptions = {}): Diagnos
   }
 
   const ids = new Set(bank.questions.map((q) => q.id));
+  const byId = new Map(bank.questions.map((q) => [q.id, q]));
   const seenIds = new Map<string, string>();
 
   bank.questions.forEach((q, qi) => {
@@ -159,6 +160,39 @@ export function lintBank(merged: MergedBank, options: LintOptions = {}): Diagnos
     });
     if (q.unlock_if && !q.unlock_if.any && !q.unlock_if.top_genres) {
       report(at("unlock_if"), "unlock-ref", "unlock_if needs `any` and/or `top_genres`.");
+    }
+
+    // Families: a variant points at its canonical question and is asked in its place.
+    if (q.family !== undefined) {
+      const canonical = byId.get(q.family);
+      if (!canonical) {
+        report(at("family"), "family", `family "${q.family}" is not a question id.`);
+      } else if (canonical.id === q.id) {
+        report(
+          at("family"),
+          "family",
+          "a canonical question has no `family`; only its variants do.",
+        );
+      } else if (canonical.family !== undefined) {
+        report(
+          at("family"),
+          "family",
+          `"${q.family}" is itself a variant (of "${canonical.family}"); point to the canonical question.`,
+        );
+      } else if (canonical.pack !== q.pack) {
+        report(
+          at("pack"),
+          "family",
+          `a variant shares its canonical question's pack ("${canonical.pack}").`,
+        );
+      }
+      if (q.unlock_if) {
+        report(
+          at("unlock_if"),
+          "family",
+          "variants unlock with their canonical question; remove unlock_if.",
+        );
+      }
     }
   });
 

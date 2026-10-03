@@ -17,14 +17,17 @@ import fc from "fast-check";
 import { beforeAll, describe, expect, it } from "vitest";
 import { type AnswerMix, runQuiz, simulate } from "../../src/sim.ts";
 import { determinismDigest } from "./determinism-worker.ts";
-import { FROZEN_BANK_DIR, loadSeedBank } from "./load-seed.ts";
+import { FROZEN_BANK_DIR, loadSeedBank, M3_BANK_DIR } from "./load-seed.ts";
 
 let bank: Bank;
+let m3: Bank;
 beforeAll(async () => {
   bank = await loadSeedBank();
+  m3 = await loadSeedBank(M3_BANK_DIR);
 });
 
 describe("§16 #12 golden selection sequences (default packs, spicy off)", () => {
+  // Over the seed as of M3 (frozen copy): the live bank grows, the selection rules don't.
   // If you change the selection rules on purpose, update these, HANDOFF §16 #12 and DECISIONS.md.
   // M3: IG normalized by key count after the 3-question hook (HANDOFF §18, chosen by the persona eval).
   const GOLDEN = {
@@ -38,15 +41,47 @@ describe("§16 #12 golden selection sequences (default packs, spicy off)", () =>
   };
 
   it.each(["a", "b"] as const)("always answering %s", (side) => {
-    const run = runQuiz(bank, { mode: 10, packs: defaultPacks(bank) }, () => side);
+    const run = runQuiz(m3, { mode: 10, packs: defaultPacks(m3) }, () => side);
     expect(run.sequence.join(", ")).toBe(GOLDEN[side]);
     expect(run.view.status).toBe("profile_ready");
   });
 
   it.each(["a", "b"] as const)("always answering %s, §8.3 as written", (side) => {
     const literal = { igNorm: "none" } as const;
-    const run = runQuiz(bank, { mode: 10, packs: defaultPacks(bank) }, () => side, literal);
+    const run = runQuiz(m3, { mode: 10, packs: defaultPacks(m3) }, () => side, literal);
     expect(run.sequence.join(", ")).toBe(BRIEF[side]);
+  });
+});
+
+describe("the live bank (no quiz seed)", () => {
+  // A snapshot, so a bank edit that changes what people are asked first shows up in review.
+  it.each(["a", "b"] as const)("always answering %s", (side) => {
+    const run = runQuiz(bank, { mode: 10, packs: defaultPacks(bank) }, () => side);
+    expect(run.sequence).toMatchSnapshot();
+  });
+});
+
+describe("variety (owner decision D7): a quiz seed per session", () => {
+  const first10 = (seed: string, avoid: readonly string[] = []) =>
+    runQuiz(bank, { mode: 10, packs: defaultPacks(bank), quiz_seed: seed, avoid }, (q) =>
+      q.id.length % 2 ? "a" : "b",
+    ).sequence;
+  const shared = (x: readonly string[], y: readonly string[]) =>
+    x.filter((id) => y.includes(id)).length;
+
+  it("replays the same path for the same seed and answers", () => {
+    expect(first10("00000000000000a1")).toEqual(first10("00000000000000a1"));
+  });
+
+  it("a retake that avoids the last session's cards shares few of the first 10", () => {
+    let total = 0;
+    const runs = 40;
+    for (let k = 0; k < runs; k++) {
+      const one = first10(`${k.toString(16).padStart(14, "0")}aa`);
+      const two = first10(`${k.toString(16).padStart(14, "0")}bb`, one);
+      total += shared(one, two);
+    }
+    expect(total / runs).toBeLessThan(4);
   });
 });
 
@@ -73,7 +108,7 @@ describe("§16 #2 determinism across processes", () => {
   it("is identical on every machine (pinned digest over a frozen bank; CI runs Linux, Windows, macOS)", async () => {
     // Changes only if the engine's behavior changes. If that's intended, update and log it in DECISIONS.md.
     expect(await determinismDigest(300, "a11ce5ba5eba11ed", FROZEN_BANK_DIR)).toBe(
-      "1ad50b705599e78cf3a6ec082f646fedaa69f3073064e757c6ff0e4a3c4abfbe",
+      "422b7c4c35d115d92d9860fe9acbdcd933c67f32e0e1e8534f475587d4411e96",
     );
   }, 120_000);
 });

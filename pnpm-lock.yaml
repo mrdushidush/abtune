@@ -32,6 +32,9 @@ importers:
       '@abtune/catalog':
         specifier: workspace:*
         version: link:../../packages/catalog
+      '@abtune/connectors':
+        specifier: workspace:*
+        version: link:../../packages/connectors
       '@abtune/engine':
         specifier: workspace:*
         version: link:../../packages/engine
@@ -111,6 +114,12 @@ importers:
       '@abtune/eval':
         specifier: workspace:*
         version: link:../eval
+
+  packages/connectors:
+    dependencies:
+      '@abtune/engine':
+        specifier: workspace:*
+        version: link:../engine
 
   packages/engine:
     dependencies:

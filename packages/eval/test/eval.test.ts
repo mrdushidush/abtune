@@ -8,8 +8,10 @@ import {
   fitTables,
   loadPersonas,
   type Persona,
+  parseCanon,
   personaChoice,
   playlistMetrics,
+  recognition,
   summarize,
   trackFit,
   utility,
@@ -113,8 +115,11 @@ describe("metrics", () => {
       language: 1,
       scalar: 1,
       fit: 1,
+      fit2: 1,
     });
     expect(trackFit(columns, t, 1).fit).toBeCloseTo(0.5);
+    // fit2 doesn't penalize a hit tagged metal and pop half-and-half.
+    expect(trackFit(columns, t, 1).fit2).toBeCloseTo(1);
     expect(trackFit(columns, t, 2).fit).toBe(0);
     expect(trackFit(columns, t, 3)).toMatchObject({ language: 0, scalar: 0, fit: 0 });
     const lenient = fitTables(columns, persona({ languages: { lang_en: 1, none: 1 } }));
@@ -130,12 +135,43 @@ describe("metrics", () => {
 
   it("summaries flag a fit that doesn't rise with depth", () => {
     const at = (mode: number, fit: number) =>
-      ({ mode, metrics: { fit }, playlists: [] }) as unknown as Parameters<
+      ({ mode, persona: { id: "p" }, metrics: { fit }, playlists: [] }) as unknown as Parameters<
         typeof summarize
       >[0][number];
     expect(summarize([at(10, 0.1), at(20, 0.2), at(50, 0.3)])).toMatchObject({ monotone: true });
     const flat = summarize([at(10, 0.1), at(20, 0.1)]);
     expect(flat.monotone).toBe(false);
     expect(flat.margin).toBe(0);
+  });
+
+  it("recognition: canon hits per 100, signature songs of famous artists, hits view, Hebrew", () => {
+    const tiered = {
+      ...columns,
+      tier: Uint8Array.from([0, 1, 2, 0]),
+      artistRank: Uint8Array.from([1, 4, 1, 2]),
+    };
+    // Artists 0–3 each have one track; artist 2's best song has no top-list listeners at all.
+    const recog = recognition(tiered, [1], Float64Array.from([500, 300, 0, 100]));
+    expect([...recog.canon]).toEqual([0, 1, 0, 0]);
+    expect([...recog.signature]).toEqual([1, 0, 1, 1]);
+    const m = playlistMetrics(tiered, t, [0, 1, 2, 3], recog);
+    expect(m.canon).toBe(25);
+    expect(m.sig).toBe(0.75);
+    expect(m.hits).toBe(0.5);
+    expect(m.hebrew).toBe(0);
+  });
+
+  it("parses the canon list: market, artist and title alternatives, comments skipped", () => {
+    const text = [
+      "# hits",
+      "intl\tQueen\tBohemian Rhapsody",
+      "il\tעומר אדם,Omer Adam\tתל אביב,Tel Aviv",
+      "",
+    ].join("\n");
+    expect(parseCanon(text)).toEqual([
+      { market: "intl", artists: ["Queen"], titles: ["Bohemian Rhapsody"] },
+      { market: "il", artists: ["עומר אדם", "Omer Adam"], titles: ["תל אביב", "Tel Aviv"] },
+    ]);
+    expect(() => parseCanon("intl\tQueen\n")).toThrow(/3 columns/);
   });
 });

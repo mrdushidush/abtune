@@ -14,6 +14,10 @@ ABTune's **code** is MIT-licensed. The **music catalog** it builds comes from op
 | **AcousticBrainz** final dumps, 2022-06-23: high-level JSON and low-level rhythm features | mood, danceability, voice/instrumental and genre classifier probabilities; BPM | **CC0 1.0** | "All of the data contained in AcousticBrainz is licensed under the CC0 license (public domain)." ([MusicBrainz wiki](https://musicbrainz.org/doc/AcousticBrainz)). These dumps contain no `COPYING` file, so the build can't check this one |
 | Cover Art Archive (M4, optional) | album covers, hotlinked at display time | per image | Never downloaded or stored |
 | Spotify Web API (M5) | delivery only | Spotify Developer Terms | **No Spotify metadata goes into the catalog** (HANDOFF §3.1) |
+| `data/il_artists.yaml` (this repo) | curated Israeli artists, tiers and signature songs for the hits view | MIT, with the code | Written by the project owner (drafted from the catalog by `abtune catalog il-draft`) |
+| `data/eval/canon.tsv` (this repo) | widely known hits for the eval's canon metric; never in the catalog | MIT, with the code | Hand-made song titles (facts), 2026-10-02 |
+| Deezer API | **not used** | Deezer terms: "strictly private use within a family scope" | Checked 2026-10-03: a published catalog can't carry Deezer-derived ranks, so Israeli song ranking uses the owner's pins instead (DECISIONS.md) |
+| YouTube / Spotify search links | links from playlist rows only | none needed | Plain search URLs built from artist and title at display time; nothing is fetched or stored |
 
 ## What the catalog files are licensed under
 

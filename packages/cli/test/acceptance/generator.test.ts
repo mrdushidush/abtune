@@ -72,7 +72,7 @@ describe("§16 #2 playlist determinism", () => {
   it("is identical on every machine (pinned digest: frozen bank + fixture; CI runs Linux, Windows, macOS)", async () => {
     // Changes only if generation changes. If that's intended, update and log it in DECISIONS.md.
     expect(await playlistDigest(300, "a11ce5ba5eba11ed", FROZEN_BANK_DIR)).toBe(
-      "c89836b663daf040ebf9ff14a54054ecdccb2105104ae325c2c708b200ad5a88",
+      "c628baf363a5799618ff75aef633e8f8021d20a7923784d2322537505382743d",
     );
   }, 120_000);
 });

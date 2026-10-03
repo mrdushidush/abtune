@@ -17,9 +17,10 @@ Subcommands:
 
   build [--version catalog-YYYY.MM] [--target 2000000] [--candidates 3500000]
         [--he-min 30000] [--he-lang-min 18000] [--no-api] [--from-stage <stage>]
-        [--memory 16GB] [--threads N]
+        [--memory 16GB] [--threads N] [--il-artists data/il_artists.yaml]
       Run the pipeline: extract → load → songs → candidates → popularity → select →
-      features → export. Writes data/catalog/<version>/ and docs/catalog-report-*.md.
+      features → hits → export. Writes data/catalog/<version>/ and docs/catalog-report-*.md.
+      --il-artists is the curated list of Israeli artists for the hits view.
       --he-min is the quota for IL artists or Hebrew songs; --he-lang-min for Hebrew songs.
       Needs ~60 GB free disk besides the dumps. Each stage resumes when its inputs
       are unchanged; --from-stage reruns a stage and everything after it.
@@ -27,6 +28,10 @@ Subcommands:
   sample [--catalog data/catalog/<version>] [--dev-size 50000] [--fixture-size 5000]
       Draw the dev sample (data/catalog/<version>-dev50k/ plus a .tar for release) and
       the committed 5k test fixture (data/catalog-fixture/) from a built catalog.
+
+  il-draft [--catalog data/catalog/<version>] [--out data/il_artists.yaml] [--limit 900]
+      Draft the curated Israeli artist list from a built catalog, for the owner to edit
+      (tiers and signature songs). Refuses to overwrite an existing file without --force.
 
   fetch [--file <tar> | --url <url>] [--out data/catalog]
       Download (default: CATALOG_SAMPLE_URL or the GitHub release), verify and install
@@ -48,6 +53,8 @@ export async function catalog(argv: readonly string[]): Promise<number> {
       return fetchCmd(rest);
     case "report":
       return report(rest);
+    case "il-draft":
+      return ilDraft(rest);
     default:
       console.error(sub ? `Unknown subcommand "${sub}".\n\n${catalogHelp}` : catalogHelp);
       return 1;
@@ -101,6 +108,7 @@ async function build(argv: readonly string[]): Promise<number> {
       "from-stage": { type: "string" },
       memory: { type: "string" },
       threads: { type: "string" },
+      "il-artists": { type: "string" },
     },
   });
   // The heavy pipeline (DuckDB) loads only for this subcommand.
@@ -144,6 +152,7 @@ async function build(argv: readonly string[]): Promise<number> {
     fromStage: fromStage as (typeof STAGES)[number] | undefined,
     memoryLimit: values.memory,
     threads: values.threads ? Number(values.threads) : undefined,
+    ilArtistsFile: values["il-artists"],
     log,
   });
   log(
@@ -223,6 +232,41 @@ async function fetchCmd(argv: readonly string[]): Promise<number> {
   log(
     `Ready in ${((performance.now() - started) / 1000).toFixed(1)}s. Set CATALOG_PATH=${dir.split(path.sep).join("/")} (or leave it unset to use the newest catalog in ${values.out}).`,
   );
+  return 0;
+}
+
+async function ilDraft(argv: readonly string[]): Promise<number> {
+  const { values } = parseArgs({
+    args: [...argv],
+    options: {
+      catalog: { type: "string" },
+      out: { type: "string", default: "data/il_artists.yaml" },
+      limit: { type: "string", default: "900" },
+      force: { type: "boolean", default: false },
+    },
+  });
+  const catalogDir = values.catalog ?? (await defaultCatalogDir());
+  if (!catalogDir) {
+    console.error("No built catalog found; pass --catalog.");
+    return 1;
+  }
+  if (!values.force) {
+    try {
+      await readFile(values.out);
+      console.error(`${values.out} exists (the owner's edits?); pass --force to overwrite.`);
+      return 1;
+    } catch {}
+  }
+  const { Db, draftIlArtists, renderIlArtists } = await import("@abtune/catalog/build");
+  const manifest = JSON.parse(await readFile(path.join(catalogDir, "manifest.json"), "utf8"));
+  const db = await Db.open(":memory:");
+  try {
+    const draft = await draftIlArtists(db, catalogDir, { limit: Number(values.limit) });
+    await writeFile(values.out, renderIlArtists(draft, manifest.catalog_version));
+    log(`Drafted ${draft.length} Israeli artists into ${values.out}`);
+  } finally {
+    db.close();
+  }
   return 0;
 }
 

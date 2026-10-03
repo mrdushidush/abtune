@@ -1,7 +1,9 @@
 import { fileURLToPath } from "node:url";
 import { loadBankFromDisk } from "@abtune/bank/node";
+import { engineVersion } from "@abtune/engine";
 import { describe, expect, it } from "vitest";
 import { createApp } from "../src/server/app.ts";
+import { catalogSlot } from "../src/server/catalog.ts";
 
 const questionsDir = fileURLToPath(new URL("../../../data/questions", import.meta.url));
 
@@ -16,20 +18,28 @@ describe("API", async () => {
     expect(await res.json()).toEqual({
       name: "ABTune",
       version: "9.9.9",
-      questions: 153,
-      packs: { core: 40, context: 6, deep: 56, vibe: 42, spicy: 9 },
+      engine_version: engineVersion(bank),
+      questions: 226,
+      packs: { core: 70, context: 9, deep: 66, vibe: 55, spicy: 9, il: 17 },
       catalog: null,
     });
   });
 
-  it("reports the installed catalog", async () => {
-    const withCatalog = createApp({
+  it("reports the installed catalog and its load status", async () => {
+    const info = { version: "catalog-2026.10", kind: "dev-sample", tracks: 50000, license: null };
+    const loading = createApp({
       bank,
       version: "9.9.9",
-      catalog: { version: "catalog-2026.10", kind: "dev-sample", tracks: 50000 },
+      catalog: catalogSlot(info, new Promise(() => {})),
     });
-    const body = (await (await withCatalog.request("/api/health")).json()) as { catalog: unknown };
-    expect(body.catalog).toEqual({ version: "catalog-2026.10", kind: "dev-sample", tracks: 50000 });
+    const body = (await (await loading.request("/api/health")).json()) as { catalog: unknown };
+    expect(body.catalog).toEqual({ ...info, status: "loading" });
+
+    const slot = catalogSlot(info, Promise.reject(new Error("boom")));
+    await slot.settled;
+    const failed = createApp({ bank, version: "9.9.9", catalog: slot });
+    const after = (await (await failed.request("/api/health")).json()) as { catalog: unknown };
+    expect(after.catalog).toEqual({ ...info, status: "error" });
   });
 
   it("returns JSON 404 for unknown API routes", async () => {

@@ -25,6 +25,23 @@ export interface GeneratorParams {
   readonly shortLength: number;
   /** §9.4: weight of |Δtempo| against the energy-curve error when sequencing. */
   readonly tempoLambda: number;
+  /**
+   * Popularity tiers (owner decision D6): a popularity target t ≥ hitsAbove draws from the hits view
+   * only; t ≥ deepAbove adds deep cuts by artists with a hit; below that, the whole catalog. A
+   * playlist that can't fill widens one tier at a time before relaxing genres or language.
+   */
+  readonly hitsAbove: number;
+  readonly deepAbove: number;
+  /**
+   * Familiarity window: a cell picks only from the best-known tracks of each (primary cluster,
+   * decade, market) group of its allowed tiers: max(familiarityPool × its pool size,
+   * familiarityShare × the group) × familiarityRatio^(−t), never fewer than the pool itself. It
+   * widens (doubling) when it runs dry. familiarityPool 0 turns it off. A playlist that starts from
+   * the whole long tail ("Hidden gems") has no window.
+   */
+  readonly familiarityPool: number;
+  readonly familiarityShare: number;
+  readonly familiarityRatio: number;
 }
 
 /** The brief's §9.1 start, tuned with the persona eval (M3, see DECISIONS.md): wLanguage 0.1 → 0.2, languageNeutral 0.5 → 0.25. */
@@ -44,6 +61,11 @@ export const DEFAULT_GENERATOR_PARAMS: GeneratorParams = {
   shortArtistCap: 1,
   shortLength: 25,
   tempoLambda: 0.3,
+  hitsAbove: 0,
+  deepAbove: -0.5,
+  familiarityPool: 3,
+  familiarityShare: 0.004,
+  familiarityRatio: 4,
 };
 
 /** §9.3: max tracks per artist for a playlist of `length`. */

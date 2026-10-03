@@ -15,6 +15,8 @@ interface Candidate {
   readonly id: string;
   readonly stratum: string;
   readonly hebrew: boolean;
+  /** In the hits view (tier 0). */
+  readonly hit?: boolean;
 }
 
 /**
@@ -55,20 +57,10 @@ export function allocate(sizes: readonly number[], total: number): number[] {
   return out;
 }
 
-/** Choose `size` track ids: a Hebrew floor first, then (primary cluster, decade) strata. */
-export function chooseSample(
-  ranked: readonly Candidate[],
-  size: number,
-  hebrewFloor: number,
-): Set<string> {
-  const chosen = new Set<string>();
-  const hebrew = ranked.filter((c) => c.hebrew);
-  for (const i of spreadPick(hebrew.length, Math.min(hebrewFloor, size))) {
-    const c = hebrew[i];
-    if (c) chosen.add(c.id);
-  }
+/** Add `n` of the not-yet-chosen `pool` across its (primary cluster, decade) strata. */
+function fillStrata(pool: readonly Candidate[], n: number, chosen: Set<string>): void {
   const strata = new Map<string, Candidate[]>();
-  for (const c of ranked) {
+  for (const c of pool) {
     if (chosen.has(c.id)) continue;
     const list = strata.get(c.stratum) ?? [];
     list.push(c);
@@ -77,7 +69,7 @@ export function chooseSample(
   const keys = [...strata.keys()].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
   const slots = allocate(
     keys.map((k) => strata.get(k)?.length ?? 0),
-    size - chosen.size,
+    n,
   );
   keys.forEach((k, ki) => {
     const list = strata.get(k) ?? [];
@@ -86,15 +78,39 @@ export function chooseSample(
       if (c) chosen.add(c.id);
     }
   });
+}
+
+/**
+ * Choose `size` track ids: a Hebrew floor first, then `hitsShare` of the sample from the hits view,
+ * then (primary cluster, decade) strata over everything left. A sample is what a self-hoster's
+ * playlists come from, so it leans on the songs people know but keeps the long tail.
+ */
+export function chooseSample(
+  ranked: readonly Candidate[],
+  size: number,
+  hebrewFloor: number,
+  hitsShare = 0,
+): Set<string> {
+  const chosen = new Set<string>();
+  const hebrew = ranked.filter((c) => c.hebrew);
+  for (const i of spreadPick(hebrew.length, Math.min(hebrewFloor, size))) {
+    const c = hebrew[i];
+    if (c) chosen.add(c.id);
+  }
+  const hits = ranked.filter((c) => c.hit);
+  const hitsWanted = Math.min(size, Math.round(hitsShare * size));
+  const hitsHave = hits.filter((c) => chosen.has(c.id)).length;
+  fillStrata(hits, Math.max(0, Math.min(hitsWanted - hitsHave, size - chosen.size)), chosen);
+  fillStrata(ranked, size - chosen.size, chosen);
   return chosen;
 }
 
-const HEBREW = "(language = 'lang_he' OR artist_country = 'IL')";
+const HEBREW = "(market = 'il' OR language = 'lang_he' OR artist_country = 'IL')";
 
 async function rankedCandidates(db: Db, table: string): Promise<Candidate[]> {
   return db.all<Candidate>(`
     SELECT track_id AS id, coalesce(primary_cluster, 'none') || '|' || coalesce(decade, 'unknown') AS stratum,
-           ${HEBREW} AS hebrew
+           ${HEBREW} AS hebrew, tier = 0 AS hit
     FROM ${table} ORDER BY popularity_pct DESC, track_id`);
 }
 
@@ -138,7 +154,7 @@ export async function fixtureLines(db: Db, table: string): Promise<string[]> {
         out[c] = Object.fromEntries(
           Object.entries(parsed).map(([k, w]) => [k, Number(w.toFixed(3))]),
         );
-      } else if (c === "popularity_pct") out[c] = tidy(v, 6);
+      } else if (c === "popularity_pct" || c === "hit_pct") out[c] = tidy(v, 6);
       else if (c === "raw_bpm") out[c] = tidy(v, 1);
       else if (typeof v === "number" && !Number.isInteger(v)) out[c] = tidy(v, 4);
       else out[c] = v;
@@ -157,6 +173,9 @@ export async function buildSamples(
     readonly fixtureSize?: number;
     readonly devHebrewFloor?: number;
     readonly fixtureHebrewFloor?: number;
+    /** Share of each sample drawn from the hits view. */
+    readonly devHitsShare?: number;
+    readonly fixtureHitsShare?: number;
   },
 ): Promise<SampleResult> {
   const {
@@ -164,6 +183,8 @@ export async function buildSamples(
     fixtureSize = 5_000,
     devHebrewFloor = 1_000,
     fixtureHebrewFloor = 100,
+    devHitsShare = 0.8,
+    fixtureHitsShare = 0.6,
   } = opts;
   const full = JSON.parse(
     await readFile(path.join(opts.catalogDir, "manifest.json"), "utf8"),
@@ -172,12 +193,18 @@ export async function buildSamples(
     `CREATE OR REPLACE TEMP TABLE full_catalog AS SELECT * FROM read_parquet(${pathLit(path.join(opts.catalogDir, "tracks.parquet"))})`,
   );
 
-  const dev = chooseSample(await rankedCandidates(db, "full_catalog"), devSize, devHebrewFloor);
+  const dev = chooseSample(
+    await rankedCandidates(db, "full_catalog"),
+    devSize,
+    devHebrewFloor,
+    devHitsShare,
+  );
   await subset(db, "full_catalog", "dev_sample", dev);
   const fixture = chooseSample(
     await rankedCandidates(db, "dev_sample"),
     fixtureSize,
     fixtureHebrewFloor,
+    fixtureHitsShare,
   );
   await subset(db, "dev_sample", "fixture_sample", fixture);
 

@@ -11,6 +11,7 @@ import {
 } from "./build/features.ts";
 import { buildCatalogTable, exportParquet } from "./build/finalize.ts";
 import { buildCandidates, buildFilters, buildGenres, type Pool } from "./build/genres.ts";
+import { buildHits, DEFAULT_HITS, type HitsConfig } from "./build/hits.ts";
 import {
   loadAcousticBrainz,
   loadCanonical,
@@ -25,6 +26,7 @@ import { Db } from "./db.ts";
 import { readLock } from "./download.ts";
 import { extractAll, rawPaths } from "./extract/index.ts";
 import { sha256File } from "./files.ts";
+import { DEFAULT_IL_ARTISTS, type IlArtists, loadIlArtists } from "./il-artists.ts";
 import { impute } from "./impute.ts";
 import {
   CATALOG_LICENSE,
@@ -51,6 +53,8 @@ export interface BuildConfig {
   /** Top up popularity from the ListenBrainz API (otherwise dump-only). */
   readonly api: boolean;
   readonly minLengthMs: number;
+  /** The hits view (owner decisions D2/D5). */
+  readonly hits: HitsConfig;
 }
 
 export const DEFAULT_CONFIG: Omit<BuildConfig, "version"> = {
@@ -66,6 +70,7 @@ export const DEFAULT_CONFIG: Omit<BuildConfig, "version"> = {
   dedupe: { minListeners: 20, minShare: 0.2 },
   api: true,
   minLengthMs: 30_000,
+  hits: DEFAULT_HITS,
 };
 
 export interface BuildOptions {
@@ -73,6 +78,8 @@ export interface BuildOptions {
   readonly dims: Dimensions;
   readonly layout?: Layout;
   readonly tagMapFile?: string;
+  /** The curated Israeli artists (default data/il_artists.yaml; missing = not curated yet). */
+  readonly ilArtistsFile?: string;
   /** Re-run this stage and everything after it. */
   readonly fromStage?: Stage;
   readonly memoryLimit?: string;
@@ -92,6 +99,7 @@ export const STAGES = [
   "popularity",
   "select",
   "features",
+  "hits",
   "export",
 ] as const;
 export type Stage = (typeof STAGES)[number];
@@ -104,7 +112,7 @@ export interface BuildResult {
 }
 
 /** Bump when stage SQL changes in a way that should invalidate existing stamps. */
-export const PIPELINE_VERSION = 2;
+export const PIPELINE_VERSION = 3;
 
 export async function buildCatalog(opts: BuildOptions): Promise<BuildResult> {
   const { config, dims, log } = opts;
@@ -113,6 +121,7 @@ export async function buildCatalog(opts: BuildOptions): Promise<BuildResult> {
   if (!lock)
     throw new Error(`No ${layout.dumps}/sources.lock.json: run \`abtune catalog download\` first.`);
   const tagMap = await readTagMap(opts.tagMapFile, dims);
+  const ilArtists = await loadIlArtists(opts.ilArtistsFile ?? DEFAULT_IL_ARTISTS);
   const apiCacheDir = opts.apiCacheDir ?? path.join(layout.dumps, "lb-popularity-api");
 
   const extractSteps = await extractAll(lock, layout.dumps, layout.raw, log);
@@ -125,7 +134,7 @@ export async function buildCatalog(opts: BuildOptions): Promise<BuildResult> {
   try {
     await loadTagMap(db, tagMap.file);
     await loadDimensions(db, dims);
-    const steps = await runStages(db, opts, layout, lock, tagMap, apiCacheDir);
+    const steps = await runStages(db, opts, layout, lock, tagMap, ilArtists, apiCacheDir);
     const manifest = JSON.parse(
       await readFile(path.join(layout.out, "manifest.json"), "utf8"),
     ) as CatalogManifest;
@@ -162,6 +171,7 @@ async function runStages(
   layout: Layout,
   lock: SourcesLock,
   tagMap: TagMap,
+  ilArtists: IlArtists,
   apiCacheDir: string,
 ): Promise<StepRecord[]> {
   const { config, dims, log } = opts;
@@ -202,16 +212,20 @@ async function runStages(
       (SELECT count(DISTINCT mbid) FROM ab_hl) AS ab_mbids, (SELECT count(*) FROM cn_rec) AS canonical_redirects`);
   });
 
-  await stage("songs", { dedupe: config.dedupe, seeds: poolSeeds(config.pools) }, async () => {
-    await buildSongs(db, config.dedupe, config.pools);
-    await buildAttributes(db);
-    return db.one(`SELECT (SELECT count(*) FROM canon_pop) AS listened_canonicals, (SELECT count(*) FROM canon_info) AS keyed_canonicals,
+  await stage(
+    "songs",
+    { dedupe: config.dedupe, seeds: poolSeeds(config.pools), minLen: config.minLengthMs },
+    async () => {
+      await buildSongs(db, config.dedupe, config.pools, config.minLengthMs);
+      await buildAttributes(db);
+      return db.one(`SELECT (SELECT count(*) FROM canon_pop) AS listened_canonicals, (SELECT count(*) FROM canon_info) AS keyed_canonicals,
       (SELECT count(*) FROM unit_pop) AS units, (SELECT count(*) FROM song) AS songs,
       (SELECT count(*) FROM song WHERE alt_version) AS kept_alt_versions,
       (SELECT count(*) FROM canon_pop) - (SELECT count(*) FROM unit_pop WHERE listeners > 0) AS merged_canonicals,
       (SELECT count(*) FROM unit_pop) - (SELECT count(*) FROM song) AS dropped_versions,
       (SELECT count(*) FROM song WHERE proxy_listeners = 0) AS seeded_songs`);
-  });
+    },
+  );
 
   await stage(
     "candidates",
@@ -276,6 +290,11 @@ async function runStages(
     return { impute: report as unknown as Record<string, unknown> };
   });
 
+  const ilHash = sha256Hex(ilArtists.text);
+  await stage("hits", { hits: config.hits, il: ilHash }, async () =>
+    buildHits(db, config.hits, ilArtists),
+  );
+
   await stage(
     "export",
     { version: config.version, schema: CATALOG_SCHEMA_VERSION, tagHash },
@@ -301,7 +320,7 @@ async function runStages(
           dumpDate: f.dumpDate,
         })),
         popularity: { api: config.api, snapshot: config.api ? path.basename(apiCacheDir) : null },
-        config: { ...config, tag_map_sha256: tagHash },
+        config: { ...config, tag_map_sha256: tagHash, il_artists_sha256: ilHash },
         dimensions: { genres: dims.genres, decades: dims.decades, languages: dims.languages },
         files: [{ name: "tracks.parquet", bytes, sha256: await sha256File(tracksFile) }],
       };
@@ -317,4 +336,5 @@ async function runStages(
 }
 
 export { Db } from "./db.ts";
+export { draftIlArtists, renderIlArtists } from "./il-artists.ts";
 export { buildSamples, type SampleResult } from "./sample.ts";

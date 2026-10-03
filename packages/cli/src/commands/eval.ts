@@ -3,6 +3,7 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import { engineVersion, playlistTitle, tasteVector } from "@abtune/engine";
 import {
+  CANON_MIN,
   catalogBaseline,
   DEFAULT_EVAL,
   type EvalSettings,
@@ -14,9 +15,12 @@ import {
   type PrintedPlaylist,
   percentile,
   randomPlaylists,
+  readCanon,
+  recognition,
   renderReport,
   reportOrder,
   runPersonaQuizzes,
+  SIG_MIN,
   summarize,
   TUNE_SPACE,
   tune,
@@ -61,6 +65,15 @@ export async function evalCmd(argv: readonly string[]): Promise<number> {
     `${columns.version} (${catalog.manifest.kind}, ${columns.n} tracks) loaded in ${(catalog.loadMs / 1000).toFixed(1)} s; ${personas.length} personas`,
   );
   try {
+    const canon = await readCanon();
+    const canonMatches = await catalog.match(canon);
+    const recog = recognition(
+      columns,
+      canonMatches.flat(),
+      await catalog.numbers("proxy_listeners"),
+    );
+    const canonFound = canonMatches.filter((m) => m.length > 0).length;
+    log(`canon: ${canonFound} of ${canon.length} songs in this catalog`);
     let settings: EvalSettings = { ...DEFAULT_EVAL, salts: Number(values.salts) };
     let tuning:
       | { start: ReturnType<typeof summarize>; changes: string[]; evaluations: number }
@@ -83,10 +96,15 @@ export async function evalCmd(argv: readonly string[]): Promise<number> {
 
     log("persona playlists…");
     const quizzes = runPersonaQuizzes(bank, personas, settings);
-    const results = evaluateQuizzes(bank, columns, quizzes, settings);
+    const results = evaluateQuizzes(bank, columns, quizzes, settings, recog);
     const summary = summarize(results);
     for (const m of summary.byMode)
-      log(`mode ${m.mode}: fit ${m.metrics.fit.toFixed(4)}, violations ${m.violations}`);
+      log(
+        `mode ${m.mode}: fit ${m.metrics.fit.toFixed(4)}, fit2 ${m.metrics.fit2.toFixed(4)}, hits ${(100 * m.metrics.hits).toFixed(0)}%, sig ${(100 * m.metrics.sig).toFixed(0)}%, canon ${m.metrics.canon.toFixed(1)}, violations ${m.violations}`,
+      );
+    log(
+      `recognition: hits ${(100 * summary.hits).toFixed(1)}%, sig ${(100 * summary.sig).toFixed(1)}%, canon ${summary.canon.toFixed(2)}/100, Hebrew personas ${(100 * summary.hebrewShare).toFixed(1)}% Hebrew`,
+    );
 
     const noise = Number(values.noise);
     let noisy: { noise: number; summary: ReturnType<typeof summarize> } | undefined;
@@ -95,7 +113,7 @@ export async function evalCmd(argv: readonly string[]): Promise<number> {
       noisy = {
         noise,
         summary: summarize(
-          evaluateQuizzes(bank, columns, runPersonaQuizzes(bank, personas, ns), ns),
+          evaluateQuizzes(bank, columns, runPersonaQuizzes(bank, personas, ns), ns, recog),
         ),
       };
       log(
@@ -157,6 +175,8 @@ export async function evalCmd(argv: readonly string[]): Promise<number> {
       random,
       printed,
       marginThreshold: FIT_MARGIN,
+      recognitionThresholds: { canon: CANON_MIN, sig: SIG_MIN },
+      canon: { songs: canon.length, found: canonFound },
       ...(tuning ? { tuning } : {}),
       notes: full
         ? [
@@ -170,9 +190,14 @@ export async function evalCmd(argv: readonly string[]): Promise<number> {
       await writeFile(out, report);
       log(`wrote ${out}`);
     }
+    const recognized = !full || (summary.canon >= CANON_MIN && summary.sig >= SIG_MIN);
     const ok =
-      violations === 0 && summary.monotone && summary.margin >= FIT_MARGIN && (!full || p95 < 2000);
-    log(ok ? "§16 #3–#5: pass" : "§16 #3–#5: FAIL");
+      violations === 0 &&
+      summary.monotone &&
+      summary.margin >= FIT_MARGIN &&
+      recognized &&
+      (!full || p95 < 2000);
+    log(ok ? "§16 #3–#5 and recognition: pass" : "§16 #3–#5 and recognition: FAIL");
     return ok ? 0 : 1;
   } finally {
     catalog.close();

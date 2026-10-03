@@ -1,6 +1,6 @@
 # Self-hosting ABTune
 
-> This covers the music catalog (M1). Spotify setup (M5), the AI layer (M7) and the full walkthrough (M9) come later.
+> This covers the music catalog (M1) and the web app (M4). Spotify setup (M5), the AI layer (M7) and the full walkthrough (M9) come later.
 
 ## Quick start: Docker and the dev catalog
 
@@ -12,7 +12,7 @@ docker compose up --build         # http://127.0.0.1:8787
 `/api/health` should report the catalog:
 
 ```json
-{ "catalog": { "version": "catalog-2026.09", "kind": "dev-sample", "tracks": 50000 } }
+{ "catalog": { "version": "catalog-2026.09", "kind": "dev-sample", "tracks": 50000, "status": "ready" } }
 ```
 
 The `catalog` service runs `abtune catalog fetch`. It downloads one ~7 MB archive, checks its sha256 and every file's sha256 in the manifest, and unpacks it into `./data/catalog/`. The download URL defaults to the GitHub release; set `CATALOG_SAMPLE_URL` in `.env` to use a mirror. To install an archive you already have, put it in `data/catalog/` and run `docker compose run --rm catalog --file data/catalog/catalog-2026.09-dev50k.tar`.
@@ -20,6 +20,17 @@ The `catalog` service runs `abtune catalog fetch`. It downloads one ~7 MB archiv
 Without Docker, use `pnpm abtune catalog fetch` (or `--file <tar>`).
 
 **Which catalog the app uses:** `CATALOG_PATH` if set. Otherwise the best catalog under `data/catalog/`: a full build beats the dev sample, and a newer version beats an older one.
+
+## The web app
+
+The server starts listening at once and loads the catalog's columns in the background. Until it's done, `/api/health` reports `"status": "loading"` and the result screen says "Warming up the music catalog…" and retries on its own. Measured on the machine below (2026-10-02):
+
+| catalog | load | memory | `POST /api/playlist`, 50 tracks |
+|---|---:|---:|---|
+| dev sample (50k) | 0.4 s | small | instant |
+| full (2M) | 7.7 s | ~230 MB of columns | p50 257 ms, p95 522 ms (generation plus track lookup) |
+
+The quiz runs entirely in the browser. The server receives only the quantized taste profile, the seed and the playlist length, never the answers, and it logs no request bodies. Sessions and 👍/👎 feedback stay in the browser's local storage.
 
 ## Building the full catalog (~2M tracks)
 
@@ -58,9 +69,12 @@ The build writes `data/catalog/catalog-YYYY.MM/` (tracks.parquet, manifest.json,
 | popularity | 23 min first time | 3,912 API calls. With a warm cache: 30 s |
 | select | 20 s | top 2M plus the Hebrew quotas |
 | features | 50 s | ridge regression on 1.39M tracks |
+| hits | 70 s | the hits view: each artist's best-known songs (proxy listeners, Various-Artists compilations), Israeli artists from `data/il_artists.yaml` |
 | export | 2 min | tracks.parquet (262 MiB), digest, report |
-| **build after extraction** | **~35 min** | ~10 min with a warm API cache. From scratch, download included: ~2 h |
-| sample | 10 s | 50k dev sample (7 MB .tar) and 5k fixture |
+| **build after extraction** | **~35 min** | ~15 min with a warm API cache (catalog-2026.09.2: 14.5 min). From scratch, download included: ~2 h |
+| sample | 10 s | 50k dev sample (8 MB .tar, mostly hits) and 5k fixture |
+
+The Israeli hits come from a curated list, `data/il_artists.yaml` (artist, tier, up to 3 signature songs), because the popularity data barely sees Israeli listeners. `abtune catalog il-draft` drafts it from a built catalog; after editing it, `abtune catalog build --from-stage hits` re-runs only the last two stages (~3 min).
 
 ## Licenses
 

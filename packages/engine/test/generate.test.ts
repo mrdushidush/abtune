@@ -11,6 +11,7 @@ import {
   DEFAULT_GENERATOR_PARAMS,
   DEFAULT_TASTE_PARAMS,
   energyCurve,
+  familiarityRanks,
   foldProfile,
   generate,
   largestRemainder,
@@ -266,6 +267,106 @@ describe("generate", () => {
     expect(energyCurve(0)).toBe(0.5);
     expect(energyCurve(0.65)).toBe(1);
     expect(energyCurve(1)).toBeCloseTo(0.3);
+  });
+});
+
+describe("popularity tiers, the familiarity window and pages", () => {
+  /** `synthetic`, plus tiers (a share of hits, more deep cuts, the rest long tail) and hit ranks. */
+  function tiered(n: number, hits: number, seed = "00000000000000cc"): CatalogColumns {
+    const base = synthetic(n, { seed });
+    const rng = createRng(seed);
+    const tier = new Uint8Array(n);
+    const hit = new Float32Array(n);
+    const artistRank = new Uint8Array(n);
+    for (let i = 0; i < n; i++) {
+      const r = rng.next();
+      tier[i] = r < hits ? 0 : r < hits + 0.3 ? 1 : 2;
+      hit[i] = rng.next();
+      artistRank[i] = 1 + rng.int(10);
+    }
+    return { ...base, tier, hit, artistRank };
+  }
+  const POP = DIMS.scalar.indexOf("mainstream");
+  const wantPopularity = (t: number) => {
+    const target = DIMS.scalar.map(() => 0);
+    const weight = DIMS.scalar.map(() => 0);
+    target[POP] = Math.round(t * 100);
+    weight[POP] = 50;
+    return neutral({ target, weight });
+  };
+  const tiersOf = (cat: CatalogColumns, out: ReturnType<typeof generate>) =>
+    new Set(out.tracks.map((t) => cat.tier[t.index] as number));
+  const cat = tiered(4000, 0.2);
+
+  it("grades by the popularity target: hits, then deep cuts by known artists, then the long tail", () => {
+    const hits = generate(cat, wantPopularity(0.6), { length: 50, seed: SEED });
+    expect([...tiersOf(cat, hits)]).toEqual([0]);
+    expect(hits.warnings).toEqual([]);
+    const deep = generate(cat, wantPopularity(-0.3), { length: 50, seed: SEED });
+    expect(Math.max(...tiersOf(cat, deep))).toBe(1);
+    const gems = generate(cat, wantPopularity(-0.9), { length: 100, seed: SEED });
+    expect(tiersOf(cat, gems).has(2)).toBe(true);
+  });
+
+  it("widens tiers before genres when the hits can't fill a playlist", () => {
+    const few = tiered(3000, 0.01, "00000000000000dd");
+    const taste = { ...wantPopularity(0.6), genres: [0, 1000, 0, 0, 0] };
+    const out = generate(few, taste, { length: 40, seed: SEED });
+    expect(out.tracks).toHaveLength(40);
+    expect(out.warnings).toEqual(["hits_relaxed"]);
+    expect(out.tracks.every((t) => t.genre === "pop")).toBe(true);
+    // Every hit that fits is used before a deep cut.
+    const used = new Set(out.tracks.map((t) => t.index));
+    const hitsInCell = out.tracks.filter((t) => few.tier[t.index] === 0).length;
+    expect(hitsInCell).toBeGreaterThan(0);
+    expect(used.size).toBe(40);
+  });
+
+  it("ranks each (cluster, decade, market) group by hit percentile within the allowed tiers", () => {
+    const ranks = familiarityRanks(cat, 0);
+    for (let i = 0; i < 200; i++) {
+      if (cat.tier[i] !== 0) expect(ranks.rank[i]).toBe(-1);
+    }
+    const group = (i: number) => `${cat.primary[i]}|${cat.decade[i]}|${cat.market[i]}`;
+    const byRank = new Map<string, number[]>();
+    for (let i = 0; i < cat.n; i++) {
+      if (cat.tier[i] !== 0) continue;
+      const list = byRank.get(group(i)) ?? [];
+      list[ranks.rank[i] as number] = cat.hit[i] as number;
+      byRank.set(group(i), list);
+    }
+    for (const list of byRank.values()) {
+      for (let r = 1; r < list.length; r++)
+        expect(list[r - 1]).toBeGreaterThanOrEqual(list[r] as number);
+    }
+  });
+
+  it("continues a playlist: a second page keeps §9.3 over both pages", () => {
+    const taste = wantPopularity(0.6);
+    const first = generate(cat, taste, { length: 25, seed: SEED }).tracks.map((t) => t.index);
+    const second = generate(cat, wantPopularity(0.1), {
+      length: 25,
+      seed: "fedcba9876543210",
+      previous: first,
+    }).tracks.map((t) => t.index);
+    expect(second).toHaveLength(25);
+    expect(checkPlaylist(cat, [...first, ...second], 50)).toEqual([]);
+  });
+
+  it("swaps a track for one by an artist new to the playlist", () => {
+    const first = generate(cat, wantPopularity(0.6), { length: 25, seed: SEED }).tracks.map(
+      (t) => t.index,
+    );
+    const out = generate(cat, wantPopularity(0.6), {
+      length: 1,
+      seed: "0000000000000001",
+      previous: first,
+      newArtistsOnly: true,
+    });
+    expect(out.tracks).toHaveLength(1);
+    const pick = out.tracks[0]?.index as number;
+    expect(first).not.toContain(pick);
+    expect(first.map((i) => cat.artist[i])).not.toContain(cat.artist[pick]);
   });
 });
 

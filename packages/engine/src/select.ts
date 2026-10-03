@@ -1,5 +1,7 @@
 import { bankIndex } from "./dims.ts";
+import { sha256Hex } from "./hash.ts";
 import { type AnswerEvent, type Profile, questionWeight, topCategories } from "./profile.ts";
+import { createRng, type Rng } from "./rng.ts";
 import type { Bank, Question } from "./types.ts";
 
 /** Packs with fixed pacing slots. Every other enabled pack (core, context, deep, community) is "main". */
@@ -56,13 +58,45 @@ function unlockRefs(bank: Bank): Map<string, readonly UnlockRef[]> {
   return cached;
 }
 
+/** Question families (`family`), parsed once per bank. */
+export interface Families {
+  /** Every question id → its family's canonical id (a canonical question maps to itself). */
+  readonly familyOf: ReadonlyMap<string, string>;
+  /** Canonical id → the family's questions, canonical first, then variants in bank order. */
+  readonly members: ReadonlyMap<string, readonly Question[]>;
+}
+const familyCache = new WeakMap<Bank, Families>();
+
+export function families(bank: Bank): Families {
+  let cached = familyCache.get(bank);
+  if (!cached) {
+    const byId = bankIndex(bank).byId;
+    const familyOf = new Map<string, string>();
+    const members = new Map<string, Question[]>();
+    for (const q of bank.questions) {
+      familyOf.set(q.id, q.family !== undefined && byId.has(q.family) ? q.family : q.id);
+    }
+    for (const q of bank.questions) {
+      const canonical = familyOf.get(q.id) as string;
+      const list = members.get(canonical) ?? [];
+      if (canonical === q.id) list.unshift(q);
+      else list.push(q);
+      members.set(canonical, list);
+    }
+    cached = { familyOf, members };
+    familyCache.set(bank, cached);
+  }
+  return cached;
+}
+
 /** Current genre top 3 used by `unlock_if.top_genres`. */
 export const UNLOCK_TOP_GENRES = 3;
 
 /**
- * Eligible = not yet asked (skips count as asked), pack enabled, and `unlock_if` satisfied:
- * any listed answer is in the log (a "both" answer satisfies =a and =b), or any listed genre
- * is in the current top 3 with s_c > 0.
+ * Eligible = family not yet asked (skips count as asked), pack enabled, and its canonical
+ * question's `unlock_if` satisfied: any listed answer is in the log (a "both" answer satisfies
+ * =a and =b; an answer to any variant counts for its family), or any listed genre is in the
+ * current top 3 with s_c > 0. Variants of an eligible family are eligible too.
  */
 export function eligibleQuestions(
   bank: Bank,
@@ -70,15 +104,19 @@ export function eligibleQuestions(
   log: readonly AnswerEvent[],
   enabledPacks: ReadonlySet<string>,
 ): Question[] {
-  const choices = new Map(log.map((e) => [e.id, e.choice]));
+  const { familyOf } = families(bank);
+  const { byId } = bankIndex(bank);
+  const fam = (id: string) => familyOf.get(id) ?? id;
+  const choices = new Map(log.map((e) => [fam(e.id), e.choice]));
   const refsById = unlockRefs(bank);
   let top: Set<string> | undefined;
   return bank.questions.filter((q) => {
-    if (choices.has(q.id) || !enabledPacks.has(q.pack)) return false;
-    const unlock = q.unlock_if;
+    const canonical = byId.get(fam(q.id)) ?? q;
+    if (choices.has(canonical.id) || !enabledPacks.has(canonical.pack)) return false;
+    const unlock = canonical.unlock_if;
     if (!unlock) return true;
-    for (const ref of refsById.get(q.id) ?? []) {
-      const choice = choices.get(ref.id);
+    for (const ref of refsById.get(canonical.id) ?? []) {
+      const choice = choices.get(fam(ref.id));
       if (choice === ref.side || choice === "both") return true;
     }
     if (!unlock.top_genres) return false;
@@ -137,8 +175,43 @@ export function compareIds(a: string, b: string): number {
 }
 
 /**
- * The next question for 1-based `position`, or null when nothing is eligible.
- * Deterministic: highest score wins, ties broken by id. No randomness.
+ * A session's variety (owner decision D7, 2026-10-03; amends locked decision #3 to "same seed +
+ * same answers → same path"). Without a seed, selection is §8.3 as written: deterministic, and
+ * only canonical questions are asked.
+ */
+export interface Variety {
+  /** 16 hex chars, random per session; null = deterministic. */
+  readonly seed: string | null;
+  /** Question ids to steer away from when choosing a family's variant (the previous session's). */
+  readonly avoid?: readonly string[];
+}
+
+/**
+ * With a seed, a slot's card is drawn among the questions scoring within this share of the best
+ * (weighted by score). Vibe cards are interchangeable moods; main cards discover genres, so their
+ * band is narrow; the hook stays the best card, and its family supplies the variety.
+ */
+export const VARIETY_BAND: Readonly<Record<SlotKind, number>> = {
+  hook: 0,
+  vibe: 0.6,
+  main: 0.1,
+  spicy: 0,
+};
+
+/** Integer resolution of the draw's weights (the best candidate weighs this much). */
+const DRAW_RESOLUTION = 1 << 16;
+
+/** The draw for the next card: a pure function of the seed and the log so far (Back replays it). */
+export function stepRng(seed: string, log: readonly AnswerEvent[]): Rng {
+  const path = log.map((e) => `${e.id}=${e.choice}`).join(",");
+  return createRng(sha256Hex(`${seed}|${path}`).slice(0, 16));
+}
+
+/**
+ * The next question for 1-based `position`, or null when nothing is eligible. Families are
+ * scored by their canonical question. Without a variety seed: the highest score wins, ties by id,
+ * no randomness. With one: a seeded draw within VARIETY_BAND of the best (weighted by score), then
+ * a seeded variant of the drawn family, preferring variants not in `avoid`.
  */
 export function nextQuestion(
   bank: Bank,
@@ -147,23 +220,39 @@ export function nextQuestion(
   enabledPacks: ReadonlySet<string>,
   position: number,
   options: SelectOptions = {},
+  variety: Variety = { seed: null },
 ): Question | null {
-  const eligible = eligibleQuestions(bank, profile, log, enabledPacks);
+  const { familyOf, members } = families(bank);
+  const eligible = eligibleQuestions(bank, profile, log, enabledPacks).filter(
+    (q) => familyOf.get(q.id) === q.id,
+  );
   if (eligible.length === 0) return null;
   const slot = slotFor(position, enabledPacks.has(SPICY_PACK));
   const inPool = eligible.filter((q) => inSlot(q.pack, slot));
   const pool = inPool.length > 0 ? inPool : eligible;
   const scoring: SelectOptions =
     slot === "hook" && (options.rawHook ?? DEFAULT_RAW_HOOK) ? { igNorm: "none" } : options;
+  const scored = pool
+    .map((q) => ({ q, score: scoreQuestion(bank, profile, q, scoring) }))
+    .sort((x, y) => y.score - x.score || compareIds(x.q.id, y.q.id));
+  const best = scored[0] as { q: Question; score: number };
+  if (!variety.seed) return best.q;
 
-  let best: Question | null = null;
-  let bestScore = Number.NEGATIVE_INFINITY;
-  for (const q of pool) {
-    const score = scoreQuestion(bank, profile, q, scoring);
-    if (score > bestScore || (score === bestScore && best && compareIds(q.id, best.id) < 0)) {
-      best = q;
-      bestScore = score;
-    }
+  const rng = stepRng(variety.seed, log);
+  const floor = best.score * (1 - VARIETY_BAND[slot]);
+  const band = scored.filter((c) => c.score >= floor);
+  const weights = band.map((c) =>
+    best.score > 0 ? Math.max(1, Math.floor((c.score / best.score) * DRAW_RESOLUTION)) : 1,
+  );
+  let r = rng.int(weights.reduce((a, b) => a + b, 0));
+  let k = 0;
+  while (r >= (weights[k] as number)) {
+    r -= weights[k] as number;
+    k++;
   }
-  return best;
+  const family = members.get((band[k] as { q: Question }).q.id) ?? [best.q];
+  const avoid = new Set(variety.avoid ?? []);
+  const fresh = family.filter((q) => !avoid.has(q.id));
+  const choices = fresh.length > 0 ? fresh : family;
+  return choices[rng.int(choices.length)] as Question;
 }

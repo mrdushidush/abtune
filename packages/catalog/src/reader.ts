@@ -8,6 +8,7 @@ import {
   CLUSTER_SLOTS,
   type Dimensions,
   LANG_INSTRUMENTAL,
+  MARKETS,
   NONE,
 } from "@abtune/engine";
 import { type DuckDBBlobValue, DuckDBInstance } from "@duckdb/node-api";
@@ -29,6 +30,7 @@ export interface TrackMeta {
   readonly feature_source: string;
   readonly listeners: number;
   readonly popularity_pct: number;
+  readonly length_ms: number | null;
 }
 
 export interface LoadedCatalog {
@@ -39,10 +41,27 @@ export interface LoadedCatalog {
   readonly loadMs: number;
   /** The MusicBrainz recording id of row `index`. */
   trackId(index: number): string;
+  /** Row index of a MusicBrainz recording id, or -1 if this catalog doesn't have it. */
+  indexOf(trackId: string): number;
   /** Display rows for `indices`, in the same order. */
   meta(indices: readonly number[]): Promise<TrackMeta[]>;
+  /**
+   * For each wanted song, the rows whose artist credit contains one of `artists` and whose
+   * normalized title equals one of `titles` (case, accents, punctuation and version noise ignored).
+   */
+  match(wanted: readonly SongQuery[]): Promise<number[][]>;
+  /** One numeric column for every row (e.g. `proxy_listeners`), in row order. */
+  numbers(column: string): Promise<Float64Array>;
   close(): void;
 }
+
+export interface SongQuery {
+  readonly artists: readonly string[];
+  readonly titles: readonly string[];
+}
+
+/** Lowercase, accent-free letters and digits only (SQL side: `squash`). */
+const SQUASH = String.raw`CREATE OR REPLACE MACRO squash(s) AS regexp_replace(lower(strip_accents(s)), '[^\p{L}\p{N}]+', '', 'g');`;
 
 export interface LoadOptions {
   /** DuckDB threads (default: all cores). */
@@ -67,6 +86,12 @@ const JSON_COLUMNS: Record<string, string> = {
   feature_confidence: "FLOAT",
   listeners: "BIGINT",
   popularity_pct: "DOUBLE",
+  length_ms: "INTEGER",
+  market: "VARCHAR",
+  artist_rank: "INTEGER",
+  hit_pct: "DOUBLE",
+  tier: "INTEGER",
+  proxy_listeners: "INTEGER",
 };
 
 function sourceSql(dir: string): string {
@@ -153,7 +178,9 @@ export async function loadCatalog(
         coalesce(list_position(${D}, r.decade) - 1, ${NONE})::UTINYINT,
         (CASE WHEN r.language = 'none' THEN ${LANG_INSTRUMENTAL}
               ELSE coalesce(list_position(${L}, r.language) - 1, ${NONE}) END)::UTINYINT,
-        art.aid, ttl.tid, coalesce(r.year, 0)::SMALLINT
+        art.aid, ttl.tid, coalesce(r.year, 0)::SMALLINT, r.tier::UTINYINT,
+        (list_position(${sqlList(MARKETS)}, r.market) - 1)::UTINYINT, r.hit_pct::FLOAT,
+        least(r.artist_rank, 255)::UTINYINT
       FROM r
       JOIN art ON art.a1 = r.artist_mbids[1]
       JOIN ttl ON ttl.nt = norm_title(r.title)
@@ -172,6 +199,10 @@ export async function loadCatalog(
     const artist = new Int32Array(n);
     const titleKey = new Int32Array(n);
     const year = new Int16Array(n);
+    const tier = new Uint8Array(n);
+    const market = new Uint8Array(n);
+    const hit = new Float32Array(n);
+    const artistRank = new Uint8Array(n);
 
     let row = 0;
     for (;;) {
@@ -200,6 +231,10 @@ export async function loadCatalog(
       artist.set(col(c++) as number[], row);
       titleKey.set(col(c++) as number[], row);
       year.set(col(c++) as number[], row);
+      tier.set(col(c++) as number[], row);
+      market.set(col(c++) as number[], row);
+      hit.set(col(c++) as number[], row);
+      artistRank.set(col(c++) as number[], row);
       row += rc;
     }
     if (row !== n) throw new Error(`${dir}: ${row} rows, but the manifest says ${n}`);
@@ -218,6 +253,10 @@ export async function loadCatalog(
       artist,
       titleKey,
       year,
+      tier,
+      market,
+      hit,
+      artistRank,
     };
     const trackId = (index: number): string => {
       if (!Number.isInteger(index) || index < 0 || index >= n)
@@ -225,13 +264,29 @@ export async function loadCatalog(
       const hex = Buffer.from(ids.subarray(index * 16, index * 16 + 16)).toString("hex");
       return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
     };
+    // Rows are in track_id order, and lowercase hex UUIDs sort like their bytes: binary search.
+    const indexOf = (id: string): number => {
+      const hex = id.toLowerCase().replaceAll("-", "");
+      if (!/^[0-9a-f]{32}$/.test(hex)) return -1;
+      const key = Buffer.from(hex, "hex");
+      let lo = 0;
+      let hi = n - 1;
+      while (lo <= hi) {
+        const mid = (lo + hi) >>> 1;
+        const c = Buffer.compare(ids.subarray(mid * 16, mid * 16 + 16), key);
+        if (c === 0) return mid;
+        if (c < 0) lo = mid + 1;
+        else hi = mid - 1;
+      }
+      return -1;
+    };
     const meta = async (indices: readonly number[]): Promise<TrackMeta[]> => {
       if (indices.length === 0) return [];
       const wanted = indices.map(trackId);
       const rows = (
         await conn.runAndReadAll(`
           SELECT track_id, title, artist_credit, release_title, year, coalesce(isrcs, []) AS isrcs,
-                 language, primary_cluster, feature_source, listeners, popularity_pct
+                 language, primary_cluster, feature_source, listeners, popularity_pct, length_ms
           FROM ${src} WHERE track_id IN (${wanted.map(lit).join(", ")})`)
       ).getRowObjectsJS() as unknown as (TrackMeta & { listeners: bigint | number })[];
       const byId = new Map(rows.map((r) => [r.track_id, { ...r, listeners: Number(r.listeners) }]));
@@ -241,13 +296,48 @@ export async function loadCatalog(
         return m;
       });
     };
+    const match = async (wanted: readonly SongQuery[]): Promise<number[][]> => {
+      const out: number[][] = wanted.map(() => []);
+      const pairs = wanted.flatMap((w, k) =>
+        w.artists.flatMap((a) => w.titles.map((t) => `(${k}, ${lit(a)}, ${lit(t)})`)),
+      );
+      if (pairs.length === 0) return out;
+      await conn.run(SQUASH);
+      const rows = (
+        await conn.runAndReadAll(`
+          WITH q AS (SELECT k, squash(a) AS a, squash(t) AS t FROM (VALUES ${pairs.join(", ")}) v(k, a, t)),
+          c AS (SELECT track_id, squash(artist_credit) AS a, squash(norm_title(title)) AS t FROM ${src})
+          SELECT DISTINCT q.k, c.track_id FROM q JOIN c ON c.t = q.t AND contains(c.a, q.a)
+          ORDER BY q.k, c.track_id`)
+      ).getRowObjectsJS() as { k: number; track_id: string }[];
+      for (const r of rows) out[Number(r.k)]?.push(indexOf(r.track_id));
+      return out;
+    };
+    const numbers = async (column: string): Promise<Float64Array> => {
+      if (!/^[a-z_][a-z0-9_]*$/.test(column)) throw new Error(`bad column name ${column}`);
+      const out = new Float64Array(n);
+      const res = await conn.stream(
+        `SELECT coalesce(${column}, 0)::DOUBLE AS v FROM ${src} ORDER BY track_id`,
+      );
+      let row = 0;
+      for (;;) {
+        const chunk = await res.fetchChunk();
+        if (!chunk || chunk.rowCount === 0) break;
+        out.set(chunk.getColumns()[0] as number[], row);
+        row += chunk.rowCount;
+      }
+      return out;
+    };
     return {
       dir,
       manifest,
       columns,
       loadMs: performance.now() - started,
       trackId,
+      indexOf,
       meta,
+      match,
+      numbers,
       close() {
         conn.closeSync();
         instance.closeSync();

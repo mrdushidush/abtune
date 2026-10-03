@@ -1,5 +1,5 @@
 // Data quality report (HANDOFF §6.8), written to docs/catalog-report-<version>.md each build.
-import type { Db } from "./db.ts";
+import { type Db, lit } from "./db.ts";
 import type { ImputeReport } from "./impute.ts";
 import type { CatalogManifest } from "./manifest.ts";
 import type { StepRecord } from "./steps.ts";
@@ -36,7 +36,64 @@ export interface CatalogStats {
   };
   readonly unmappedTags: { tag: string; songs: number; votes: number }[];
   readonly selectedVia: Dist;
+  readonly hits: {
+    readonly tiers: { market: string; tier: number; n: number }[];
+    readonly decade: Dist;
+    readonly signature: SignatureRow[];
+  };
 }
+
+export interface SignatureRow {
+  readonly artist: string;
+  readonly title: string;
+  readonly rank: number;
+  readonly tier: number;
+  readonly proxyListeners: number;
+  readonly vaComps: number;
+}
+
+/** Well-known artists whose top 3 songs the report shows, so a person can eyeball the hit signal. */
+export const SIGNATURE_ARTISTS = [
+  "Rihanna",
+  "Ed Sheeran",
+  "Adele",
+  "Queen",
+  "Michael Jackson",
+  "The Beatles",
+  "Madonna",
+  "Britney Spears",
+  "Taylor Swift",
+  "Beyoncé",
+  "Eminem",
+  "Drake",
+  "Coldplay",
+  "Nirvana",
+  "Radiohead",
+  "Bon Jovi",
+  "ABBA",
+  "Whitney Houston",
+  "Bruno Mars",
+  "Lady Gaga",
+  "Shakira",
+  "Luis Fonsi",
+  "The Weeknd",
+  "Billie Eilish",
+  "Dua Lipa",
+  "Metallica",
+  "Elvis Presley",
+  "Lana Del Rey",
+  "BTS",
+  "עומר אדם",
+  "אריק איינשטיין",
+  "שלמה ארצי",
+  "אייל גולן",
+  "נועה קירל",
+  "כוורת",
+  "משינה",
+  "הדג נחש",
+  "שרית חדד",
+  "עפרה חזה",
+];
 
 const dist = (db: Db, expr: string, where = "true", table = "catalog") =>
   db.all<{ key: string | null; n: number }>(
@@ -99,7 +156,32 @@ export async function collectStats(db: Db): Promise<CatalogStats> {
         AND ct.tag NOT IN (SELECT tag FROM tm_tag) AND ct.tag NOT IN (SELECT tag FROM tm_nonmusic)
       GROUP BY ct.tag ORDER BY songs DESC, ct.tag LIMIT 50`),
     selectedVia: await dist(db, "selected_via"),
+    hits: {
+      tiers: await db.all(
+        `SELECT market, tier, count(*) AS n FROM catalog GROUP BY ALL ORDER BY market, tier`,
+      ),
+      decade: await dist(db, "decade", "tier = 0"),
+      signature: await signatureRows(db),
+    },
   };
+}
+
+/** Each SIGNATURE_ARTISTS name → the artist most often credited exactly so → their top 3 songs. */
+async function signatureRows(db: Db): Promise<SignatureRow[]> {
+  const names = SIGNATURE_ARTISTS.map((n, k) => `(${k}, ${lit(n)})`).join(", ");
+  return db.all<SignatureRow>(`
+    WITH named AS (SELECT * FROM (VALUES ${names}) v(k, name)),
+    artist AS (
+      SELECT k, name, mbid FROM (
+        SELECT n.k, n.name, c.artist_mbids[1] AS mbid,
+               row_number() OVER (PARTITION BY n.k ORDER BY count(*) DESC, c.artist_mbids[1]) AS r
+        FROM named n JOIN catalog c ON c.artist_credit = n.name GROUP BY n.k, n.name, c.artist_mbids[1]
+      ) WHERE r = 1
+    )
+    SELECT a.name AS artist, c.title, c.artist_rank AS rank, c.tier,
+           c.proxy_listeners AS "proxyListeners", c.va_comps AS "vaComps"
+    FROM artist a JOIN catalog c ON c.artist_mbids[1] = a.mbid AND c.artist_rank <= 3
+    ORDER BY a.k, c.artist_rank`);
 }
 
 const fmt = (x: number) => x.toLocaleString("en");
@@ -110,6 +192,21 @@ function distTable(title: string, d: Dist, total: number, limit = 40): string {
     .slice(0, limit)
     .map((r) => `| ${r.key ?? "_(none)_"} | ${fmt(r.n)} | ${pct(r.n, total)} |`);
   return `| ${title} | tracks | share |\n|---|---:|---:|\n${rows.join("\n")}\n`;
+}
+
+function hitsNotes(info: Record<string, unknown> | undefined): string {
+  if (!info) return "";
+  const curated = Number(info.curatedArtists ?? 0);
+  const unknown = (info.unknownArtists as string[] | undefined) ?? [];
+  const pins = (info.unmatchedPins as string[] | undefined) ?? [];
+  const lines = [
+    curated > 0
+      ? `Curated Israeli artists: ${fmt(curated)}.`
+      : "No curated Israeli list yet: the best-known Israeli artists by our own data stand in.",
+  ];
+  if (unknown.length) lines.push(`Curated artists not in the catalog: ${unknown.join(", ")}.`);
+  if (pins.length) lines.push(`Pinned songs not found: ${pins.join("; ")}.`);
+  return `${lines.join(" ")}\n`;
 }
 
 function step(steps: readonly StepRecord[], name: string): StepRecord | undefined {
@@ -176,6 +273,29 @@ ${distTable("selected via", s.selectedVia, T)}
 ${(sel?.pools ?? []).map((p) => `Quota **${p.name}**: minimum ${fmt(p.min)}, ${fmt(p.inTop)} made the top ${fmt(T)} on popularity alone, ${fmt(p.added)} added; final ${fmt(p.final)}.`).join("\n")}
 
 Listeners per track (ListenBrainz + MLHD+ where the API answered): min ${fmt(s.popularity.minListeners)}, median ${fmt(s.popularity.medianListeners)}, max ${fmt(s.popularity.maxListeners)}.
+
+## Hits view
+
+The songs people know (stage \`hits\`, owner decisions D2/D5). An international song is a hit when it is one of its
+artist's top 3 (ranked by ListenBrainz users with the song in their all-time top 1000 and by the Various-Artists
+compilations that carry it) and among the best-known of its decade. Israeli songs: the top 3 of each curated artist
+(\`data/il_artists.yaml\`). Tier 1 is every other song by an artist with a hit; tier 2 is the rest.
+
+| market | tier | tracks | share |
+|---|---:|---:|---:|
+${s.hits.tiers.map((t) => `| ${t.market} | ${t.tier} | ${fmt(t.n)} | ${pct(t.n, T)} |`).join("\n")}
+
+${distTable(
+  "hits view: decade",
+  s.hits.decade,
+  s.hits.tiers.filter((t) => t.tier === 0).reduce((a, t) => a + t.n, 0),
+)}
+${hitsNotes(step(steps, "hits")?.info)}
+Signature songs, each artist's top 3 (tier 0 = in the hits view):
+
+| artist | # | title | tier | top-list users | VA compilations |
+|---|---:|---|---:|---:|---:|
+${s.hits.signature.map((r) => `| ${r.artist} | ${r.rank} | ${r.title} | ${r.tier} | ${fmt(r.proxyListeners)} | ${fmt(r.vaComps)} |`).join("\n")}
 
 ## Feature coverage
 

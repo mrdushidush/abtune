@@ -33,12 +33,14 @@ function energyTargets(energies: readonly number[]): number[] {
  * Order `tracks` along the energy curve: greedily place the track minimizing
  * |energy − target(i)| + λ·|Δtempo| that doesn't repeat the previous artist, then repair any
  * forced adjacency by swapping. Deterministic: ties go to the earlier entry of `tracks`.
+ * `before`: the track just ahead of this list (the end of an earlier page), or -1.
  * Returns positions into `tracks`.
  */
 export function sequence(
   columns: CatalogColumns,
   tracks: readonly number[],
   tempoLambda: number,
+  before = -1,
 ): number[] {
   const n = tracks.length;
   const ei = columns.dimensions.scalar.indexOf("energy");
@@ -51,6 +53,8 @@ export function sequence(
   const tempo = tracks.map((t) => (tempoCol ? (tempoCol[t] as number) : 0));
   const artist = tracks.map((t) => columns.artist[t] as number);
   const targets = energyTargets(energy);
+  const beforeArtist = before >= 0 ? (columns.artist[before] as number) : -1;
+  const beforeTempo = before >= 0 && tempoCol ? (tempoCol[before] as number) : 0;
 
   const left = new Set<number>(tracks.map((_, p) => p));
   for (let i = 0; i < n; i++) {
@@ -63,7 +67,8 @@ export function sequence(
     for (const p of left) {
       let cost = Math.abs((energy[p] as number) - target);
       if (prev >= 0) cost += tempoLambda * Math.abs((tempo[p] as number) - (tempo[prev] as number));
-      const clash = prev >= 0 && artist[p] === artist[prev];
+      else if (before >= 0) cost += tempoLambda * Math.abs((tempo[p] as number) - beforeTempo);
+      const clash = prev >= 0 ? artist[p] === artist[prev] : artist[p] === beforeArtist;
       if (clash) {
         if (cost < fallbackCost || (cost === fallbackCost && p < fallback)) {
           fallback = p;
@@ -78,17 +83,21 @@ export function sequence(
     order.push(pick);
     left.delete(pick);
   }
-  repairAdjacency(order, artist);
+  repairAdjacency(order, artist, beforeArtist);
   return order;
 }
 
-/** Swap away same-artist neighbors: first swap partner (lowest index) that leaves no clash. */
-function repairAdjacency(order: number[], artist: readonly number[]): void {
+/**
+ * Swap away same-artist neighbors (position 0 also against `beforeArtist`): first swap partner
+ * (lowest index) that leaves no clash.
+ */
+function repairAdjacency(order: number[], artist: readonly number[], beforeArtist: number): void {
   const n = order.length;
-  const a = (pos: number) => artist[order[pos] as number];
+  const a = (pos: number) => (pos < 0 ? beforeArtist : artist[order[pos] as number]);
   const clashAt = (pos: number) =>
-    (pos > 0 && a(pos) === a(pos - 1)) || (pos < n - 1 && a(pos) === a(pos + 1));
-  for (let i = 1; i < n; i++) {
+    (pos > 0 ? a(pos) === a(pos - 1) : a(pos) === beforeArtist) ||
+    (pos < n - 1 && a(pos) === a(pos + 1));
+  for (let i = beforeArtist >= 0 ? 0 : 1; i < n; i++) {
     if (a(i) !== a(i - 1)) continue;
     for (let k = 0; k < n; k++) {
       if (k === i || k === i - 1) continue;

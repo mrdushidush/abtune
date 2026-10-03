@@ -27,6 +27,11 @@ export interface Question {
   readonly weight: number;
   readonly sensitive?: string;
   readonly unlock_if?: UnlockIf;
+  /**
+   * A variant of the question with this id (its canonical): the same contrast in other words or
+   * faces, with A and B meaning the same. A family is asked once; a quiz seed picks the variant.
+   */
+  readonly family?: string;
   readonly a: QuestionOption;
   readonly b: QuestionOption;
 }

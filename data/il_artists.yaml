@@ -1,0 +1,4511 @@
+# Israeli artists whose best-known songs join the hits view (owner decision D4, 2026-10-03).
+# Drafted by `abtune catalog il-draft` from catalog-2026.09.2: ranked by our own data (Israeli songs,
+# compilations, listeners), which barely sees Israeli listeners. Please edit:
+#   - delete artists who aren't Israeli or aren't known; add missing ones (name + mbid; ask Claude
+#     to look up the MusicBrainz id if you only have the name);
+#   - tier: 1 = household name, 2 = well known, 3 = known. Order inside a tier doesn't matter;
+#   - songs: up to 3 signature songs, best first, as catalog titles. Tier-1 artists start with
+#     our data's top 3: fix the wrong ones. Empty = ranked by our data (shown in the comment).
+# Every listed artist's top 3 songs become hits; artists not listed are never Israeli hits.
+version: 1
+artists:
+  # 364 songs; our top 3: Becoming Insane (2007, 43,008) · Cities of the Future (2004, 24,598) · Spitfire (2017, 1,102)
+  - name: "Infected Mushroom"
+    mbid: eab76c9f-ff91-4431-b6dd-3b976c598020
+    tier: 1
+    songs: ["Becoming Insane", "Cities of the Future", "Spitfire"]
+  # 180 songs; our top 3: Im Nin'alu (1984, 5,087) · Galbi (1984, 410) · Show Me (1997, 55)
+  - name: "עפרה חזה"
+    mbid: 7591796a-a545-4b51-ba52-bf2539b90d99
+    tier: 1
+    songs: ["Im Nin'alu", "Galbi", "Show Me"]
+  # 149 songs; our top 3: Mahadeva (1994, 3,228) · Kabalah (1996, 7,643) · Enlightened Evolution (1996, 6,338)
+  - name: "Astral Projection"
+    mbid: 2ba31cc4-df9e-4c21-9dbc-bb8fa9af424f
+    tier: 1
+    songs: ["Mahadeva", "Kabalah", "Enlightened Evolution"]
+  # 278 songs; our top 3: הבלדה על יואל משה סלומון (1970, 64) · למה לי לקחת ללב (1970, 103) · אבשלום (1970, 80)
+  - name: "אריק איינשטיין"
+    mbid: d3c90d1b-f529-404b-939d-41873386d4b4
+    tier: 1
+    songs: ["הבלדה על יואל משה סלומון", "למה לי לקחת ללב", "אבשלום"]
+  # 207 songs; our top 3: Voyage (2000, 1,668) · Going Up (1999, 2,012) · Devotion (2000, 977)
+  - name: "Yahel"
+    mbid: efbbb4b2-b0aa-40b7-a15a-dfb3963697c9
+    tier: 1
+    songs: ["Voyage", "Going Up", "Devotion"]
+  # 171 songs; our top 3: Deep Jungle Walk (2016, 995) · Sahara (2018, 238) · Coolio (Infected Mushroom remix) (2004, 142)
+  - name: "Astrix"
+    mbid: 13875f81-5bfc-4939-a6cc-296c3f8d0fa5
+    tier: 1
+    songs: ["Deep Jungle Walk", "Sahara", "Coolio (Infected Mushroom remix)"]
+  # 131 songs; our top 3: Sapari (2010, 10,209) · Ocean Land (The Revelation) (2004, 7,715) · All Is One (2013, 696)
+  - name: "Orphaned Land"
+    mbid: 3877a6a1-093c-4478-b5a6-58a99a1338db
+    tier: 1
+    songs: ["Sapari", "Ocean Land (The Revelation)", "All Is One"]
+  # 199 songs; our top 3: Decisions (2012, 1,899) · Best (2016, 320) · Nympho (2010, 15,504)
+  - name: "Borgore"
+    mbid: 215e2b5d-06f8-4c68-b33b-8fccec27a077
+    tier: 1
+    songs: ["Decisions", "Best", "Nympho"]
+  # 132 songs; our top 3: Jardin d’hiver (2000, 7,170) · Lay Your Head Down (2007, 13,955) · Not Going Anywhere (2003, 12,797)
+  - name: "Keren Ann"
+    mbid: 8bb436cd-8fbf-48c6-9fc8-a172c27e24ba
+    tier: 1
+    songs: ["Jardin d’hiver", "Lay Your Head Down", "Not Going Anywhere"]
+  # 258 songs; our top 3: כמו צמח בר (1975, 73) · פרח הלילך (1967, 38) · את תלכי בשדה (1975, 77)
+  - name: "חוה אלברשטיין"
+    mbid: b6f36ff7-d252-498f-99b4-1937b00b386c
+    tier: 1
+    songs: ["כמו צמח בר", "פרח הלילך", "את תלכי בשדה"]
+  # 86 songs; our top 3: Reflect (2006, 7,731) · Shapes (2007, 2,312) · Chasing Love (2010, 388)
+  - name: "Maor Levi"
+    mbid: 72d9e82d-ed37-4057-9031-45306e9507a7
+    tier: 1
+    songs: ["Reflect", "Shapes", "Chasing Love"]
+  # 170 songs; our top 3: Lamur (Henry Saiz Remix) (2009, 67) · Hazui (Gui Boratto remix) (2006, 189) · Cicada (2019, 19)
+  - name: "Guy J"
+    mbid: bfaa69de-b75c-410a-8a23-c1accc0b5107
+    tier: 1
+    songs: ["Lamur (Henry Saiz Remix)", "Hazui (Gui Boratto remix)", "Cicada"]
+  # 178 songs; our top 3: Beautiful That Way (1998, 1,473) · Eye in the Sky (2001, 1,315) · I Don’t Know (1994, 718)
+  - name: "Noa"
+    mbid: 8c4ade2f-1b8e-4b87-a719-6a84c4eb1cd8
+    tier: 1
+    songs: ["Beautiful That Way", "Eye in the Sky", "I Don’t Know"]
+  # 116 songs; our top 3: No Distance (2014, 295) · What To Do (2018, 258) · Stoppage Time (2004, 3,257)
+  - name: "Guy Gerber"
+    mbid: 69c075c0-3c49-4143-8aa8-fdfbacac3b08
+    tier: 1
+    songs: ["No Distance", "What To Do", "Stoppage Time"]
+  # 44 songs; our top 3: Qui saura (1972, 641) · Laisse‐moi t’aimer (1970, 811) · C’est comme ça que je t’aime (1974, 192)
+  - name: "Mike Brant"
+    mbid: cc02cf2c-4d1b-419f-ae12-92e559a62518
+    tier: 1
+    songs: ["Qui saura", "Laisse‐moi t’aimer", "C’est comme ça que je t’aime"]
+  # 260 songs; our top 3: תרקוד (1984, 175) · ירח (1992, 133) · האיש ההוא (1978, 50)
+  - name: "שלמה ארצי"
+    mbid: 88f93eab-1bbb-4b02-816b-539af9ba8d4f
+    tier: 1
+    songs: ["תרקוד", "ירח", "האיש ההוא"]
+  # 46 songs; our top 3: One Day / Reckoning Song (Wankelmut remix, radio edit) (2012, 11,292) · Reckoning Song (2008, 10,308) · One Day / Reckoning Song (Wankelmut remix) (2012, 1,525)
+  - name: "Asaf Avidan & the Mojos"
+    mbid: f21d9cba-dafc-494e-ace9-e9ed33fec536
+    tier: 1
+    songs: ["One Day / Reckoning Song (Wankelmut remix, radio edit)", "Reckoning Song", "One Day / Reckoning Song (Wankelmut remix)"]
+  # 112 songs; our top 3: Diva (1998, 2,552) · Ding Dong (2011, 42) · Diva (English version) (1998, 257)
+  - name: "Dana International"
+    mbid: f92469be-f755-433a-be19-8bd0c9040e5a
+    tier: 1
+    songs: ["Diva", "Ding Dong", "Diva (English version)"]
+  # 120 songs; our top 3: Hit 'N' Run (2006, 2,072) · Move Away (2006, 1,698) · Anarchy (2006, 3,281)
+  - name: "Skazi"
+    mbid: 8d62a782-3c12-4067-9bce-80fd91ddd5c0
+    tier: 1
+    songs: ["Hit 'N' Run", "Move Away", "Anarchy"]
+  # 187 songs; our top 3: כשאלוהים אמר בפעם הראשונה (1973, 59) · ברית עולם (1976, 96) · שיר ערש (1980, 34)
+  - name: "מתי כספי"
+    mbid: 606d3e5a-cbaa-4199-b2fd-88951e07d523
+    tier: 1
+    songs: ["כשאלוהים אמר בפעם הראשונה", "ברית עולם", "שיר ערש"]
+  # 117 songs; our top 3: Statik Dancin' (1981, 1,379) · Next One Is Real (1984, 1,028) · Nil-Nil (1987, 376)
+  - name: "Minimal Compact"
+    mbid: 25f49778-3ed1-4a6a-9511-6d3bb3b26306
+    tier: 1
+    songs: ["Statik Dancin'", "Next One Is Real", "Nil-Nil"]
+  # 135 songs; our top 3: Bring Me Down (2003, 1,905) · Too Bad You Don’t Get It (1999, 2,696) · Before It Kills (2012, 1,248)
+  - name: "Useless ID"
+    mbid: 3bb24e11-821a-4e4e-bd89-e0a2452474cf
+    tier: 1
+    songs: ["Bring Me Down", "Too Bad You Don’t Get It", "Before It Kills"]
+  # 195 songs; our top 3: Equator (2011, 729) · If (2005, 2,212) · Redreaming (2005, 2,292)
+  - name: "Zero Cult"
+    mbid: f5a8f323-71b5-4666-94c6-032f395d694d
+    tier: 1
+    songs: ["Equator", "If", "Redreaming"]
+  # 169 songs; our top 3: שלל שרב (1987, 76) · יעלה ויבוא (1993, 35) · למה ליבך כמו קרח? (1989, 49)
+  - name: "גידי גוב"
+    mbid: 9ad63bae-b65a-467d-9311-21193fdae775
+    tier: 1
+    songs: ["שלל שרב", "יעלה ויבוא", "למה ליבך כמו קרח?"]
+  # 98 songs; our top 3: Timelessness (1997, 486) · Cream (1998, 462) · Dew Point (1998, 360)
+  - name: "Oforia"
+    mbid: 1290567d-8b0b-4fbe-822a-93f5b1224209
+    tier: 1
+    songs: ["Timelessness", "Cream", "Dew Point"]
+  # 206 songs; our top 3: Remembering (2005, 5,840) · Eleven Wives (2008, 2,993) · Elli (2006, 359)
+  - name: "Avishai Cohen"
+    mbid: 17d78170-7194-4603-8dbb-ca1108430882
+    tier: 1
+    songs: ["Remembering", "Eleven Wives", "Elli"]
+  # 61 songs; our top 3: Oh, wann kommst Du? (1970, 41) · Wär ich ein Buch (1971, 216) · C'est ca la vie (2009, 8)
+  - name: "Daliah Lavi"
+    mbid: 19faa9e3-6976-4baa-8e1a-db5212b18c2c
+    tier: 1
+    songs: ["Oh, wann kommst Du?", "Wär ich ein Buch", "C'est ca la vie"]
+  # 87 songs; our top 3: Space Cats (1998, 932) · New Horizon (1999, 752) · Shake & Freeze (2005, 382)
+  - name: "Space Cat"
+    mbid: eadb195b-a506-4437-99c2-75f5f53a73d3
+    tier: 1
+    songs: ["Space Cats", "New Horizon", "Shake & Freeze"]
+  # 140 songs; our top 3: מחכים למשיח (1985, 162) · אהבת נעורי (2003, 238) · הדרכים הידועות (1981, 190)
+  - name: "שלום חנוך"
+    mbid: 5dfde28d-8e46-43f8-bb33-2f593ee8c9f1
+    tier: 1
+    songs: ["מחכים למשיח", "אהבת נעורי", "הדרכים הידועות"]
+  # 235 songs; our top 3: It’s Been So Long (2014, 2,838) · No Mercy (2017, 1,617) · Die in a Fire (2015, 1,009)
+  - name: "The Living Tombstone"
+    mbid: 3f6ee55e-d523-4dd8-a027-7a6af9909ae1
+    tier: 1
+    songs: ["It’s Been So Long", "No Mercy", "Die in a Fire"]
+  # 61 songs; our top 3: Serenade no. 13 “Eine kleine Nachtmusik”: Allegro (1997, 15) · Slavonic Dances, op. 72: no. 2 in E Minor (2014, 14) · Vltava (2006, 142)
+  - name: "Israel Philharmonic Orchestra, Leonard Bernstein"
+    mbid: c8a88cc7-c93e-42b5-ba29-68859b5716e3
+    tier: 1
+    songs: ["Serenade no. 13 “Eine kleine Nachtmusik”: Allegro", "Slavonic Dances, op. 72: no. 2 in E Minor", "Vltava"]
+  # 172 songs; our top 3: אור הירח (1992, 180) · עכשיו מעונן (1993, 142) · סוף העולם (1997, 137)
+  - name: "אביב גפן"
+    mbid: 3f1f9c33-b86e-44e1-a332-b215456d279c
+    tier: 1
+    songs: ["אור הירח", "עכשיו מעונן", "סוף העולם"]
+  # 47 songs; our top 3: Nevermind (2016, 4,065) · Alien (2020, 634) · Never Go Back (2019, 847)
+  - name: "Dennis Lloyd"
+    mbid: 026c1c22-8d1c-473c-a33f-a27fd02d6975
+    tier: 1
+    songs: ["Nevermind", "Alien", "Never Go Back"]
+  # 85 songs; our top 3: Adhana (2017, 630) · Universe Inside Me (2016, 114) · 100 (2018, 162)
+  - name: "Vini Vici"
+    mbid: 14276a83-d21d-41ab-b809-09b494645645
+    tier: 1
+    songs: ["Adhana", "Universe Inside Me", "100"]
+  # 88 songs; our top 3: Orchid (2017, 69) · The Unknown (2020, 15) · Process (2010, 324)
+  - name: "Ritmo"
+    mbid: 43a2fdeb-0aa8-4083-a02a-14b2af6f7fb1
+    tier: 1
+    songs: ["Orchid", "The Unknown", "Process"]
+  # 104 songs; our top 3: People (2006, 1,846) · Tick Tock (2016, 39) · Disconnecting (2006, 1,376)
+  - name: "Sesto Sento"
+    mbid: e3bd2490-1380-4633-a32b-e7d9f249610a
+    tier: 1
+    songs: ["People", "Tick Tock", "Disconnecting"]
+  # 102 songs; our top 3: Una noche más (2007, 2,393) · La alegria (2005, 1,465) · Irme kero (2007, 1,819)
+  - name: "Yasmin Levy"
+    mbid: 856e486f-21f3-4203-a5d2-e30993988b38
+    tier: 1
+    songs: ["Una noche más", "La alegria", "Irme kero"]
+  # 69 songs; our top 3: Albert Balbert (2004, 882) · Story of D.M.T (Sesto Sento Remix) (2016, 84) · Rearranged (2004, 1,942)
+  - name: "Vibe Tribe"
+    mbid: a71436a7-2b5b-44d5-bb37-a8e3b4f9906a
+    tier: 1
+    songs: ["Albert Balbert", "Story of D.M.T (Sesto Sento Remix)", "Rearranged"]
+  # 79 songs; our top 3: Midnight Sun (GMS remix) (2001, 984) · Crystal Skulls (dance mix) (2002, 854) · The First Revelation, Part 1 (2001, 600)
+  - name: "Alien Project"
+    mbid: 8d56e655-efb7-4f03-b3c1-320c5ea838fb
+    tier: 1
+    songs: ["Midnight Sun (GMS remix)", "Crystal Skulls (dance mix)", "The First Revelation, Part 1"]
+  # 143 songs; our top 3: סליחות (1979, 71) · מישהו (1979, 71) · הילדה הכי יפה בגן (1978, 65)
+  - name: "יהודית רביץ"
+    mbid: 10385cb9-e45f-4c18-b03e-190c94f5f305
+    tier: 1
+    songs: ["סליחות", "מישהו", "הילדה הכי יפה בגן"]
+  # 70 songs; our top 3: When We Dream (1997, 459) · To Eternity (1996, 313) · Overload (1996, 629)
+  - name: "MFG"
+    mbid: 047f6f4c-fbd7-4ee1-a90e-5fea12bd2aac
+    tier: 1
+    songs: ["When We Dream", "To Eternity", "Overload"]
+  # 108 songs; our top 3: Different Pulses (2012, 4,885) · Lost Horse (2020, 550) · Love It or Leave It (2012, 3,272)
+  - name: "Asaf Avidan"
+    mbid: 5b9890b9-a2e8-4768-ad70-9f28bb81fc00
+    tier: 1
+    songs: ["Different Pulses", "Lost Horse", "Love It or Leave It"]
+  # 62 songs; our top 3: Outside (2014, 79) · Freedom (2009, 702) · Carrying the World (2010, 217)
+  - name: "Suntree"
+    mbid: 07abbeaa-5396-464a-9ae6-b4d251d1d6ef
+    tier: 1
+    songs: ["Outside", "Freedom", "Carrying the World"]
+  # 93 songs; our top 3: La Vezina Catina (1972, 53) · Kinderspiele (1972, 53) · Pamparapam (1972, 21)
+  - name: "Esther Ofarim"
+    mbid: 8408d6b8-f124-46f4-9cb5-c37e03a6e08a
+    tier: 1
+    songs: ["La Vezina Catina", "Kinderspiele", "Pamparapam"]
+  # 70 songs; our top 3: Slow Dancer (2010, 1,077) · Freakside (original mix) (2007, 309) · New York Dreamer (2010, 236)
+  - name: "Shlomi Aber"
+    mbid: 75f3fd37-c7f1-4d68-8621-6b9035c1e0c8
+    tier: 1
+    songs: ["Slow Dancer", "Freakside (original mix)", "New York Dreamer"]
+  # 74 songs; our top 3: Elements (2008, 972) · Stop Time (2009, 303) · Plastic (2006, 753)
+  - name: "U‐Recken"
+    mbid: b62d7b00-7950-4305-b5b2-d2f966a8bc27
+    tier: 1
+    songs: ["Elements", "Stop Time", "Plastic"]
+  # 158 songs; our top 3: שיר המכולת (1973, 183) · נתתי לה חיי (1974, 168) · יו-יה (1973, 122)
+  - name: "כוורת"
+    mbid: 6ac29708-9886-4cef-a81b-5d289f55645d
+    tier: 1
+    songs: ["שיר המכולת", "נתתי לה חיי", "יו-יה"]
+  # 76 songs; our top 3: Intergalactic (2018, 16) · Mindset Matters (2023, 7) · Boombay (2017, 19)
+  - name: "Cosmic Tone"
+    mbid: deedcc59-47b8-4eb1-8453-1e06c087a6d8
+    tier: 1
+    songs: ["Intergalactic", "Mindset Matters", "Boombay"]
+  # 105 songs; our top 3: אין מקום אחר (1992, 190) · תחזור תחזור (1995, 142) · להתראות נעורים שלום אהבה (1995, 133)
+  - name: "משינה"
+    mbid: a174c5e9-de6a-4ba7-bb0e-d1395257c175
+    tier: 1
+    songs: ["אין מקום אחר", "תחזור תחזור", "להתראות נעורים שלום אהבה"]
+  # 111 songs; our top 3: שיר לשירה (1989, 119) · אין לי ארץ אחרת (1990, 86) · מותק (1984, 45)
+  - name: "קורין אלאל"
+    mbid: d0feb19b-5d90-4ad2-ac4a-12d04b1cc488
+    tier: 1
+    songs: ["שיר לשירה", "אין לי ארץ אחרת", "מותק"]
+  # 52 songs; our top 3: Anjuna Beach (2005, 1,583) · Out of Rage (2007, 34) · Breaking the Toys (Quantize remix) (2009, 11)
+  - name: "X-Noize"
+    mbid: 95c3fea7-4328-41de-9c27-afd13cf2272d
+    tier: 1
+    songs: ["Anjuna Beach", "Out of Rage", "Breaking the Toys (Quantize remix)"]
+  # 53 songs; our top 3: Searching (2004, 24) · On My Own (2005, 152) · Alone (2005, 56)
+  - name: "Offer Nissim"
+    mbid: 9da88e1f-94f7-48e3-a8c2-e969cb8cfcd7
+    tier: 1
+    songs: ["Searching", "On My Own", "Alone"]
+  # 64 songs; our top 3: Shaman (2010, 156) · Insight (2013, 15) · Black Light (2013, 14)
+  - name: "Mindwave"
+    mbid: a4b1f8b3-5207-4070-9717-1b322d1e1d94
+    tier: 1
+    songs: ["Shaman", "Insight", "Black Light"]
+  # 81 songs; our top 3: L.S.Dance (1999, 528) · New Wave Hooker (Domestic & Pixel remix) (2005, 188) · Altered States (2002, 10)
+  - name: "Psysex"
+    mbid: f86ca5d1-4c03-4801-9e5d-e915cfdfe576
+    tier: 1
+    songs: ["L.S.Dance", "New Wave Hooker (Domestic & Pixel remix)", "Altered States"]
+  # 123 songs; our top 3: האיש שראה הכל (1995, 135) · חור בלבנה (1995, 165) · Goes Around (2007, 611)
+  - name: "Rockfour"
+    mbid: d81b52ad-22f6-434e-bd3d-fc126493356b
+    tier: 1
+    songs: ["האיש שראה הכל", "חור בלבנה", "Goes Around"]
+  # 69 songs; our top 3: Spirit Zone (2017, 116) · Pushing Me Out (2006, 637) · Acid Waves (2014, 26)
+  - name: "Ananda Shake"
+    mbid: b5ac6096-25c3-42ca-ba3e-9e52f56fbf95
+    tier: 1
+    songs: ["Spirit Zone", "Pushing Me Out", "Acid Waves"]
+  # 59 songs; our top 3: 7th Son (2004, 62) · Ra He'ya (Shulman remix) (2004, 561) · Indian Jackpot (Invisible Reality remix) (2002, 257)
+  - name: "Sub6"
+    mbid: bd1ee510-8e0d-487f-9546-0203468bc924
+    tier: 1
+    songs: ["7th Son", "Ra He'ya (Shulman remix)", "Indian Jackpot (Invisible Reality remix)"]
+  # 51 songs; our top 3: The Vision (2005, 271) · Paranoia (2004, 592) · Ghost in the Machine (U-Recken remix) (2009, 47)
+  - name: "Xerox & Illumination"
+    mbid: 0a319945-0464-4454-9de6-b74c05727acf
+    tier: 1
+    songs: ["The Vision", "Paranoia", "Ghost in the Machine (U-Recken remix)"]
+  # 134 songs; our top 3: Холод (2006, 1,016) · Всё будет так, как хочется зиме (2006, 587) · Гамлет (2007, 916)
+  - name: "Majdanek Waltz"
+    mbid: 43ddf4ce-a854-465f-8cbb-d318e48004f1
+    tier: 1
+    songs: ["Холод", "Всё будет так, как хочется зиме", "Гамлет"]
+  # 96 songs; our top 3: נרקומן ציבור (1987, 69) · טרמינל לומינלט (1978, 202) · נשל הנחש (1987, 166)
+  - name: "מאיר אריאל"
+    mbid: 630d216e-178d-4b25-9bc9-31830f7a133d
+    tier: 1
+    songs: ["נרקומן ציבור", "טרמינל לומינלט", "נשל הנחש"]
+  # 46 songs; our top 3: NN3 (2005, 4,334) · The Unexpected Visitor (CBL Carbonator remix) (2005, 878) · I Dive (2006, 1,892)
+  - name: "Shulman"
+    mbid: 4ab065be-818b-4775-af2f-31a276211ff4
+    tier: 1
+    songs: ["NN3", "The Unexpected Visitor (CBL Carbonator remix)", "I Dive"]
+  # 157 songs; our top 3: אל תלכי לי (2007, 19) · ידעת שזה זמני (2009, 3) · זה אני (2009, 38)
+  - name: "אייל גולן"
+    mbid: 1bac0f84-77e7-4884-a9ae-122a90582da0
+    tier: 1
+    songs: ["אל תלכי לי", "ידעת שזה זמני", "זה אני"]
+  # 66 songs; our top 3: Mantra (2009, 503) · Dragonfly (2009, 462) · Freak (Deepernet remix) (2012, 39)
+  - name: "Lemonchill"
+    mbid: 536c725f-2e0f-43fc-8e4b-ed41b3818016
+    tier: 1
+    songs: ["Mantra", "Dragonfly", "Freak (Deepernet remix)"]
+  # 86 songs; our top 3: Jajo (1998, 308) · Rain (1999, 40) · Green Sky (1997, 153)
+  - name: "California Sunshine"
+    mbid: 7193b7ad-72ef-4250-b31c-2e956e024175
+    tier: 1
+    songs: ["Jajo", "Rain", "Green Sky"]
+  # 129 songs; our top 3: Papa Sooma (2014, 231) · Calib (2021, 33) · Hey (2023, 32)
+  - name: "Red Axes"
+    mbid: a9734106-210d-4c29-b2cb-aed0cb049733
+    tier: 1
+    songs: ["Papa Sooma", "Calib", "Hey"]
+  # 59 songs; our top 3: Stereo Talk (2006, 8) · Blue (2005, 278) · Fresh (Vibrasphere remix) (2006, 265)
+  - name: "Lish"
+    mbid: 369b1ed2-81e8-4aab-b105-2b67e7535527
+    tier: 1
+    songs: ["Stereo Talk", "Blue", "Fresh (Vibrasphere remix)"]
+  # 197 songs; our top 3: אני לא מדונה (2002, 9) · אין גבול לאהבה (2004, 6) · חגיגה (2004, 35)
+  - name: "שרית חדד"
+    mbid: bf77650a-a5c6-462d-8a29-b6381464ad09
+    tier: 1
+    songs: ["אני לא מדונה", "אין גבול לאהבה", "חגיגה"]
+  # 48 songs; our top 3: Spectral Dimension (Deep Vibration remix) (2021, 11) · Alice Dream (2010, 303) · Visibility (2009, 505)
+  - name: "Invisible Reality"
+    mbid: 5e57beb3-4fcc-4cd4-a57d-d3a639805fa4
+    tier: 1
+    songs: ["Spectral Dimension (Deep Vibration remix)", "Alice Dream", "Visibility"]
+  # 85 songs; our top 3: Mi'Ma'amakim (Out of the Depths) (2006, 116) · Bo'ee (Come With Me) (2006, 100) · Ayal-Ayale (2002, 57)
+  - name: "הפרויקט של עידן רייכל"
+    mbid: 8e6a0856-2040-4859-ad8a-33384e861158
+    tier: 1
+    songs: ["Mi'Ma'amakim (Out of the Depths)", "Bo'ee (Come With Me)", "Ayal-Ayale"]
+  # 64 songs; our top 3: Mateluna (2006, 641) · Quantum Mechanics (2006, 640) · Single Cell (2006, 493)
+  - name: "Atomic Pulse"
+    mbid: 08b3801b-d3b0-4496-9bce-b22309078b73
+    tier: 1
+    songs: ["Mateluna", "Quantum Mechanics", "Single Cell"]
+  # 68 songs; our top 3: Inner Bright (2007, 500) · Un:Balanced (2005, 89) · Time Theory (2007, 152)
+  - name: "Timelock"
+    mbid: 66c10f3c-721e-4079-96aa-191dc00fc45f
+    tier: 1
+    songs: ["Inner Bright", "Un:Balanced", "Time Theory"]
+  # 50 songs; our top 3: Alive (Kiki remix) (2011, 274) · Robots on Meth (radio edit) (2011, 384) · Blue Shadow (Slow dance mix) (2014, 170)
+  - name: "Chaim"
+    mbid: 642d4b22-3afd-4976-8cd4-c05dd8d0bf4d
+    tier: 1
+    songs: ["Alive (Kiki remix)", "Robots on Meth (radio edit)", "Blue Shadow (Slow dance mix)"]
+  # 115 songs; our top 3: No Groove Where I Come From (2006, 188) · Music Is Ruling My World (2007, 109) · Losing It (2007, 1,030)
+  - name: "Kutiman"
+    mbid: 48e18c9b-371f-42e6-878d-633e25fa01fd
+    tier: 1
+    songs: ["No Groove Where I Come From", "Music Is Ruling My World", "Losing It"]
+  # 71 songs; our top 3: שיר אהובת הספן (1986, 139) · שביל הבריחה (1986, 83) · ימי התום (1988, 11)
+  - name: "ריטה"
+    mbid: f1ed9728-df08-4969-b480-944682c3a8ed
+    tier: 1
+    songs: ["שיר אהובת הספן", "שביל הבריחה", "ימי התום"]
+  # 54 songs; our top 3: קראת לי אסתר (1993, 44) · רואה לך בעיניים (1990, 16) · הנשיקה האחרונה (2003, 8)
+  - name: "אתי אנקרי"
+    mbid: 728c048d-659e-42f7-9553-198bec3798ad
+    tier: 1
+    songs: ["קראת לי אסתר", "רואה לך בעיניים", "הנשיקה האחרונה"]
+  # 52 songs; our top 3: Tied Up (2001, 680) · Knock it Off (2003, 638) · Hit the Machine (2004, 536)
+  - name: "Exaile"
+    mbid: cf1f34a3-4b24-4a5f-a486-31b787636bfc
+    tier: 1
+    songs: ["Tied Up", "Knock it Off", "Hit the Machine"]
+  # 114 songs; our top 3: פחות אבל כואב (1990, 92) · דברים שרציתי לומר (1990, 82) · רדיו רמאללה (1997, 71)
+  - name: "יהודה פוליקר"
+    mbid: 4f1f5734-ea28-4640-862b-8fcdd79a16d5
+    tier: 1
+    songs: ["פחות אבל כואב", "דברים שרציתי לומר", "רדיו רמאללה"]
+  # 101 songs; our top 3: Push the Button (2007, 66) · יש לי חברה (1995, 20) · בתוך נייר עיתון (1993, 69)
+  - name: "טיפקס"
+    mbid: 97004089-62eb-45de-a6ea-fa2bf9a2e6ff
+    tier: 1
+    songs: ["Push the Button", "יש לי חברה", "בתוך נייר עיתון"]
+  # 72 songs; our top 3: Silent Galaxy (2003, 1,039) · Full Circle (2006, 631) · Overfly Zone (2002, 387)
+  - name: "Space Buddha"
+    mbid: eb3ffaab-b5e9-451f-84d7-82011e21a22a
+    tier: 1
+    songs: ["Silent Galaxy", "Full Circle", "Overfly Zone"]
+  # 42 songs; our top 3: Where You’re Gone (1969, 110) · Too Much in Love to Hear (1968, 50) · Song From the Sea (1969, 201)
+  - name: "Churchill's"
+    mbid: 59f5e2af-251d-4aac-8b0d-6b8b74c69dcf
+    tier: 1
+    songs: ["Where You’re Gone", "Too Much in Love to Hear", "Song From the Sea"]
+  # 53 songs; our top 3: Day Dream (Red & Blue remix) (2011, 11) · Dawn (2006, 390) · Ocean View (2006, 428)
+  - name: "Fatali"
+    mbid: 0a241ac5-6153-45ce-99c1-9a525f4002c1
+    tier: 1
+    songs: ["Day Dream (Red & Blue remix)", "Dawn", "Ocean View"]
+  # 152 songs; our top 3: כמה יוסי (1993, 261) · חלליות (1991, 273) · עבדים (1998, 243)
+  - name: "ברי סחרוף"
+    mbid: 01f94ec3-536a-4461-9621-82628247cd06
+    tier: 1
+    songs: ["כמה יוסי", "חלליות", "עבדים"]
+  # 60 songs; our top 3: All Filters Up (2007, 938) · Beat De Lucia (2007, 887) · Tiger Rock (2005, 19)
+  - name: "Beat Hackers"
+    mbid: ad98ef61-ed03-4461-9871-3dcbeb40506b
+    tier: 1
+    songs: ["All Filters Up", "Beat De Lucia", "Tiger Rock"]
+  # 37 songs; our top 3: Final Mission (1995, 735) · Deliverance (1999, 61) · X-File (Monkey mix) (1996, 151)
+  - name: "Chakra"
+    mbid: 421ed647-7dea-4a60-9bfa-2d85ab38f661
+    tier: 1
+    songs: ["Final Mission", "Deliverance", "X-File (Monkey mix)"]
+  # 51 songs; our top 3: 10 High (2005, 15) · Electric Problem (2005, 113) · Up n Down (2009, 62)
+  - name: "Echotek"
+    mbid: 18065467-56c5-4f03-bf91-39550bd33eb7
+    tier: 1
+    songs: ["10 High", "Electric Problem", "Up n Down"]
+  # 72 songs; our top 3: Small Talk (2006, 136) · Africa 101 (Extended Mix) (2016, 10) · If… (2012, 13)
+  - name: "LOUD"
+    mbid: baf32590-b1ba-4054-bab4-73feb8f6c80e
+    tier: 1
+    songs: ["Small Talk", "Africa 101 (Extended Mix)", "If…"]
+  # 38 songs; our top 3: Pyramid Song (2011, 251) · Pyramid Song (Arr. C. O’Riley for Cello & Piano) (2019, 29) · Heaven or Las Vegas (2011, 7,671)
+  - name: "Matt Haimovitz"
+    mbid: 9bde975a-29a4-490c-83db-5707a9266559
+    tier: 1
+    songs: ["Pyramid Song", "Pyramid Song (Arr. C. O’Riley for Cello & Piano)", "Heaven or Las Vegas"]
+  # 53 songs; our top 3: Dreaming Mode (2007, 1,529) · Tripping Out (2007, 404) · Night Becomes Day (2005, 286)
+  - name: "Gataka"
+    mbid: 6fdae30d-f829-4a1f-a45d-4e0a48653174
+    tier: 1
+    songs: ["Dreaming Mode", "Tripping Out", "Night Becomes Day"]
+  # 66 songs; our top 3: Soul Particle (2018, 4) · Silver Sands (2018, 33) · In the Village (2006, 625)
+  - name: "Hujaboy"
+    mbid: 6f246f8c-9f81-4bd1-9c40-0c09fa5595d2
+    tier: 1
+    songs: ["Soul Particle", "Silver Sands", "In the Village"]
+  # 57 songs; our top 3: As Summer Gave Way to Autumn (2011, 112) · Emotional Seed of Love (2013, 7) · Dovevation (2007, 98)
+  - name: "Kukan Dub Lagan"
+    mbid: 287739aa-2e3f-4883-b884-f9ab85b5f002
+    tier: 1
+    songs: ["As Summer Gave Way to Autumn", "Emotional Seed of Love", "Dovevation"]
+  # 40 songs; our top 3: Your Style (2010, 488) · Welcome to the Zoo (2014, 19) · Follow Me (2020, 82)
+  - name: "Crystal Lake"
+    mbid: f5c78fe9-6072-4219-97eb-bd62c4cbd87d
+    tier: 1
+    songs: ["Your Style", "Welcome to the Zoo", "Follow Me"]
+  # 102 songs; our top 3: חדר משלי (1995, 42) · טמבל (1989, 41) · איש בלי נצח (1995, 10)
+  - name: "ארקדי דוכין"
+    mbid: d62ef425-a2c4-481a-9e21-67b5d853e030
+    tier: 1
+    songs: ["חדר משלי", "טמבל", "איש בלי נצח"]
+  # 42 songs; our top 3: Top Gun (2003, 25) · Nothing but Music (2004, 606) · A Song for You (2002, 647)
+  - name: "PsyCraft"
+    mbid: 70e87e89-8abf-40bb-a2ba-d404d89e14bf
+    tier: 1
+    songs: ["Top Gun", "Nothing but Music", "A Song for You"]
+  # 47 songs; our top 3: Alien Craft (2004, 589) · Genetic Engineering (Alien Project Remix) (2003, 8) · Time To Get Serious (2006, 176)
+  - name: "Dynamic"
+    mbid: 26ce5008-4940-45b2-9f6f-5ae3324635d1
+    tier: 1
+    songs: ["Alien Craft", "Genetic Engineering (Alien Project Remix)", "Time To Get Serious"]
+  # 44 songs; our top 3: I’ve Got the Power (Cosmic Tone remix) (2007, 38) · Double Trouble (2007, 851) · High Cue (2006, 994)
+  - name: "Electro Sun"
+    mbid: 6c965db2-88df-4e2c-86c8-81eb56dd48b3
+    tier: 1
+    songs: ["I’ve Got the Power (Cosmic Tone remix)", "Double Trouble", "High Cue"]
+  # 43 songs; our top 3: Love Simulation (2004, 259) · Here Comes the Revolution (2009, 44) · Peaches On The Moon (2006, 20)
+  - name: "Bizzare Contact"
+    mbid: 4742160b-e036-4bc7-a6b5-c0d6c9f091dc
+    tier: 1
+    songs: ["Love Simulation", "Here Comes the Revolution", "Peaches On The Moon"]
+  # 46 songs; our top 3: Trilodyne (2015, 27) · Wakandah (2018, 8) · The Dark Side of the Universe (2017, 14)
+  - name: "Phanatic"
+    mbid: 43fae559-99b3-4260-ba8a-4e3dd5420783
+    tier: 1
+    songs: ["Trilodyne", "Wakandah", "The Dark Side of the Universe"]
+  # 27 songs; our top 3: The Time Has Come (2003, 733) · People on Hold (2003, 2,167) · Nonstop (2003, 1,977)
+  - name: "Cosma"
+    mbid: 363b9e17-e955-461b-97a3-ec8ce1713a54
+    tier: 1
+    songs: ["The Time Has Come", "People on Hold", "Nonstop"]
+  # 50 songs; our top 3: שיר סתיו (1974, 36) · זה קורה (1975, 36) · הסלע האדום (1963, 3)
+  - name: "אריק לביא"
+    mbid: dcc27b9b-99d9-427d-addd-f542d5d8ad6e
+    tier: 1
+    songs: ["שיר סתיו", "זה קורה", "הסלע האדום"]
+  # 45 songs; our top 3: Back 2 Black (2005, 180) · Beat Conductor (2005, 179) · Silver Sky (2003, 66)
+  - name: "Delirious"
+    mbid: 6b4d328b-d007-4ecf-8844-411d6709e951
+    tier: 1
+    songs: ["Back 2 Black", "Beat Conductor", "Silver Sky"]
+  # 48 songs; our top 3: Think Different (Audiomatic remix) (2012, 27) · Shushu the Fox (2004, 637) · Analayzer (2006, 284)
+  - name: "DNA"
+    mbid: 97113e01-3faf-495e-9140-0f5913aa32fb
+    tier: 1
+    songs: ["Think Different (Audiomatic remix)", "Shushu the Fox", "Analayzer"]
+  # 81 songs; our top 3: שוב היא כאן (1979, 73) · זה כל מה שיש (1979, 48) · לילה ויום (1979, 31)
+  - name: "יוני רכטר"
+    mbid: 48580a29-41f2-49e2-b602-90dc12899549
+    tier: 1
+    songs: ["שוב היא כאן", "זה כל מה שיש", "לילה ויום"]
+  # 64 songs; our top 3: I'm Next (2004, 488) · Vainish (2004, 269) · Fullon String (2004, 163)
+  - name: "Safi Connection"
+    mbid: 95a9e97a-01e8-4cfa-94af-715e6c28ca97
+    tier: 1
+    songs: ["I'm Next", "Vainish", "Fullon String"]
+  # 61 songs; our top 3: Killing (2006, 3,016) · Attention! (2005, 988) · Up-Skirt (2008, 1,088)
+  - name: "The Apples"
+    mbid: dc4a1f32-d787-4c99-9bdc-1d5affdf3f2d
+    tier: 1
+    songs: ["Killing", "Attention!", "Up-Skirt"]
+  # 61 songs; our top 3: I Only Smoke (2012, 55) · Fear (2012, 24) · Become One (2013, 95)
+  - name: "Coming Soon!!!"
+    mbid: caa57c92-428d-450b-8839-41d4f5921638
+    tier: 1
+    songs: ["I Only Smoke", "Fear", "Become One"]
+  # 46 songs; our top 3: מים לדוד המלך (1970, 9) · כלא 6 (1965, 9) · הלאה (1984, 1)
+  - name: "הגשש החיוור"
+    mbid: 532c3d82-6d84-4fa6-9201-e4a895afdb7f
+    tier: 1
+    songs: ["מים לדוד המלך", "כלא 6", "הלאה"]
+  # 61 songs; our top 3: יהיה טוב (1979, 32) · Raquel (2000, 13) · Chileno Boys (1989, 8)
+  - name: "David Broza"
+    mbid: 2077bf4d-9bf2-43ac-8c9d-d3eec73e3b30
+    tier: 1
+    songs: ["יהיה טוב", "Raquel", "Chileno Boys"]
+  # 43 songs; our top 3: Just a Dream (2010, 21) · Minority (2006, 429) · Security Risk (2009, 30)
+  - name: "Aerospace"
+    mbid: f5d74d27-55ee-4e9c-a72f-5c256521363a
+    tier: 1
+    songs: ["Just a Dream", "Minority", "Security Risk"]
+  # 62 songs; our top 3: Games of Psy (2017, 52) · Come to India (2006, 639) · Loose Control (2008, 21)
+  - name: "Indra"
+    mbid: d602d4b5-1c11-429e-a16a-85554bbe9f1e
+    tier: 1
+    songs: ["Games of Psy", "Come to India", "Loose Control"]
+  # 25 songs; our top 3: Her Morning Elegance (2007, 30,431) · Did You Really Say No (2017, 166) · A Dance 'round the Memory Tree (2008, 4,798)
+  - name: "Oren Lavie"
+    mbid: 411f15e4-fdad-4d09-beca-0201c2e56727
+    tier: 1
+    songs: ["Her Morning Elegance", "Did You Really Say No", "A Dance 'round the Memory Tree"]
+  # 47 songs; our top 3: Machine (2004, 270) · Dirty Mind (2004, 951) · Comes Alive (2009, 290)
+  - name: "Void"
+    mbid: 1db78dcc-efdc-4b32-aab1-37b9c2210d02
+    tier: 1
+    songs: ["Machine", "Dirty Mind", "Comes Alive"]
+  # 55 songs; our top 3: על קו הזינוק (1991, 153) · עוד נגיעה (1991, 125) · יש בך (1989, 90)
+  - name: "החברים של נטאשה"
+    mbid: a0fcbf1b-bc94-4f01-9869-a2963cbcb67c
+    tier: 1
+    songs: ["על קו הזינוק", "עוד נגיעה", "יש בך"]
+  # 49 songs; our top 3: Gross (2005, 877) · Surfing Tuba (2010, 507) · Wedding Song (2006, 2,235)
+  - name: "Boom Pam"
+    mbid: ac373af8-8eb6-432b-ab15-90d2593cd72c
+    tier: 1
+    songs: ["Gross", "Surfing Tuba", "Wedding Song"]
+  # 38 songs; our top 3: Light in the Dark (2004, 599) · Dark Moon in Stonehenge (2002, 458) · The 14th (2002, 789)
+  - name: "Dark Soho"
+    mbid: aab5a121-e8a1-4b46-a7ae-0d3609c9ef3d
+    tier: 1
+    songs: ["Light in the Dark", "Dark Moon in Stonehenge", "The 14th"]
+  # 69 songs; our top 3: תני לו פרח (1986, 4) · סתיו ישראלי (1986, 3) · אין לי ארץ אחרת (1986, 2)
+  - name: "גלי עטרי"
+    mbid: d352aa74-3c8c-4a5c-9d17-63abe4149119
+    tier: 1
+    songs: ["תני לו פרח", "סתיו ישראלי", "אין לי ארץ אחרת"]
+  # 76 songs; our top 3: Speed of Soul (Querox remix) (2016, 56) · Make Us Stronger (2017, 177) · Speed of Soul (2015, 136)
+  - name: "Ghost Rider"
+    mbid: b408cb32-8782-4331-a867-ab333ff8ffa6
+    tier: 1
+    songs: ["Speed of Soul (Querox remix)", "Make Us Stronger", "Speed of Soul"]
+  # 40 songs; our top 3: Wishing Girl (2017, 828) · You’re Mine (2015, 642) · Something Stupid (From "Better Call Saul") (2018, 698)
+  - name: "Lola Marsh"
+    mbid: 9fb0217a-e50c-4aba-8d39-9238edbf0844
+    tier: 1
+    songs: ["Wishing Girl", "You’re Mine", "Something Stupid (From \"Better Call Saul\")"]
+  # 120 songs; our top 3: תמיד אהבה (1997, 111) · Strong World (2002, 464) · מישהו פעם (2012, 37)
+  - name: "עברי לידר"
+    mbid: e63b8019-5fd8-460d-8d82-58af4fb9b9b0
+    tier: 1
+    songs: ["תמיד אהבה", "Strong World", "מישהו פעם"]
+  # 12 songs; our top 3: If I Were a Rich Man (1967, 3,120) · Sunrise, Sunset (1967, 163) · To Life (1967, 145)
+  - name: "טופול"
+    mbid: e23e3e0e-7327-48ce-96a3-481896b26ca1
+    tier: 1
+    songs: ["If I Were a Rich Man", "Sunrise, Sunset", "To Life"]
+  # 40 songs; our top 3: Gravity Waves (Infected Mushroom 2017 remix) (2017, 499) · Time Code (2002, 87) · Gravity Waves (1997, 38)
+  - name: "Xerox"
+    mbid: cbf5768c-8baf-490a-be13-835a0683bf91
+    tier: 1
+    songs: ["Gravity Waves (Infected Mushroom 2017 remix)", "Time Code", "Gravity Waves"]
+  # 54 songs; our top 3: ספירת מלאי (1974, 22) · ערב עירוני (1987, 29) · אני וסימון ומואיז הקטן (1979, 34)
+  - name: "יוסי בנאי"
+    mbid: 331edda3-a98d-422e-9b44-9a9484b8a479
+    tier: 1
+    songs: ["ספירת מלאי", "ערב עירוני", "אני וסימון ומואיז הקטן"]
+  # 45 songs; our top 3: שער הרחמים (1992, 94) · גשם (1987, 267) · כמה אהבה (1996, 67)
+  - name: "מאיר בנאי"
+    mbid: 0c6f309f-4ed2-4e3b-a2a5-047cecbcf042
+    tier: 1
+    songs: ["שער הרחמים", "גשם", "כמה אהבה"]
+  # 44 songs; our top 3: Circles of Hipocrisy (2004, 48) · Evil Force (Remix) (2005, 20) · Aboriginman (2016, 12)
+  - name: "Azax Syndrom"
+    mbid: f274a279-fae8-47c0-8e15-d4e84e53d48a
+    tier: 1
+    songs: ["Circles of Hipocrisy", "Evil Force (Remix)", "Aboriginman"]
+  # 52 songs; our top 3: Bungee Jump (2013, 362) · The Power of Now (2015, 121) · Marshmallows (Off Limits remix) (2017, 37)
+  - name: "Captain Hook"
+    mbid: ca18d03b-3cd1-401d-b0d5-a09219fbc69c
+    tier: 1
+    songs: ["Bungee Jump", "The Power of Now", "Marshmallows (Off Limits remix)"]
+  # 55 songs; our top 3: נפלת חזק (1993, 219) · מישהו שומע אותי (1994, 186) · אחד אלוהים (1991, 110)
+  - name: "איפה הילד"
+    mbid: 10cb810b-2898-45af-83bf-77355eeb2566
+    tier: 1
+    songs: ["נפלת חזק", "מישהו שומע אותי", "אחד אלוהים"]
+  # 56 songs; our top 3: Cash (2013, 59) · Killing the Fuss (2013, 23) · Fuckin' Rock 'n' Roll (2005, 1,082)
+  - name: "Betzefer"
+    mbid: c05db3a4-9f3c-443f-b90a-3edb1acbf588
+    tier: 1
+    songs: ["Cash", "Killing the Fuss", "Fuckin' Rock 'n' Roll"]
+  # 40 songs; our top 3: Secrets (2005, 413) · Point Blank (2005, 307) · New Born (2006, 227)
+  - name: "Yotopia"
+    mbid: 9bbd3fda-dbc0-4674-a233-73a26aad2583
+    tier: 1
+    songs: ["Secrets", "Point Blank", "New Born"]
+  # 33 songs; our top 3: כל הכבוד (1967, 19) · עוד לא אהבתי די (1977, 41) · הנני כאן (1971, 32)
+  - name: "יהורם גאון"
+    mbid: 67025659-1206-4d8f-aaf2-36df95c73a6a
+    tier: 1
+    songs: ["כל הכבוד", "עוד לא אהבתי די", "הנני כאן"]
+  # 28 songs; our top 3: Tsufi Time (2005, 76) · Largetto (Gaudium remix) (2011, 67) · Technics Bla (Midimal remix) (2009, 5)
+  - name: "Rocky"
+    mbid: c7b8495c-8cec-4aac-b051-19578bbd4ade
+    tier: 1
+    songs: ["Tsufi Time", "Largetto (Gaudium remix)", "Technics Bla (Midimal remix)"]
+  # 27 songs; our top 3: Stay (original mix) (2007, 157) · Amen (Flash Brothers original mix) (2004, 87) · Stay (Noel Sanger remix) (2007, 328)
+  - name: "Flash Brothers"
+    mbid: 54a9a878-51d9-4aa9-8053-777ff1658f1d
+    tier: 1
+    songs: ["Stay (original mix)", "Amen (Flash Brothers original mix)", "Stay (Noel Sanger remix)"]
+  # 60 songs; our top 3: שובי לביתך (1981, 39) · התעוררות (1981, 34) · עמוד האש (1981, 14)
+  - name: "שם טוב לוי"
+    mbid: 20d1949e-ee90-44ed-a26a-05a4d441bbaa
+    tier: 1
+    songs: ["שובי לביתך", "התעוררות", "עמוד האש"]
+  # 88 songs; our top 3: VIEWS (2020, 539) · End of the Road (2021, 505) · Vandalist (2024, 384)
+  - name: "Noga Erez"
+    mbid: 06479724-ee7d-471e-a3d4-4554330a0293
+    tier: 1
+    songs: ["VIEWS", "End of the Road", "Vandalist"]
+  # 26 songs; our top 3: Goaway (1996, 733) · Granada (1996, 628) · Granada (Remix '98) (1999, 178)
+  - name: "Power Source"
+    mbid: 3cf3c554-f4fd-40d0-976e-9fa371112280
+    tier: 1
+    songs: ["Goaway", "Granada", "Granada (Remix '98)"]
+  # 81 songs; our top 3: אהבה חדשה (1994, 85) · יקירתי (1994, 111) · כוכב (1999, 67)
+  - name: "אסף אמדורסקי"
+    mbid: cb9aca05-9cdc-4500-bfbf-338920ea2c36
+    tier: 1
+    songs: ["אהבה חדשה", "יקירתי", "כוכב"]
+  # 54 songs; our top 3: יש לי סימפטיה (1982, 48) · מה יהיה בסופנו (1978, 23) · כי האדם עץ השדה (1981, 24)
+  - name: "נורית גלרון"
+    mbid: 0d2057e6-e05c-4ffa-b855-cef53b47ef78
+    tier: 1
+    songs: ["יש לי סימפטיה", "מה יהיה בסופנו", "כי האדם עץ השדה"]
+  # 34 songs; our top 3: We Are Awakening (2018, 61) · High Hopes (2014, 21) · Insidious (2014, 24)
+  - name: "Symbolic"
+    mbid: 484ccb93-facb-4dd8-a8ac-abe837161b84
+    tier: 1
+    songs: ["We Are Awakening", "High Hopes", "Insidious"]
+  # 77 songs; our top 3: סיפור מגירה (2004, 98) · חמסין (2003, 64) · עיניים זרות (2007, 156)
+  - name: "רונה קינן"
+    mbid: aad5601f-e4b4-4ae6-9b91-b83c9b175e38
+    tier: 1
+    songs: ["סיפור מגירה", "חמסין", "עיניים זרות"]
+  # 36 songs; our top 3: Expose (1996, 128) · Ashes to Ashes (1999, 577) · China (1999, 831)
+  - name: "Mystica"
+    mbid: 3f226406-76d0-4430-93e9-55f6d1fea43f
+    tier: 1
+    songs: ["Expose", "Ashes to Ashes", "China"]
+  # 93 songs; our top 3: שמש לך מצפים (1978, 62) · חלום כחול (1998, 67) · לייפציג, ברצלונה (1989, 44)
+  - name: "רמי פורטיס"
+    mbid: 145c2a0f-887d-452e-a487-2cd12dab3447
+    tier: 1
+    songs: ["שמש לך מצפים", "חלום כחול", "לייפציג, ברצלונה"]
+  # 44 songs; our top 3: Codes of D.N.A. (2013, 31) · Inside Your Head (2017, 67) · Virtual Object (2012, 6)
+  - name: "Vertical Mode"
+    mbid: a4ee4c28-5711-493a-8025-92347035b7fc
+    tier: 1
+    songs: ["Codes of D.N.A.", "Inside Your Head", "Virtual Object"]
+  # 46 songs; our top 3: From Above (2020, 8) · Inside Me (2020, 22) · Linoy (2020, 9)
+  - name: "Static Movement"
+    mbid: 0bb9de86-c187-4925-8590-c1168e036e3c
+    tier: 1
+    songs: ["From Above", "Inside Me", "Linoy"]
+  # 38 songs; our top 3: Flowers (2008, 233) · Dirty Herring (2007, 110) · Froid (2004, 6)
+  - name: "Black & White"
+    mbid: 958abf78-dbe9-442e-bae1-08e5b7bfd9e5
+    tier: 1
+    songs: ["Flowers", "Dirty Herring", "Froid"]
+  # 47 songs; our top 3: שמש שמש (1976, 91) · בחברה להגנת הטבע (1983, 63) · אגדה יפנית (1976, 70)
+  - name: "אריאל זילבר"
+    mbid: 91a0e0b2-732a-4ee4-8aaa-76edf50a1c9a
+    tier: 1
+    songs: ["שמש שמש", "בחברה להגנת הטבע", "אגדה יפנית"]
+  # 39 songs; our top 3: Tomorrow's Gone (2019, 378) · The Girl Who Was Frightened of Ashtrays (2019, 388) · Yesterday, Today and Tomorrow (2019, 194)
+  - name: "Charlie Megira"
+    mbid: dcaa3a76-4aed-4e59-9eab-4504f8aadb50
+    tier: 1
+    songs: ["Tomorrow's Gone", "The Girl Who Was Frightened of Ashtrays", "Yesterday, Today and Tomorrow"]
+  # 42 songs; our top 3: Epika (2015, 144) · Where Is Home (Matthias Meyer remix) (2021, 46) · Shine Tomorrow (2025, 17)
+  - name: "Guy Mantzur"
+    mbid: 003815e2-9476-47ef-aa76-1519b91c09db
+    tier: 1
+    songs: ["Epika", "Where Is Home (Matthias Meyer remix)", "Shine Tomorrow"]
+  # 36 songs; our top 3: Ajna (2017, 7) · Counterpoint (2020, 28) · Imagine (2023, 5)
+  - name: "One Function"
+    mbid: fb53a51b-1fc7-415c-b9e1-5ec453a66d94
+    tier: 1
+    songs: ["Ajna", "Counterpoint", "Imagine"]
+  # 37 songs; our top 3: End of the World (1998, 120) · Mushroom Symphony (1998, 198) · Loop in Control (2000, 75)
+  - name: "Sandman"
+    mbid: b9401d29-6fdb-4b0f-bfc4-90b4b817e514
+    tier: 1
+    songs: ["End of the World", "Mushroom Symphony", "Loop in Control"]
+  # 53 songs; our top 3: We Are in the Shadows (2017, 21) · Matter of Fact (2018, 24) · Cosmic Freaks (2022, 10)
+  - name: "Outsiders"
+    mbid: ee764d89-e5b5-4414-b7a7-6e73a346ffb8
+    tier: 1
+    songs: ["We Are in the Shadows", "Matter of Fact", "Cosmic Freaks"]
+  # 45 songs; our top 3: לגור איתו (1979, 18) · הצריף של תמרי (2002, 6) · אמת או חובה (2002, 11)
+  - name: "ריקי גל"
+    mbid: 22783a0d-71ea-489b-b0bc-9912e0ba64d1
+    tier: 1
+    songs: ["לגור איתו", "הצריף של תמרי", "אמת או חובה"]
+  # 137 songs; our top 3: עיר מקלט (1998, 133) · זמנך עבר (2006, 107) · אביא לך (1996, 102)
+  - name: "אהוד בנאי"
+    mbid: 5f52ab16-e6d1-44e4-8de1-65d140410ebf
+    tier: 1
+    songs: ["עיר מקלט", "זמנך עבר", "אביא לך"]
+  # 46 songs; our top 3: L.S.Dream (2006, 491) · Creation (2006, 232) · Artrance (2010, 29)
+  - name: "Audiotec"
+    mbid: 9c7fd86b-c3dd-4f71-b4e7-7b1ed4803d2e
+    tier: 2
+    songs: []
+  # 65 songs; our top 3: Lost Voices (2018, 24) · Echoes (2018, 17) · Find Your Heart (2018, 7)
+  - name: "RAZ"
+    mbid: f5a49563-21a6-4aee-aae7-3d84239901ad
+    tier: 2
+    songs: []
+  # 54 songs; our top 3: Suspended Animation Dreams (2005, 2,695) · Early Morning Mantra (2015, 109) · Summoning of the Muse (deconstructed) (2004, 1,415)
+  - name: "Subterranean Masquerade"
+    mbid: 6cd76c7a-757f-4bba-b88c-32b138a506a7
+    tier: 2
+    songs: []
+  # 34 songs; our top 3: Bayaka (2016, 311) · Breeze (2018, 141) · Tantra (2018, 109)
+  - name: "Berg"
+    mbid: 02b3a9b0-a39d-4a16-a477-48cba270292f
+    tier: 2
+    songs: []
+  # 23 songs; our top 3: We Who Worship the Black (2011, 1,284) · Hater Of Mankind (2012, 354) · Take Me Back to Where I Belong (2011, 985)
+  - name: "Sonne Adam"
+    mbid: 69d58066-09fa-44e5-9bbd-822956054aed
+    tier: 2
+    songs: []
+  # 60 songs; our top 3: The Skeleton Dance (extended mix) (2014, 85) · Trippy Blinders (2021, 22) · OnnSunTai (2022, 14)
+  - name: "Bliss"
+    mbid: 70da3c55-89c3-494d-91fd-b5024cdb7fc3
+    tier: 2
+    songs: []
+  # 27 songs; our top 3: I Know That I Know (2005, 2,517) · Overall Pattern (2010, 337) · Golden Orb (2008, 1,920)
+  - name: "Capsula"
+    mbid: c84351dd-8e0a-400c-9246-65b9a5418222
+    tier: 2
+    songs: []
+  # 31 songs; our top 3: Anything & Everything (2014, 7) · Flip the Script (2004, 221) · Sem Parar (2009, 19)
+  - name: "Pixel"
+    mbid: 19cc79fb-572a-4d9b-9bee-f0f5dce9530a
+    tier: 2
+    songs: []
+  # 62 songs; our top 3: Brothers, Part 3 (2000, 32) · Night Cortage (2001, 575) · Nihil (2003, 99)
+  - name: "Chaos as Shelter"
+    mbid: f7747343-b5f1-4073-8088-87ee1353ea85
+    tier: 2
+    songs: []
+  # 16 songs; our top 3: Spells Of Yoruba (Jamie Jones Watertight Mix) (2010, 14) · Spells of Yoruba (2008, 369) · Your Face Is a Mess (Mark Broom remix) (2008, 181)
+  - name: "Gel Abril"
+    mbid: 342ccb52-8154-41a3-8d31-4fc0bca492a7
+    tier: 2
+    songs: []
+  # 51 songs; our top 3: The First Birth (2008, 1,984) · The Last Battle (2008, 1,270) · Andromeda (2008, 1,935)
+  - name: "Green Sun"
+    mbid: 55f1cd9f-35ec-4c21-9958-0a0ff6545c3e
+    tier: 2
+    songs: []
+  # 74 songs; our top 3: Flip (2015, 118) · Different Kind of Weather (2015, 54) · Saw It Coming (2019, 38)
+  - name: "Not on Tour"
+    mbid: e0d2ca1d-5fc6-468c-80fd-0fa89caf5baf
+    tier: 2
+    songs: []
+  # 43 songs; our top 3: New Ways (2013, 49) · Power of Acid (2015, 204) · Keleno (2020, 83)
+  - name: "Ranji"
+    mbid: 2347072b-5553-4fc4-a677-7a41ab893f32
+    tier: 2
+    songs: []
+  # 54 songs; our top 3: By My Side (2020, 71) · Run (2020, 38) · Easy Ride (2013, 92)
+  - name: "Highway Superstar"
+    mbid: 050322b5-7269-4d7d-83af-8dccd6876cdc
+    tier: 2
+    songs: []
+  # 39 songs; our top 3: Deep Into Matter (2006, 22) · Dream Vision (2006, 23) · Flash Dance (2007, 5)
+  - name: "System Nipel"
+    mbid: fc886d9e-ef7e-45b4-9d6a-d9f94acdfecf
+    tier: 2
+    songs: []
+  # 35 songs; our top 3: Balkan (2017, 335) · Na Le (2018, 154) · Na Le (Phaxe remix) (2021, 67)
+  - name: "Omiki"
+    mbid: fa6ce5aa-14e8-4dc3-bd41-a56ed7708b75
+    tier: 2
+    songs: []
+  # 28 songs; our top 3: First Time (2005, 842) · Perfect Love (2007, 21) · Searching (2005, 6)
+  - name: "Offer Nissim feat. Maya"
+    mbid: acf84327-a195-44dc-9800-11372c940956
+    tier: 2
+    songs: []
+  # 37 songs; our top 3: עד העונג הבא (1994, 182) · המכשפות (1994, 128) · נסיעה מהירה (1994, 105)
+  - name: "המכשפות"
+    mbid: d207ed77-daf7-4562-979a-ce6ad77b42ab
+    tier: 2
+    songs: []
+  # 66 songs; our top 3: נשל הנחש (1991, 77) · ערב ב׳ כסלו (2001, 89) · הוא והיא (2000, 110)
+  - name: "ערן צור"
+    mbid: aedba678-1a92-418b-ae55-637c72d34e3f
+    tier: 2
+    songs: []
+  # 68 songs; our top 3: Broken Yet United (2002, 279) · Eyes to Match a Soul (1994, 882) · Coming End of Reason (2002, 610)
+  - name: "Salem"
+    mbid: 3e1fc14c-397f-485a-a763-48f5892d8adf
+    tier: 2
+    songs: []
+  # 54 songs; our top 3: Ain't Feel Nothing (2002, 1,364) · War (2003, 27) · Ain't Gonna Hurt You (2003, 195)
+  - name: "Zino & Tommy"
+    mbid: ef9d8648-50bf-4d68-acc5-529d8ea9bce8
+    tier: 2
+    songs: []
+  # 59 songs; our top 3: Postcards (2024, 138) · River of Swords (2025, 74) · My Daily Crisis (2025, 48)
+  - name: "Fugee"
+    mbid: 1d353c51-db57-4a24-bb97-cf5d4be9053a
+    tier: 2
+    songs: []
+  # 101 songs; our top 3: Souvenir (2021, 152) · Locked Away (2021, 60) · Poisons (2021, 59)
+  - name: "Whales"
+    mbid: d3d9fc64-5f13-4760-8d5b-d3ebc8e112ad
+    tier: 2
+    songs: []
+  # 55 songs; our top 3: הדפוק הזה (1995, 106) · מודדת (1994, 86) · כבר עכשיו (1995, 55)
+  - name: "ירמי קפלן"
+    mbid: a7c5c464-758a-41ca-8f0c-f2724487639b
+    tier: 2
+    songs: []
+  # 80 songs; our top 3: Rape It, Waste It, Taste It (2020, 32) · Anal Impregnator (2020, 27) · Necroalienphile (2014, 46)
+  - name: "Alien Fucker"
+    mbid: f84bcb02-e414-43cd-83de-67e4893ae3b8
+    tier: 2
+    songs: []
+  # 24 songs; our top 3: Grip (2003, 811) · Massive Trance (2004, 1,195) · Suenos (2006, 85)
+  - name: "Melicia"
+    mbid: 81c0d682-c3d4-423a-83e8-d3f49bb12867
+    tier: 2
+    songs: []
+  # 48 songs; our top 3: רוזה מרציפן (1971, 33) · עכשיו זה שנינו (1982, 27) · שירים פשוטים (1989, 31)
+  - name: "שלמה גרוניך"
+    mbid: 32b29b99-38fb-4f6f-ade3-b9c3a3eb320a
+    tier: 2
+    songs: []
+  # 49 songs; our top 3: Roza (2008, 683) · Rosa (2007, 783) · Bezos (2016, 9)
+  - name: "Mor Karbasi"
+    mbid: ddadcc7a-4ab1-4e2d-9d0c-11bf4192a358
+    tier: 2
+    songs: []
+  # 26 songs; our top 3: Progressive Love (2012, 14) · Spiritual Service (2023, 6) · Beautiful Destination (2012, 10)
+  - name: "Osher"
+    mbid: 4535559c-5f28-4bd7-a8af-306e392f50ac
+    tier: 2
+    songs: []
+  # 42 songs; our top 3: רדיו חזק (1981, 126) · תנו לי רוקנ'רול (1981, 57) · יש לך אותי (1990, 63)
+  - name: "תיסלם"
+    mbid: e500eb9f-9efd-42b8-9a8e-14f47e5490ed
+    tier: 2
+    songs: []
+  # 36 songs; our top 3: Time Is My Enemy (2006, 129) · Hotpot (2007, 149) · Slicer (2007, 61)
+  - name: "Quantum"
+    mbid: 7dd48e9b-05e1-4e54-b272-e2c546910008
+    tier: 2
+    songs: []
+  # 77 songs; our top 3: מחפש תשובה (1995, 397) · קח אותי (1995, 365) · אלה (1995, 379)
+  - name: "היהודים"
+    mbid: bc45bdfb-bd29-4213-aa92-be527cdcf424
+    tier: 2
+    songs: []
+  # 35 songs; our top 3: Blissfull Guidance (2005, 11) · Sycoactive (2006, 8) · Demolution (2009, 396)
+  - name: "InterSys"
+    mbid: dd06d872-f246-4fe4-b4b2-14f4f884d924
+    tier: 2
+    songs: []
+  # 39 songs; our top 3: Gypsy Soul (1994, 160) · Abadai (1996, 270) · Igrig (2004, 115)
+  - name: "Bustan Abraham"
+    mbid: a4d390c5-eef1-4b14-a6e2-e0d72be1a09a
+    tier: 2
+    songs: []
+  # 33 songs; our top 3: כנף קטנה (1993, 12) · צליל מכוון (1979, 7) · אף אחד כבר לא מתגעגע (1981, 9)
+  - name: "יצחק קלפטר"
+    mbid: 650a52ba-f69a-403f-b089-00e9e6aaed39
+    tier: 2
+    songs: []
+  # 25 songs; our top 3: Video Games (2012, 2,055) · All of It but Me (2015, 26) · Deserve (2011, 1,248)
+  - name: "The Young Professionals"
+    mbid: e03b1605-82ab-4d09-bc62-e572f6103e4a
+    tier: 2
+    songs: []
+  # 49 songs; our top 3: Move On (2013, 450) · Santal 33 (2018, 96) · My Only Love (2015, 186)
+  - name: "Garden City Movement"
+    mbid: 480ed4c4-a771-401b-bff6-e1d7164f95a5
+    tier: 2
+    songs: []
+  # 41 songs; our top 3: מה תאמרי (1992, 120) · הלילות שלנו (1992, 64) · איש השוקולד (1992, 62)
+  - name: "יזהר אשדות"
+    mbid: a6d1d71e-74db-4e82-a548-b15051e9b2e7
+    tier: 2
+    songs: []
+  # 10 songs; our top 3: Children of the Sun (2004, 848) · Things 2 Say (2003, 246) · Walls of Indonesia (2002, 366)
+  - name: "Robert Gitelman"
+    mbid: bf001ff3-af6c-4f38-8dcc-4053e28d98b6
+    tier: 2
+    songs: []
+  # 70 songs; our top 3: שמחות קטנות (1999, 19) · הכל עד לכאן (2006, 61) · כשאת עצובה (1999, 58)
+  - name: "עמיר בניון"
+    mbid: 56ec372f-e833-40cd-a2b3-ff85206c5d8d
+    tier: 2
+    songs: []
+  # 38 songs; our top 3: Espera (2002, 35) · סיגל - ריקוד שורות (2001, 5) · Dam Dam (2002, 54)
+  - name: "Aris San"
+    mbid: 716ee12b-b0a9-4047-b69a-fc4b0e7236ff
+    tier: 2
+    songs: []
+  # 14 songs; our top 3: The Dream of Olwen (1980, 42) · Nocturne No. 10 in A‐flat major (2000, 20) · Love Walked In (?, 58)
+  - name: "Daniel Adni"
+    mbid: 67c2ffd6-2c79-4ab8-a9f5-76e38582cd56
+    tier: 2
+    songs: []
+  # 17 songs; our top 3: One Year After (2007, 93) · 5LL (2011, 9) · Theory of Hype (2007, 4)
+  - name: "Basic"
+    mbid: d88f7068-067c-49dd-a178-615a8a1a0e5c
+    tier: 2
+    songs: []
+  # 43 songs; our top 3: סוף המדבר (1996, 24) · שיר הסטודנט (1996, 20) · תפוס (1996, 18)
+  - name: "שלום גד והיהלומים"
+    mbid: 916a3e0d-b5c1-48ea-8a57-af10ad4b555b
+    tier: 2
+    songs: []
+  # 25 songs; our top 3: ערב של שושנים (1957, 15) · שי (1985, 15) · כיבוי אורות (1959, 10)
+  - name: "הדודאים"
+    mbid: 4879dbbd-b473-44c3-948c-ce063d97d46b
+    tier: 2
+    songs: []
+  # 30 songs; our top 3: Clever and Strong (2003, 390) · Postcard (2003, 355) · Winston Girl (2007, 161)
+  - name: "Amit Erez"
+    mbid: 9493f0e7-d9af-401d-a1db-9c03b7e73fee
+    tier: 2
+    songs: []
+  # 15 songs; our top 3: Sans chemise, sans pantalon (1975, 14) · Casatchok (1969, 7) · Aba‐nibi (1978, 4)
+  - name: "Rika Zaraï"
+    mbid: 745ff372-0333-40cf-bf44-105418ac6ce4
+    tier: 2
+    songs: []
+  # 49 songs; our top 3: היי דרומה (1991, 14) · כתם הפרי (1991, 5) · היא לא תשוב (?, 7)
+  - name: "אתניX"
+    mbid: 38439dca-6b97-41a0-9516-b99108f455e0
+    tier: 2
+    songs: []
+  # 41 songs; our top 3: שיר סיום (1995, 58) · חדווה (1989, 29) · דוד אשכנזי (1989, 27)
+  - name: "הפה והטלפיים"
+    mbid: 325979b7-0249-423b-83f9-9afd27f22f82
+    tier: 2
+    songs: []
+  # 36 songs; our top 3: Do It (2019, 153) · Hu Ha (2016, 188) · Loud (2013, 10)
+  - name: "MR.BLACK"
+    mbid: fbd35e33-7c16-4f6e-b806-0d92ee3ce51e
+    tier: 2
+    songs: []
+  # 13 songs; our top 3: The Key (1995, 727) · Shiva (1995, 274) · Camel (1995, 247)
+  - name: "Indoor"
+    mbid: 57d91818-01f5-4ecc-adac-119ecce34ce9
+    tier: 2
+    songs: []
+  # 33 songs; our top 3: Children of Earth (Ambient version) (2004, 103) · Electronic Playground (Sesto Sento remix) (2008, 12) · Shake Walker (2010, 8)
+  - name: "Ultravoice"
+    mbid: c64d9efa-dcdf-46fc-a369-e2a53f39e56e
+    tier: 2
+    songs: []
+  # 22 songs; our top 3: Faceless (Mixed) (2023, 57) · Bounded (2023, 45) · D-Compression (2017, 9)
+  - name: "Weekend Heroes"
+    mbid: 35027b57-5c15-48d8-a921-2a6aac7a54e5
+    tier: 2
+    songs: []
+  # 114 songs; our top 3: קמתי (2003, 274) · הכאפה המצלצלת (2004, 181) · קליפורניה (2006, 181)
+  - name: "הדג נחש"
+    mbid: 4f4563ac-c437-4bd7-8b93-539121efd071
+    tier: 2
+    songs: []
+  # 19 songs; our top 3: Visuals (2007, 340) · Dymethyltryptamine (Loud remix) (2011, 35) · Calvin Klein (2009, 8)
+  - name: "Quantize"
+    mbid: e87c4f4f-9d9b-4f57-b3f5-dc45f378e50f
+    tier: 2
+    songs: []
+  # 77 songs; our top 3: מכה אפורה (1995, 278) · על הרצפה (1995, 143) · גשם חזק (2001, 214)
+  - name: "מוניקה סקס"
+    mbid: 9de40d5c-b93b-49a9-921f-0edbf65d6b16
+    tier: 2
+    songs: []
+  # 28 songs; our top 3: מחר (1979, 4) · קרנבל בנח"ל (1989, 4) · הורה האחזות (1992, 3)
+  - name: "להקת הנח״ל"
+    mbid: 143db96a-9404-4246-a676-50609dbcc516
+    tier: 2
+    songs: []
+  # 35 songs; our top 3: Clockwork (2016, 103) · Moonlight Purpose (2020, 79) · Subconscious (2019, 19)
+  - name: "Freedom Fighters"
+    mbid: 5d4d6e7c-9009-419f-9da7-20de92d113af
+    tier: 2
+    songs: []
+  # 28 songs; our top 3: Frost (2005, 47) · Fuel Knock (2004, 4) · PC Software (2004, 35)
+  - name: "Pop Stream"
+    mbid: efa8ce26-fb3b-4824-9b92-2558d9e414d6
+    tier: 2
+    songs: []
+  # 26 songs; our top 3: זה הכל בשבילך (1990, 52) · לילה של כוכבים (2012, 8) · לא יפריד דבר (2009, 24)
+  - name: "דני סנדרסון"
+    mbid: 0be04841-9152-49bd-9407-06d016a5ede7
+    tier: 2
+    songs: []
+  # 69 songs; our top 3: איך זה מרגיש (2004, 155) · למיה יש אקדח (1999, 171) · אני מאמין (1993, 102)
+  - name: "כנסיית השכל"
+    mbid: 64b19038-da79-4f5f-a62b-51a961121eb7
+    tier: 2
+    songs: []
+  # 27 songs; our top 3: Big Ben (2011, 174) · Mars Needs Time (2009, 8) · Painted Dove (2005, 333)
+  - name: "Save the Robot"
+    mbid: 38e2ddce-1cb0-4be8-87a4-aed148d4161d
+    tier: 2
+    songs: []
+  # 52 songs; our top 3: The Ballad of Bitter Honey (2006, 282) · Take Me (2007, 1,540) · Ballad of Bitter Honey (2006, 2,061)
+  - name: "Eef Barzelay"
+    mbid: 08342a32-9bc9-48e5-9086-d68ac785c171
+    tier: 2
+    songs: []
+  # 14 songs; our top 3: כבר אחרי חצות (1973, 21) · שיר של יום חולין (1976, 5) · אי שם (1973, 2)
+  - name: "אילנית"
+    mbid: 7cd7c71d-8890-40d3-a5d1-c0282180389c
+    tier: 2
+    songs: []
+  # 87 songs; our top 3: Belle (2011, 390) · Vblues (2018, 32) · Verona (2015, 158)
+  - name: "Gilad Hekselman"
+    mbid: 606518a1-475d-4dc9-8f5c-8e0ebe499a41
+    tier: 2
+    songs: []
+  # 23 songs; our top 3: Winter Intro (2004, 31) · Technical Reasons (Meander remix) (2012, 8) · Ayoka (2008, 320)
+  - name: "Etic"
+    mbid: 998ea803-35d8-42d1-8f99-078e0d3516e0
+    tier: 2
+    songs: []
+  # 32 songs; our top 3: Velvet Demise (2006, 1,145) · The Somber Grounds of Truth (2006, 2,373) · A Serpentine Crave (2006, 2,650)
+  - name: "The Bishop of Hexen"
+    mbid: 3d795e98-670d-47c5-b904-153a9ae5c298
+    tier: 2
+    songs: []
+  # 37 songs; our top 3: God Mountain (1997, 312) · E-Dsopkia (club mix) (1996, 53) · Hard er Dreams (1996, 56)
+  - name: "Adrenalin Drum"
+    mbid: 87dd0d46-b546-41fc-8c2c-df984be2e5c5
+    tier: 2
+    songs: []
+  # 35 songs; our top 3: 44 (2023, 22) · Overshadows (2019, 32) · I Saw You Burn (2023, 22)
+  - name: "Shredhead"
+    mbid: 2f7146d6-944a-473e-bd18-0e4bd6ab1224
+    tier: 2
+    songs: []
+  # 27 songs; our top 3: Thinking About It (Let It Go) (KVR remix) (2016, 860) · עוד (2013, 16) · דברי איתי יותר (2015, 10)
+  - name: "נתן גושן"
+    mbid: bf580a37-46c5-4d78-b157-a3ff81e85374
+    tier: 2
+    songs: []
+  # 28 songs; our top 3: הבא בתור הוא סוס (1991, 127) · איש, קופה ומשאית (1991, 81) · אני טקסט פוליטי? (1991, 106)
+  - name: "נושאי המגבעת"
+    mbid: 535613c6-2e83-4361-ac90-f77b51d4a5fe
+    tier: 2
+    songs: []
+  # 22 songs; our top 3: Ballroom (2004, 1,804) · Comme ci comme ça (2004, 659) · Comme ci comme ça (The Twelves remix) (2009, 57)
+  - name: "Terry Poison"
+    mbid: 2e8940fa-3a10-453d-94c5-7eb0bdc99783
+    tier: 2
+    songs: []
+  # 32 songs; our top 3: Mind Control (2016, 38) · City on Mars (2014, 36) · Ayahuasca (2016, 4)
+  - name: "Side Effects"
+    mbid: d005d866-64fe-4020-b630-d3bcc71b9650
+    tier: 2
+    songs: []
+  # 46 songs; our top 3: Pentimento (2013, 46) · Tikkun (2016, 20) · It Was What It Was (album version) (2020, 16)
+  - name: "Yotam Avni"
+    mbid: b079fb04-635c-465b-8c26-b728d72c8d97
+    tier: 2
+    songs: []
+  # 15 songs; our top 3: מי ידע שכך יהיה (1973, 17) · הלוואי (1986, 43) · לשיר אתך (1987, 13)
+  - name: "בועז שרעבי"
+    mbid: 7a59e20f-09b4-4600-8e72-aff3fc17cfaf
+    tier: 2
+    songs: []
+  # 7 songs; our top 3: Hallelujah (1979, 143) · הללויה (1979, 7) · יחד (1980, 6)
+  - name: "חלב ודבש"
+    mbid: ab59e540-f584-4dd6-bfcc-eeb79dd35769
+    tier: 2
+    songs: []
+  # 32 songs; our top 3: Pecas (2019, 19) · Levantine (2022, 11) · Haziness (2013, 5)
+  - name: "Khen"
+    mbid: 9edb8bd9-c63f-4983-868a-55cd221b700d
+    tier: 2
+    songs: []
+  # 45 songs; our top 3: Bagatelle No. 25 in A minor, Woo 59 "Für Elise" (2025, 27) · Piano Sonata no. 14 in C‐sharp minor, op. 27 no. 2 “Moonlight”: I. Adagio sostenuto (2020, 10) · Carnaval, op. 9: No. 12. Chopin (2015, 9)
+  - name: "Boris Giltburg"
+    mbid: 1b7d060d-6fcc-451b-ad4a-91aab8fddb05
+    tier: 2
+    songs: []
+  # 22 songs; our top 3: העיר באפור (1965, 13) · סימן שאתה צעיר (1965, 12) · איילת אהבים (1964, 16)
+  - name: "שלישיית גשר הירקון"
+    mbid: c8b4bd01-dff6-4bf7-9050-bac02307f40c
+    tier: 2
+    songs: []
+  # 20 songs; our top 3: Independence Day (2000, 147) · Brotherly Mass Grave (1999, 188) · Taking the Secret to the Grave (1999, 167)
+  - name: "Dir Yassin"
+    mbid: 2c04e70b-4bdb-4b54-aafd-052477b5c8b0
+    tier: 2
+    songs: []
+  # 56 songs; our top 3: אחלום לנצח (1995, 255) · שמלה אדומה (1993, 173) · בואי דינה (1993, 79)
+  - name: "מופע הארנבות של ד\"ר קספר"
+    mbid: 3de5c52b-9546-4004-a191-314ee9b95a11
+    tier: 2
+    songs: []
+  # 27 songs; our top 3: Toy (2018, 1,053) · Bassa Sababa (2019, 233) · CEO (2021, 92)
+  - name: "Netta"
+    mbid: 6806600b-f824-4874-b574-f7b9a3e6cd3d
+    tier: 2
+    songs: []
+  # 24 songs; our top 3: היא לא תדע (1979, 73) · חללית (1979, 57) · רוני (1979, 56)
+  - name: "גזוז"
+    mbid: 91495a49-ec83-4a0a-98f2-5662290d83d2
+    tier: 2
+    songs: []
+  # 28 songs; our top 3: משבר אמון (1978, 34) · ימות משיח (כמה טוב לי) (1994, 13) · לא ידעתי שתלכי ממני (1996, 19)
+  - name: "דני ליטני"
+    mbid: 0cfaca3f-77cc-4538-92cd-0a918935b2ab
+    tier: 2
+    songs: []
+  # 20 songs; our top 3: Mental Distorted (2004, 87) · Communication Breakdown (2005, 378) · Disorientation (2004, 65)
+  - name: "Seroxat"
+    mbid: 9459cdb9-3ce7-4c54-a722-040660e9e5b9
+    tier: 2
+    songs: []
+  # 43 songs; our top 3: Be Invisible (2007, 302) · Spliff (2009, 273) · Hey (2007, 578)
+  - name: "Eatliz"
+    mbid: fa7dfb26-ce53-44ef-817e-e5aa511fddf6
+    tier: 2
+    songs: []
+  # 25 songs; our top 3: רואים רחוק רואים שקוף (1988, 37) · שוב (1981, 14) · מי אנחנו (2004, 11)
+  - name: "שמוליק קראוס"
+    mbid: 35cf5d5b-bd69-42a9-9772-8f69b920a297
+    tier: 2
+    songs: []
+  # 15 songs; our top 3: Brace For Impact (2011, 961) · Seven (2011, 6) · Choke on Coke (2009, 2,998)
+  - name: "Tomba"
+    mbid: 14679ea7-45c7-42dc-8781-d1ec5b2a43a2
+    tier: 2
+    songs: []
+  # 30 songs; our top 3: The Ever-Present Chance for Splendor (2015, 73) · All These Ancient Civilizations Are Like Unseemly Haunted Amusement Parks (2016, 4) · I've Waited for Four Hundred Years for One Single Hour With You (2022, 15)
+  - name: "Wings of an Angel"
+    mbid: 407fe493-a0f5-4dcd-bd86-bde9d7dc14e5
+    tier: 2
+    songs: []
+  # 114 songs; our top 3: עד מחר (2009, 223) · הדב והנחש (1997, 29) · תתחנני אליי (1997, 26)
+  - name: "אביתר בנאי"
+    mbid: f0bdaa19-6f9f-42f3-b392-7782b24725b5
+    tier: 2
+    songs: []
+  # 34 songs; our top 3: Habib Galbi (2015, 265) · Galbi Haway (2015, 63) · ודוד יפה עיניים (2019, 20)
+  - name: "A‐WA"
+    mbid: cc448b70-4c20-4ea4-a818-053494aee734
+    tier: 2
+    songs: []
+  # 22 songs; our top 3: Basic Ingredients (2019, 63) · Polygon (2019, 14) · Mind Storm (2021, 19)
+  - name: "Animato"
+    mbid: 55e6ca59-296b-49d5-9153-92a8636c239a
+    tier: 2
+    songs: []
+  # 19 songs; our top 3: Civilization (2005, 254) · After 6am (1996, 49) · Beyond the Function (2004, 454)
+  - name: "Indica"
+    mbid: be967aaf-e171-42e8-9145-725dd1645b35
+    tier: 2
+    songs: []
+  # 24 songs; our top 3: Medejin (2008, 8) · White Devil (2005, 10) · The Hunt (2006, 212)
+  - name: "Abomination"
+    mbid: 8da648e9-adba-40a9-92ca-204938875ad6
+    tier: 2
+    songs: []
+  # 23 songs; our top 3: Papercats (2004, 593) · Neto <-> Mandarin (2004, 336) · Ribat Soosim (2005, 224)
+  - name: "Zegunder"
+    mbid: df38dfa8-2c67-4971-baef-1128a13ad5d2
+    tier: 2
+    songs: []
+  # 19 songs; our top 3: זמר אהבה לים (1961, 16) · שיר השוק (1961, 14) · האם אמרו לך פעם (1961, 13)
+  - name: "התרנגולים"
+    mbid: 9e10382a-4b28-402f-8909-113c8aa13a76
+    tier: 2
+    songs: []
+  # 16 songs; our top 3: Screams From the Dark Galaxy (2003, 54) · Vampire Legend (2004, 120) · Fright Night (2004, 95)
+  - name: "Psychotic Micro"
+    mbid: 679ef24f-0510-48c8-8478-dbc1eec00f6f
+    tier: 2
+    songs: []
+  # 18 songs; our top 3: Escape to Heaven (2004, 87) · Discoteque (Melicia remix) (2006, 408) · Angels (2008, 551)
+  - name: "Aquatica"
+    mbid: a9b1fe52-3b43-4525-82a5-2c57caa66172
+    tier: 2
+    songs: []
+  # 36 songs; our top 3: Mahtab (2018, 73) · Bia Bia (2020, 179) · Zan Bezan (2020, 69)
+  - name: "Liraz"
+    mbid: 55c963e3-6b37-4887-ab08-f3f15f0a22c4
+    tier: 2
+    songs: []
+  # 35 songs; our top 3: היא הולכת בדרכים (1985, 26) · נערה במשקפיים (1998, 11) · כל הליל אני בגנך (1998, 15)
+  - name: "אולארצ׳יק"
+    mbid: 7978ffbd-02ec-41c1-8fc4-204a39a171bc
+    tier: 2
+    songs: []
+  # 16 songs; our top 3: Psymarocco (2016, 7) · Sun Valley (2020, 11) · Take a Ride (2010, 6)
+  - name: "Sundose"
+    mbid: b047d4b0-4419-4966-8fb8-14ac57f8a39f
+    tier: 2
+    songs: []
+  # 28 songs; our top 3: תפוחים ותמרים (1995, 30) · קרוב אל ליבך (1995, 47) · קר שם בחוץ (1991, 17)
+  - name: "רמי קלינשטיין"
+    mbid: 96e477e7-b816-4980-a42d-93d59b19901b
+    tier: 2
+    songs: []
+  # 13 songs; our top 3: אינך יכולה (1967, 149) · זמר נוגה (1967, 96) · יחזקאל (1967, 119)
+  - name: "החלונות הגבוהים"
+    mbid: 2d698f23-08b6-48a5-9049-3a865e578b93
+    tier: 2
+    songs: []
+  # 49 songs; our top 3: Love in Music (2016, 161) · Refugee Song (2016, 125) · I Cried For You (2014, 231)
+  - name: "Buttering Trio"
+    mbid: fd2120d3-7c64-4390-aafb-ad31ccaaa207
+    tier: 2
+    songs: []
+  # 36 songs; our top 3: Chimera (2025, 29) · Chaitanya (2021, 11) · Southern Lights (2019, 5)
+  - name: "Faders"
+    mbid: 8d201975-dd39-4f73-a485-d7798f055936
+    tier: 2
+    songs: []
+  # 8 songs; our top 3: Disk On Kick (2009, 11) · Bunker (Burn in Noise Rmx) (2013, 9) · New Clear War Head (2011, 100)
+  - name: "Ritree"
+    mbid: c5aaea35-e063-4ab2-8f77-307033a81cd3
+    tier: 2
+    songs: []
+  # 19 songs; our top 3: Coffee (2009, 727) · Eat You (2017, 23) · Ups & Downs (2009, 17)
+  - name: "Eitan Reiter"
+    mbid: 831df24e-b1ec-4799-9a2d-cff84518ca62
+    tier: 2
+    songs: []
+  # 7 songs; our top 3: Sivan (2009, 1,720) · Tel Aviv (2009, 13) · Entropy (radio edit) (2012, 10)
+  - name: "Michael Tsukerman"
+    mbid: 7bd6b555-9591-4b96-a762-0db67d95e289
+    tier: 2
+    songs: []
+  # 53 songs; our top 3: ניסיתי ונכשלתי (2004, 22) · היום זה עכשיו (2007, 19) · עצוב כמו מים (2004, 16)
+  - name: "דויד פרץ"
+    mbid: b6e1612e-1c28-428f-aba4-8eaf73f433ce
+    tier: 2
+    songs: []
+  # 16 songs; our top 3: Blue Cat (2008, 505) · Twenty (2008, 15) · Unleaded (2008, 500)
+  - name: "Yestegan Chay"
+    mbid: 20ab9d89-887d-4fe9-843c-91af369921a7
+    tier: 2
+    songs: []
+  # 54 songs; our top 3: Layla (2025, 43) · Turkum (2018, 25) · Space Camel (2019, 363)
+  - name: "Ouzo Bazooka"
+    mbid: d2e25b2b-0be7-49de-b8a6-72b031d7039c
+    tier: 2
+    songs: []
+  # 66 songs; our top 3: Oselot (2016, 15) · Mania (2017, 384) · Presudeos (2016, 435)
+  - name: "Alon Mor"
+    mbid: 672e6227-5aff-4370-849c-93c66eaf965c
+    tier: 2
+    songs: []
+  # 15 songs; our top 3: Les Quatre saisons, Concerto Op. 8, No. 1 "Le Printemps": Allegro (1986, 33) · Caprice for Solo Violin, op. 1 no. 5: Agitato in A minor (1984, 6) · Caprice for Solo Violin, op. 1 no. 9: Allegretto in E major (1984, 53)
+  - name: "Shlomo Mintz"
+    mbid: e32e635d-ee6e-45c7-bcf3-aad9407dfefa
+    tier: 2
+    songs: []
+  # 11 songs; our top 3: Kyoto Nights (2007, 412) · Kyoto Nights (Mathieu Bouthier & Muttonheads remix) (2007, 117) · Kyoto Nights (Like 'O') (12" vocal version) (2008, 6)
+  - name: "Ran Shani"
+    mbid: 5f8d66cf-6a14-4ebf-a95b-fef28d8b5720
+    tier: 2
+    songs: []
+  # 58 songs; our top 3: Pregnant With Turds (2001, 190) · Forced to Swallow Feces (2001, 205) · Turd Rugby Insanity (2001, 179)
+  - name: "Abosranie Bogom"
+    mbid: b2454073-bb25-4f0b-bc48-d75e22981118
+    tier: 2
+    songs: []
+  # 47 songs; our top 3: Dragon (2005, 41) · Drag Dorks in Vampire Suits (2008, 195) · Land of Disgust (2006, 30)
+  - name: "PTYL"
+    mbid: f18c10a8-2880-4dc4-9631-f66f5d7a65a9
+    tier: 2
+    songs: []
+  # 59 songs; our top 3: עכשיו אתה חוזר בחזרה (2007, 87) · בכרם תימן (2018, 2) · מפחד עלייך (2018, 18)
+  - name: "מירי מסיקה"
+    mbid: 808abb20-772c-4223-b18d-25ea004a0c37
+    tier: 2
+    songs: []
+  # 53 songs; our top 3: משחק של דמעות (1990, 112) · עפיפונים (1990, 83) · זקנים (1992, 9)
+  - name: "נקמת הטרקטור"
+    mbid: d509d5bd-ad9b-491a-bf10-9f22c08ed18a
+    tier: 2
+    songs: []
+  # 15 songs; our top 3: Colors Band (Astrix Remix) (2005, 273) · Love of My Life (2004, 301) · Follow the Signs (2006, 371)
+  - name: "DALI"
+    mbid: 27d3522b-0d46-406e-9466-0107afb08611
+    tier: 2
+    songs: []
+  # 24 songs; our top 3: Duties of the Hearts (2023, 21) · Eden (2019, 24) · This Way Up (2014, 9)
+  - name: "Lifeforms"
+    mbid: 6f230d55-a578-433b-b977-c1458f612a4b
+    tier: 2
+    songs: []
+  # 15 songs; our top 3: Project Pluton (2007, 7) · Bad Girls Go to Hell (2008, 120) · She Must Die (2008, 5)
+  - name: "Kalilaskov AS"
+    mbid: 1e35d329-1eac-4df2-a6e5-2716d81ebe01
+    tier: 2
+    songs: []
+  # 30 songs; our top 3: Voyage (12″ version) (2000, 23) · L.D.M.S. (2003, 73) · Revolution (2003, 31)
+  - name: "Eyal Barkan"
+    mbid: f6a69bd8-9361-4b62-a8c8-829e1ae168a9
+    tier: 2
+    songs: []
+  # 20 songs; our top 3: Henbane (2005, 860) · Pannoczka (2001, 837) · The Golden Skull (2002, 339)
+  - name: "Agnivolok"
+    mbid: a5be795e-59c5-4b20-a197-05864df870bb
+    tier: 2
+    songs: []
+  # 14 songs; our top 3: ערב של שושנים (1966, 7) · בהר הגלבוע (1999, 7) · אור וירושלים (1978, 12)
+  - name: "הפרברים"
+    mbid: 4f851ba3-b505-429f-b7d2-b5155d5a86bc
+    tier: 2
+    songs: []
+  # 29 songs; our top 3: ניצוצות (1990, 138) · אין קץ לילדות (1990, 126) · אמריקה (1990, 116)
+  - name: "פורטיסחרוף"
+    mbid: efa34270-9852-4437-8de9-b495fc7da429
+    tier: 2
+    songs: []
+  # 14 songs; our top 3: זה מכבר (1974, 64) · טוליק (2008, 17) · יונתן סע הביתה (1974, 3)
+  - name: "אושיק לוי"
+    mbid: efb391b6-85a5-45d8-a11a-980aeefeb1ce
+    tier: 2
+    songs: []
+  # 28 songs; our top 3: Arise (2025, 64) · Kabalah (2019, 62) · It's Time (2016, 15)
+  - name: "Blastoyz"
+    mbid: cf1d0ddf-9794-4c7b-9758-a43b261f5a97
+    tier: 2
+    songs: []
+  # 61 songs; our top 3: Eem Rak Na'iz (2007, 190) · אנצל (2006, 341) · ממריאים (2006, 262)
+  - name: "מוש בן ארי"
+    mbid: c227cb59-7fea-408d-86ee-b3b0addfb3ca
+    tier: 2
+    songs: []
+  # 13 songs; our top 3: Undertone (2007, 201) · Antibiotic (2006, 4) · Ghost in the Machine (2005, 262)
+  - name: "Brain Damage"
+    mbid: c8608a09-720f-450e-84aa-1e551c65932c
+    tier: 2
+    songs: []
+  # 15 songs; our top 3: Space n Time (Ritmo remix) (2009, 240) · Radioadd (2009, 151) · Mechanizm (2009, 148)
+  - name: "MUTe"
+    mbid: b310c554-373f-4191-88fd-736ee4d42e48
+    tier: 2
+    songs: []
+  # 56 songs; our top 3: Ana Maghrebi (2017, 71) · Concerto in D major, RV 93: 2. Largo (2015, 8) · Say: Black Earth (Arr. Bruce for Mandolin & Ensemble) (2025, 12)
+  - name: "Avi Avital, Il Giardino Armonico, Giovanni Antonini"
+    mbid: 18a5e73c-a688-4c6b-80ba-5f47a3b72b6b
+    tier: 2
+    songs: []
+  # 47 songs; our top 3: Angels in Disguise (2023, 21) · Worms of Souls (2016, 143) · Antipath (2016, 91)
+  - name: "Winterhorde"
+    mbid: 46261ee7-13c0-40a5-8a62-91e6a434db16
+    tier: 2
+    songs: []
+  # 12 songs; our top 3: Fixed (2008, 153) · Green Lines (2008, 486) · So Long (2007, 109)
+  - name: "Nasser"
+    mbid: 0ba4b0f2-a4ba-4b55-850a-b07bc7c5a5ff
+    tier: 2
+    songs: []
+  # 16 songs; our top 3: Puncha puncha (?, 114) · Noches noches (?, 13) · De edad de kinze anyos (?, 10)
+  - name: "Isaac Levy"
+    mbid: 7e06f780-baa4-4fc6-b804-6d1a83d6ef01
+    tier: 2
+    songs: []
+  # 28 songs; our top 3: Time (2012, 277) · Cook Me (2003, 361) · Morning Hero (2003, 444)
+  - name: "Izabo"
+    mbid: 01ed6162-978a-4c20-a4f0-828af636fda5
+    tier: 2
+    songs: []
+  # 17 songs; our top 3: Ponder (2016, 124) · Moments (2001, 219) · Razor's Edge (1994, 19)
+  - name: "Sleepless"
+    mbid: 8f1d7c55-b1da-4bfd-b3d5-500f5555b03a
+    tier: 2
+    songs: []
+  # 23 songs; our top 3: Avira (2020, 34) · Poison Turtle (2013, 6) · Poison Turtle, Pt. 2 (2019, 109)
+  - name: "OxiDaksi"
+    mbid: 4b89ae90-4076-41e1-9f3a-4138d8ffd536
+    tier: 2
+    songs: []
+  # 14 songs; our top 3: Six Degrees (2008, 8) · Just Another Day (Maelstrom Tech Trance remix) (2009, 40) · Single Shot (2006, 176)
+  - name: "Brisker & Magitman"
+    mbid: 0acd1187-a74f-4c44-8d21-3c6405c0fd45
+    tier: 2
+    songs: []
+  # 17 songs; our top 3: Wreckage (2007, 271) · Access Denied (Supreme Court remix) (2006, 100) · Find (2019, 259)
+  - name: "IWR"
+    mbid: af70b987-d311-4b7b-85a1-23f5f25548e3
+    tier: 2
+    songs: []
+  # 28 songs; our top 3: טבריה (1998, 59) · באביב (1998, 61) · נמנע ממך (2001, 32)
+  - name: "מיכה שטרית"
+    mbid: 4c10d42f-613c-44e5-8d66-9cf15574cf44
+    tier: 2
+    songs: []
+  # 43 songs; our top 3: Junun (2015, 499) · Shoshan (2009, 70) · Allah Elohim (2015, 342)
+  - name: "Shye Ben-Tzur"
+    mbid: 0c30bbeb-6748-4f2c-92ab-5e00af779b89
+    tier: 2
+    songs: []
+  # 94 songs; our top 3: Ashira Lashem (2020, 7) · Gam Ki Elech (2013, 5) · Am Echad (2013, 14)
+  - name: "Ari Goldwag"
+    mbid: a697ac23-9d82-45db-9c19-d72babbccfc9
+    tier: 2
+    songs: []
+  # 12 songs; our top 3: גבעת התחמושת (1973, 29) · חמסינים במשלט (1994, 7) · האיש מן הבקעה (1994, 13)
+  - name: "להקת פיקוד המרכז"
+    mbid: 19b2161b-ebc6-4ad0-912f-48c62f2c3020
+    tier: 2
+    songs: []
+  # 36 songs; our top 3: Say What You Want (2005, 223) · Give Me a Sign (2005, 236) · I.R.L. (2004, 91)
+  - name: "Man Alive"
+    mbid: 3542b4eb-1dc2-4771-905d-2ef36e9e86ab
+    tier: 2
+    songs: []
+  # 48 songs; our top 3: בגלל הרוח (1989, 2) · אבא (2007, 36) · מלדיטה לונה (2007, 10)
+  - name: "שלומי שבת"
+    mbid: 033255b5-77da-4560-93ae-49a55cea2f41
+    tier: 2
+    songs: []
+  # 54 songs; our top 3: Underground (2008, 456) · אל תטוסי (2006, 106) · Little Man (2008, 654)
+  - name: "תומר יוסף"
+    mbid: 717824b3-f900-4775-b15d-6088d4341a38
+    tier: 2
+    songs: []
+  # 67 songs; our top 3: Flyin' Bamboo (2018, 421) · Dream Your Dreams (2023, 50) · Of Trust and Remorse (2023, 19)
+  - name: "Nitai Hershkovits"
+    mbid: 5f9bac39-de3f-4d35-bbc9-0c43cb6bd47e
+    tier: 2
+    songs: []
+  # 22 songs; our top 3: Final Oblivion (Moon Remix) (2003, 65) · The Stones (2003, 229) · Space Embargo (2002, 224)
+  - name: "Cyber Cartel"
+    mbid: fea5af5e-18c0-41eb-81f0-39df5769afdf
+    tier: 2
+    songs: []
+  # 15 songs; our top 3: Kelman Gates (2010, 210) · Test Drive (2009, 11) · Flashback (2012, 13)
+  - name: "Easy Riders"
+    mbid: db8b6b7b-717f-4be4-8cfa-9502113c7f1d
+    tier: 2
+    songs: []
+  # 27 songs; our top 3: Unholy Metal Way (2001, 129) · Justus Ex Fide Vivit (2007, 604) · No Light (2006, 279)
+  - name: "Tangorodrim"
+    mbid: c70e1fbe-ec7f-43e0-adc6-c3b8bab28f2c
+    tier: 2
+    songs: []
+  # 5 songs; our top 3: A-Ba-Ni-Bi (1978, 73) · אבניבי (1978, 31) · שיר כלולות (1989, 2)
+  - name: "יזהר כהן"
+    mbid: 124fa000-44ae-4171-bbd0-c5d000a616a6
+    tier: 2
+    songs: []
+  # 77 songs; our top 3: Soulless Soldier (2017, 18) · Guard of She'ol (2019, 15) · Powerslave (Iron Maiden cover) (2015, 15)
+  - name: "Arallu"
+    mbid: 8c5d8a63-6303-4de3-9645-30d41bcbf33e
+    tier: 2
+    songs: []
+  # 33 songs; our top 3: She's Wearing Their Skin (2006, 661) · Schweinehund (2013, 11) · Sharing Together (2006, 628)
+  - name: "Whorecore"
+    mbid: 6d08c58f-b590-4079-9d04-63189f8f2856
+    tier: 2
+    songs: []
+  # 7 songs; our top 3: What Will Be? (1999, 887) · זמר שלוש התשובות (1998, 31) · אהבה אסורה (1998, 23)
+  - name: "זהבה בן"
+    mbid: bb4f3a1b-ab07-43ed-9339-06ce0435c3bd
+    tier: 2
+    songs: []
+  # 21 songs; our top 3: Disco Madness (2016, 31) · The Guru (2017, 19) · Zumba (2017, 11)
+  - name: "Pop Art"
+    mbid: e64b74ef-3cb3-4853-b94b-2876365b974c
+    tier: 2
+    songs: []
+  # 10 songs; our top 3: Alien Pump (1997, 687) · New Aura (1996, 515) · Visually Distorted (1997, 330)
+  - name: "Tandu"
+    mbid: 6c31f585-5246-434e-84c9-459332dd191d
+    tier: 2
+    songs: []
+  # 21 songs; our top 3: Celebrium (Yuriy From Russia remix) (2016, 4) · Behind You (MoodFreak's Campfire Mix) (2020, 35) · I Feel It (original mix) (2009, 88)
+  - name: "Matan Caspi"
+    mbid: dfa0a200-bad8-4eaa-98e0-2e771a8d9202
+    tier: 2
+    songs: []
+  # 55 songs; our top 3: חבק אותי (1995, 50) · אריה ורותי (1995, 50) · עננים שחורים (1998, 130)
+  - name: "עמיר לב"
+    mbid: 4ff8534b-cc7c-4326-91c3-5ded1e885121
+    tier: 2
+    songs: []
+  # 14 songs; our top 3: ערב של יום בהיר (1977, 35) · יותר מסתם אחת (1983, 7) · הידעת את הדרך (1982, 11)
+  - name: "אפרים שמיר"
+    mbid: ef8c09a5-9b1b-412b-aa84-4f6eefa8d9b7
+    tier: 2
+    songs: []
+  # 21 songs; our top 3: Kurgan (2011, 1,463) · Sword's Hymn (2011, 1,410) · The Birth (2003, 439)
+  - name: "Arafel"
+    mbid: 9f281ea7-762f-47f7-8a7d-410161478095
+    tier: 2
+    songs: []
+  # 30 songs; our top 3: Vibe Jadid (2024, 37) · Afrobeatz (2021, 32) · Bob Dealer (2021, 162)
+  - name: "Shay Hazan"
+    mbid: f1a77cd6-9956-49bf-8d6f-6300c48df52c
+    tier: 2
+    songs: []
+  # 56 songs; our top 3: גג (2006, 210) · יש לו בחורות כמו מים (1999, 178) · רמי מואשם באחזקת סמים קלים (1999, 193)
+  - name: "ג׳ירפות"
+    mbid: 8ae967b0-34de-43c8-bae1-8d0773b80970
+    tier: 2
+    songs: []
+  # 15 songs; our top 3: 80s Come Back to Us (extended version) (2015, 4) · Arise (2006, 45) · Sahara (2005, 196)
+  - name: "Zion"
+    mbid: 87167cb6-e8c5-4342-920b-9592c607e649
+    tier: 2
+    songs: []
+  # 50 songs; our top 3: שגר פגר (2007, 249) · שיר בחסות המועצה לפירות הדר (2007, 160) · אוטו זבל (2011, 133)
+  - name: "הבילויים"
+    mbid: 95c3e144-c161-481c-b16d-cbe72e5fddb0
+    tier: 2
+    songs: []
+  # 44 songs; our top 3: שישי שבת (1994, 107) · ריקי (1992, 35) · רק אל תלכי (1994, 89)
+  - name: "זקני צפת"
+    mbid: c7f354a6-e5f9-4cb1-8d17-e9cecca71bc2
+    tier: 2
+    songs: []
+  # 45 songs; our top 3: War and Pain (2005, 231) · Funky Mission (2005, 567) · So Long (2005, 408)
+  - name: "Funk'n'stein"
+    mbid: 8908a9d3-7a50-4143-86a1-c5c571c6c902
+    tier: 2
+    songs: []
+  # 17 songs; our top 3: זה הכל (1982, 31) · התחלה חדשה (1993, 44) · בית משותף (1984, 2)
+  - name: "בנזין"
+    mbid: a61293a9-d715-4f32-99e1-f0c2efe5c9de
+    tier: 2
+    songs: []
+  # 12 songs; our top 3: Piano Concerto No.3 in C, Op.26; 1. Andante - Allegro (1972, 291) · Nocturne (Homage to John Field), op. 33 (1995, 72) · Piano Concerto No.3 in C, Op.26; 2. Tema con variazione (1972, 12)
+  - name: "Israela Margalit"
+    mbid: df6ce6b2-2976-4d61-9429-e9ab649ec95c
+    tier: 2
+    songs: []
+  # 18 songs; our top 3: Out Run (magical acoustic shower) (2008, 8) · Bruce Lee (acoustic Jam) (2005, 79) · Uridium (Inner Space) (2006, 47)
+  - name: "Doron Deutsch"
+    mbid: c2ebef4b-de11-4a01-a4d8-3bb6f91839b8
+    tier: 2
+    songs: []
+  # 13 songs; our top 3: Too Soon (Original Mix) (2023, 17) · One Level Down (2021, 9) · Perception (2015, 5)
+  - name: "Sphera"
+    mbid: 0aa7f288-0367-4e09-9601-43a6cff028e7
+    tier: 2
+    songs: []
+  # 22 songs; our top 3: No Cover (2009, 91) · Deep Switch (2010, 40) · A Place Called U See (2006, 68)
+  - name: "Tsabeat"
+    mbid: d6bdf3f4-1ded-4068-98b1-4b54e35007d5
+    tier: 2
+    songs: []
+  # 33 songs; our top 3: Despair (For Heaven’s Sake) (2019, 94) · Hell Born Shove (Impossible) (2019, 258) · Till the End (2019, 110)
+  - name: "Walkways"
+    mbid: 2ffad9df-93db-4649-a218-9223b2e71b09
+    tier: 2
+    songs: []
+  # 11 songs; our top 3: Time Off (2008, 69) · Everyday Life (2007, 917) · One Happy Thought (2008, 7)
+  - name: "Unoccupied"
+    mbid: 27f13365-69e8-47bd-bf3e-2685be6ec26b
+    tier: 2
+    songs: []
+  # 21 songs; our top 3: Incoming Trancemision (2006, 5) · Antibiotics (2007, 116) · Space Nation (2008, 73)
+  - name: "Paranoize"
+    mbid: 66b1d630-1cf1-4c08-a3a4-ccca21b0a3ff
+    tier: 2
+    songs: []
+  # 32 songs; our top 3: Leylim Ley (2017, 6) · Floating (2018, 8) · Don’t Touch (2023, 5)
+  - name: "Laroz"
+    mbid: 1a7926db-1ab3-4165-9f39-ac1e2d5c2591
+    tier: 2
+    songs: []
+  # 18 songs; our top 3: A2D2 (2005, 188) · Korg Lucas (2005, 102) · Only in My Mind (Mechanix remix) (2008, 49)
+  - name: "E-Jekt"
+    mbid: b6de07dd-6ee4-4e8e-9c27-4641c7e8ebfa
+    tier: 2
+    songs: []
+  # 28 songs; our top 3: פרפרי תעתוע (1991, 44) · תמונה אימפרסיוניסטית (1991, 63) · כרמלה גרוס ואגנר (1991, 41)
+  - name: "כרמלה גרוס ואגנר"
+    mbid: 8b60af23-8925-4c63-9973-14884fed6e3f
+    tier: 2
+    songs: []
+  # 41 songs; our top 3: Ballerina (2019, 2,221) · Behind Every Decision (2019, 953) · Before You Left (2019, 820)
+  - name: "Yehezkel Raz"
+    mbid: b3bfa541-563a-4ff4-83d8-dac152a7ce1a
+    tier: 2
+    songs: []
+  # 45 songs; our top 3: הלב שלי עומד להתפוצץ (2008, 114) · על מי אני עובד (2008, 105) · ילדה שלי קטנה (2008, 99)
+  - name: "יוני בלוך"
+    mbid: ecf9d2d0-43fb-43ae-acf2-720e3e08bfb0
+    tier: 2
+    songs: []
+  # 19 songs; our top 3: Say What You Mean (2025, 39) · Fell For A Demon (2025, 31) · Back 2 You (2023, 13)
+  - name: "ROY KNOX"
+    mbid: 4a35ef57-b770-43ec-b6e7-52d808548f49
+    tier: 2
+    songs: []
+  # 37 songs; our top 3: Breakapart (2014, 26) · OTM (2014, 22) · Heart of Wool (2018, 66)
+  - name: "Acollective"
+    mbid: e10f9d9b-3949-445f-a920-f7c423a2d82f
+    tier: 2
+    songs: []
+  # 11 songs; our top 3: אור (1988, 17) · צריך לצלצל פעמיים (1962, 8) · כלניות (1988, 2)
+  - name: "שושנה דמארי"
+    mbid: 72495349-71ef-4714-b382-d6764a9c5666
+    tier: 2
+    songs: []
+  # 19 songs; our top 3: Ela (2016, 5) · Kalimero (2006, 8) · Smoke It (2016, 5)
+  - name: "Didrapest"
+    mbid: e8d1da9a-0746-4976-abd4-c6f07e671a88
+    tier: 2
+    songs: []
+  # 21 songs; our top 3: Olurmu Dersin (2022, 213) · Seni Sen Olduğun İçin Sevdim (2022, 180) · Hudayda (2022, 132)
+  - name: "Şatellites"
+    mbid: b0570bbc-05f0-44d3-9c7c-f267f03a880a
+    tier: 2
+    songs: []
+  # 10 songs; our top 3: שובי שובי לפרדס (1981, 4) · דרך הכורכר (1979, 17) · סיבה טובה (1981, 3)
+  - name: "אריק סיני"
+    mbid: 96855582-f799-4c15-976f-17518eb6d633
+    tier: 2
+    songs: []
+  # 51 songs; our top 3: שיר אהבה פשוט (2006, 45) · עד (2011, 9) · מי באש (2019, 6)
+  - name: "איה כורם"
+    mbid: cd61b287-37ef-403e-9cdd-f0d40f1170cf
+    tier: 2
+    songs: []
+  # 13 songs; our top 3: Spiegel im Spiegel (2006, 745) · Spiegel im Spiegel for Violin and Piano (1978) (2010, 35) · Fratres (2023, 459)
+  - name: "Vadim Gluzman, Angela Yoffe"
+    mbid: 509e666a-2f09-4ae9-823d-5413226caf15
+    tier: 2
+    songs: []
+  # 11 songs; our top 3: Mikstronivo (2008, 8) · Ah, Das Ist Gut (2009, 10) · Reaching Alizeta (2009, 306)
+  - name: "Astronivo"
+    mbid: ef009ad1-a686-4bdb-95a8-1af4164a97a1
+    tier: 2
+    songs: []
+  # 17 songs; our top 3: Salaam (2007, 181) · Ashrey Ha'ish (2007, 218) · שיר למעלות (1999, 19)
+  - name: "שבע"
+    mbid: 82ba2800-dafc-4792-8a85-e492eea5416a
+    tier: 2
+    songs: []
+  # 10 songs; our top 3: הלילה (1981, 3) · החגיגה נגמרת (1977, 8) · האורח (1984, 16)
+  - name: "הכל עובר חביבי"
+    mbid: b0244c7f-5a4a-4ea3-8428-3155d2f8335b
+    tier: 2
+    songs: []
+  # 26 songs; our top 3: Floating (2006, 513) · 7am (2006, 196) · Beyond Concept (2006, 325)
+  - name: "Digital Samsara"
+    mbid: 98cf6794-dfde-4ca9-9e55-ada91140a76e
+    tier: 2
+    songs: []
+  # 21 songs; our top 3: Inner Waves (2005, 139) · Bonanza (2005, 15) · Digital Illusions (2003, 134)
+  - name: "Space Monkey"
+    mbid: 482205ec-d5a7-40b9-9ad3-4df7188726e6
+    tier: 2
+    songs: []
+  # 64 songs; our top 3: מותק את אצלי בראש (2007, 144) · בעיות אישיות (2007, 193) · New Age Women (2007, 133)
+  - name: "שלומי שבן"
+    mbid: 6fefe5ba-0a0e-47a4-9515-4454a1fde143
+    tier: 2
+    songs: []
+  # 34 songs; our top 3: אדי (1991, 12) · שיטוט ברחובות (1991, 11) · איש השנה (1992, 11)
+  - name: "פונץ׳"
+    mbid: aff1fb85-eca0-4042-979a-dbba56c33708
+    tier: 2
+    songs: []
+  # 55 songs; our top 3: Narcissistic Cannibal (2013, 264) · Wasteland (2011, 912) · La La La (2014, 130)
+  - name: "EarlyRise"
+    mbid: 888d90ca-9bf3-4666-acba-67e1aed0cfa5
+    tier: 2
+    songs: []
+  # 9 songs; our top 3: שירי ילדות (2006, 10) · רציתי שתדע (2004, 3) · אדון עולם (1976, 2)
+  - name: "Uzi Hitman"
+    mbid: 90e3a038-2dd1-4e47-b724-69912c2b0888
+    tier: 2
+    songs: []
+  # 13 songs; our top 3: הורה (1982, 16) · זוהי יפו (1998, 8) · עם רדת יום (1998, 6)
+  - name: "אבי טולדנו"
+    mbid: 21d634c2-d412-4c37-a718-79fd7ea83e2a
+    tier: 2
+    songs: []
+  # 15 songs; our top 3: אל תדליקו לי נר (1983, 38) · כל האמת (1983, 31) · שעת הזאבים (1981, 15)
+  - name: "הקליק"
+    mbid: bc6ec992-8f72-498d-8651-c7bc8bcb9d29
+    tier: 2
+    songs: []
+  # 7 songs; our top 3: Bionic Bong (1998, 137) · Impossible Vortex (1999, 70) · Martian Civilization (Domestic Goblin remix) (1999, 43)
+  - name: "Children of the Doc"
+    mbid: 906b585c-cfff-42a1-ab09-9abdfe67ca0e
+    tier: 2
+    songs: []
+  # 34 songs; our top 3: הייתכן (2007, 34) · מישהו לרוץ איתו (2006, 638) · הו את (2008, 2)
+  - name: "דניאל סלומון"
+    mbid: a7bea84b-b8e2-4289-bf7e-21358c7c0232
+    tier: 2
+    songs: []
+  # 31 songs; our top 3: Once in a Life (Mind Complex remix) (2005, 73) · Rocket (2003, 50) · Forest (2004, 42)
+  - name: "Blanka"
+    mbid: 00a3c0b7-135b-435c-957c-3c506b1e5c30
+    tier: 2
+    songs: []
+  # 23 songs; our top 3: Failure Proven (2009, 556) · Destination, Life (2009, 505) · The Sin Collector (2009, 521)
+  - name: "The Fading"
+    mbid: 61cc9a06-ca27-4b13-9b60-a6c76455ebe8
+    tier: 2
+    songs: []
+  # 16 songs; our top 3: World of Sound (2009, 4) · Freebase (Dilemma mix) (1999, 27) · Taking Control (2006, 65)
+  - name: "Insomnia"
+    mbid: e20b2ba9-84c2-403c-bda0-b429c4db71e5
+    tier: 2
+    songs: []
+  # 32 songs; our top 3: La waLa (2024, 5) · Djaja (2022, 37) · Tislami Tislami (2024, 38)
+  - name: "El Khat"
+    mbid: d1057b89-8b57-4b77-9de0-02ef56b26225
+    tier: 2
+    songs: []
+  # 80 songs; our top 3: מעליות (2006, 57) · בסוף מתרגלים להכל (2009, 107) · איזה יום (2009, 82)
+  - name: "דודו טסה"
+    mbid: feeb07b4-4cfd-4c47-b985-dc864805f84d
+    tier: 2
+    songs: []
+  # 43 songs; our top 3: Hit Me (2009, 153) · Master Me (2009, 59) · Sun (2009, 132)
+  - name: "Tamar Eisenman"
+    mbid: 1504aa19-c13b-4fb4-b29b-84e692acc59e
+    tier: 2
+    songs: []
+  # 35 songs; our top 3: Unicorn (2023, 497) · BA DA BING (2024, 9) · Please Don't Suck (2021, 136)
+  - name: "Noa Kirel"
+    mbid: 76a3b9fc-ebb1-44a7-86fc-aca8650320c2
+    tier: 2
+    songs: []
+  # 18 songs; our top 3: Mama India (Out Now remix) (2017, 16) · Unknown Codex (2020, 15) · Psycho Celtic (2019, 110)
+  - name: "Technical Hitch"
+    mbid: 79f31273-2b8d-4b8a-9191-81345eae6a93
+    tier: 2
+    songs: []
+  # 22 songs; our top 3: רוצה להיות (2004, 4) · בך לא נוגע (2002, 10) · עוד סיבוב (1997, 11)
+  - name: "דן תורן"
+    mbid: a71b3305-8777-4bfa-aeeb-6b0f044e9fad
+    tier: 2
+    songs: []
+  # 27 songs; our top 3: Dreamer (2011, 107) · My Baby Boy (2014, 123) · Maya's Valse (2014, 92)
+  - name: "theAngelcy"
+    mbid: 047e3ab6-b8ea-4935-89ec-c9446e6b4440
+    tier: 2
+    songs: []
+  # 12 songs; our top 3: Drinking Dreams (2004, 83) · Chanting (2004, 17) · Inner Mind (2005, 10)
+  - name: "Z Machine"
+    mbid: 161ac444-694f-4ca7-9c06-581ab5cbbed0
+    tier: 2
+    songs: []
+  # 19 songs; our top 3: Deeper (2022, 30) · Unlock (2016, 22) · Major Mode (2013, 12)
+  - name: "Major7"
+    mbid: 4d3484e7-edba-4f34-9942-a2f99fdf97e1
+    tier: 2
+    songs: []
+  # 35 songs; our top 3: Alien Mental Facilities (2008, 6) · Build A Wonder (2006, 12) · Brainiac (2009, 12)
+  - name: "Terranoise"
+    mbid: ef2d9027-6bcb-49f9-acf9-231e9323fb58
+    tier: 2
+    songs: []
+  # 76 songs; our top 3: Stop (2009, 6) · Shalom Aleichem (2010, 5) · לבדו (2018, 7)
+  - name: "Ohad Moskowitz"
+    mbid: 18e0de18-ab4f-4a3a-9e06-8e0c4068fe86
+    tier: 2
+    songs: []
+  # 8 songs; our top 3: דרישת שלום (1985, 9) · אתה לי ארץ (1984, 33) · בן אדם (1988, 4)
+  - name: "ירדנה ארזי"
+    mbid: 05bafd96-ada9-43b0-a328-50d96fcbea22
+    tier: 2
+    songs: []
+  # 11 songs; our top 3: Morning Light (radio edit) (2015, 17) · Chipsy Kings (Original Mix) (2013, 23) · Stone Pony (original mix) (2012, 53)
+  - name: "Las Salinas"
+    mbid: 6a9f1af7-f8eb-453d-baf4-9dcfd6fe186f
+    tier: 2
+    songs: []
+  # 59 songs; our top 3: After the War (2018, 26) · Children of the 90's (2019, 68) · Tune for Mr. Ahmad Jamal (2019, 78)
+  - name: "Shalosh"
+    mbid: 670bcf6e-6307-4b1f-8360-5cd09d8fa297
+    tier: 2
+    songs: []
+  # 13 songs; our top 3: ככה את רצית אותי (1976, 139) · אהבה שקטה (1976, 139) · לא יודע איך לומר לך (2003, 21)
+  - name: "להקת תמוז"
+    mbid: d1d8ccec-c924-4685-b2eb-5195fe7de6e3
+    tier: 2
+    songs: []
+  # 25 songs; our top 3: תמונה (1990, 10) · אהבת שבוע הספר (1990, 9) · איך שיר נולד (1986, 4)
+  - name: "יהונתן גפן ולהקה טובה"
+    mbid: 89a93dbb-9eda-45a4-8a2c-4e92ad0c787d
+    tier: 2
+    songs: []
+  # 8 songs; our top 3: Ollie (2018, 67) · Ollie (extended mix) (2018, 15) · The Dogma Code (2017, 19)
+  - name: "Sahar Z"
+    mbid: cdb4dfcf-2caf-4d6e-a45d-fb8ef850cfc7
+    tier: 2
+    songs: []
+  # 22 songs; our top 3: Space Jam (2004, 145) · The Purist (Life Style remix) (2007, 8) · Good Vibes (2004, 99)
+  - name: "Alien vs. The Cat"
+    mbid: 1cae494e-e9c9-4a04-b965-ab783cca7573
+    tier: 2
+    songs: []
+  # 51 songs; our top 3: מכופף הבננות (?, 78) · תתקעו בחצוצרה (1997, 24) · יהיה פיצוץ (1997, 32)
+  - name: "שב״ק ס׳"
+    mbid: 5efcb54f-be7f-4596-999c-a5eeb7e6dded
+    tier: 2
+    songs: []
+  # 54 songs; our top 3: הכי יפה בעולם (1999, 155) · שיר של יום חולין (2008, 104) · מה ידוע על היום הזה (1999, 99)
+  - name: "מאור כהן"
+    mbid: 4ba46094-8c54-4ca1-8660-d8644f9fd539
+    tier: 2
+    songs: []
+  # 28 songs; our top 3: Body Language (2007, 1,639) · Lowest Dive (2007, 1,375) · Summers and Autumns (2008, 2,229)
+  - name: "Monotonix"
+    mbid: 618b4848-9402-4b38-9b34-c251938def8e
+    tier: 2
+    songs: []
+  # 16 songs; our top 3: קפה אצל ברטה (1973, 42) · שניים (1973, 45) · אחכה לך (1973, 46)
+  - name: "הנשמות הטהורות"
+    mbid: be54925f-f4eb-4fb8-884e-8bddb27ba417
+    tier: 2
+    songs: []
+  # 22 songs; our top 3: Straggled So Hard (2009, 302) · Rivers Gone Badly Wrong (2012, 11) · משעמם (2011, 3)
+  - name: "Yair Yona"
+    mbid: cefe3833-6788-462d-888e-9f4ef3a2ce40
+    tier: 2
+    songs: []
+  # 12 songs; our top 3: כד הקמח (1991, 6) · עוד לא תמו כל פלאייך (1995, 6) · קום והתהלך בארץ (1988, 2)
+  - name: "להקת פיקוד הצפון"
+    mbid: a8923532-5a78-41d3-9f09-d1f0f9bc7879
+    tier: 2
+    songs: []
+  # 56 songs; our top 3: Modern Love (2007, 535) · Days of Hunger (2006, 303) · Relaxation (2006, 252)
+  - name: "Geva Alon"
+    mbid: 1d566a14-4094-4f96-abb7-969b4f439728
+    tier: 2
+    songs: []
+  # 4 songs; our top 3: Magic Frequencies (1995, 350) · Witchcraft Magic (1996, 238) · Eastren Rain (2002, 7)
+  - name: "Witchcraft"
+    mbid: 1cd54382-2f9b-40ec-985c-05c1aced2e92
+    tier: 2
+    songs: []
+  # 43 songs; our top 3: À Paris (2012, 217) · Dans mon quartier (2012, 129) · J'aime (2012, 73)
+  - name: "Riff Cohen"
+    mbid: bf0669ad-1088-47da-a538-7f7e3255bf69
+    tier: 2
+    songs: []
+  # 36 songs; our top 3: Hangin’ Out (2013, 13) · L.A Ish (2009, 18) · For the Ones (2020, 9)
+  - name: "Kosha Dillz"
+    mbid: 75d12ea1-68e9-4d88-9486-69dd61fb7599
+    tier: 2
+    songs: []
+  # 8 songs; our top 3: Synthetic Technology (2012, 68) · Beyond And Over (2011, 140) · Signals (2011, 48)
+  - name: "Funk Truck"
+    mbid: d43f9559-6610-4c09-ba8f-cbb3505fdefa
+    tier: 2
+    songs: []
+  # 25 songs; our top 3: Scum of the Earth (2004, 17) · Decrypted Sound (2005, 9) · Back Dad City (2005, 8)
+  - name: "Double R.E.L."
+    mbid: 3944fff3-0b23-4f8c-880e-41a41db136bd
+    tier: 2
+    songs: []
+  # 29 songs; our top 3: Lullaby (1999, 1,727) · Just Now, Var. I (2007, 656) · Just Now, Var. III (2007, 397)
+  - name: "Anat Fort"
+    mbid: 29567d1b-f5f1-478b-b9c1-032f986707ed
+    tier: 2
+    songs: []
+  # 7 songs; our top 3: Bible Of Trance (2008, 5) · Love Freedom (2005, 10) · Dark Star (2007, 199)
+  - name: "Solar System"
+    mbid: 0c11717d-30f7-46f7-8898-808ffd03c171
+    tier: 2
+    songs: []
+  # 38 songs; our top 3: דנה (2012, 2) · ניו יורק-רפיח (2001, 109) · פרח נתתי לנורית (2001, 87)
+  - name: "שייגעצ"
+    mbid: 2d6c6d12-d926-458b-b9fa-d1941b04c78c
+    tier: 2
+    songs: []
+  # 11 songs; our top 3: Behind Silence (2005, 6) · Spectral Spike (2003, 17) · Gravitational Waves (2004, 10)
+  - name: "A-Force"
+    mbid: dfd1760f-a5d3-41b6-8ed0-0091486b04f4
+    tier: 2
+    songs: []
+  # 52 songs; our top 3: חיוך של ילד (2005, 3) · מילים של תפילה (2005, 3) · מלאכים (2005, 3)
+  - name: "חיים ישראל"
+    mbid: b456772d-83ed-41c6-aafa-a20bab0973bc
+    tier: 2
+    songs: []
+  # 19 songs; our top 3: Magic Rider (2024, 34) · 3 Days Later (2024, 221) · Spring Girl (2023, 150)
+  - name: "Adam Ten"
+    mbid: 9e3bb959-7f40-4fea-9801-d04863e4546b
+    tier: 2
+    songs: []
+  # 10 songs; our top 3: Slaves for Life (2008, 2,902) · Midian (2008, 2,106) · Birth of Deliverance (2008, 2,191)
+  - name: "Amaseffer"
+    mbid: 773055b0-ae36-44cf-84a2-d1b75b7f29bc
+    tier: 2
+    songs: []
+  # 42 songs; our top 3: LSDing Camping (2009, 745) · You Will See (2009, 496) · It's Not for Money (2009, 460)
+  - name: "Argaman"
+    mbid: 9481e2ac-05d7-4858-ba03-3420a0780096
+    tier: 2
+    songs: []
+  # 61 songs; our top 3: Wonder and Awe 2 (2017, 16) · Shake It (2021, 54) · Kavana (2007, 55)
+  - name: "Omer Klein"
+    mbid: 44b1a6e2-731e-4b94-a73b-336183fb4484
+    tier: 2
+    songs: []
+  # 14 songs; our top 3: High in the Sky (2020, 73) · Summer O'clock (2023, 7) · Illusions (2020, 23)
+  - name: "Shai T"
+    mbid: ced37e66-e806-4272-a0dc-97f8d0120697
+    tier: 2
+    songs: []
+  # 6 songs; our top 3: Avantgard (2012, 96) · Disco Terra (Artento Divini remix) (2010, 25) · Disco Terra (original mix) (2010, 7)
+  - name: "Moonpax"
+    mbid: 8594ff94-6d68-47a6-9dab-805ed20c211b
+    tier: 2
+    songs: []
+  # 7 songs; our top 3: Sonata in E-Flat Major for Flute and Harpsichord, BWV 1031: II. Siciliano (2011, 40) · Concerto in C major for flute, harp and orchestra, KV 299: II. Andantino (2008, 426) · Suite in 3 Movements, Op. 116: III. Valse (2007, 8)
+  - name: "Sharon Bezaly, Terence Charlston"
+    mbid: 9091ade7-02a8-42b8-9fe5-78022a91398b
+    tier: 2
+    songs: []
+  # 13 songs; our top 3: איך הוא שר (1989, 33) · אני בא הביתה מהלילה (1983, 24) · משהו חדש מתחיל (2008, 15)
+  - name: "דני רובס"
+    mbid: 81fe0058-851e-4ee9-a444-e41bf45f4b96
+    tier: 2
+    songs: []
+  # 22 songs; our top 3: Shine (2016, 14) · Island (2017, 38) · Ciel (Second mix) (2017, 11)
+  - name: "Profondita"
+    mbid: 98026504-d603-4ff3-babb-3c90f39ef8d9
+    tier: 2
+    songs: []
+  # 23 songs; our top 3: Abba Shimon (2010, 10) · Shalom Alechem (Peace On to You) (2014, 12) · Bereshit (2005, 34)
+  - name: "Moshav"
+    mbid: 6bbb49aa-7351-43ba-85e7-09e08c890601
+    tier: 2
+    songs: []
+  # 49 songs; our top 3: The Dream Thief (2018, 515) · Human (2021, 194) · Angelo (2012, 156)
+  - name: "Shai Maestro"
+    mbid: fe723bbb-47cc-4f42-830c-352f7b1fed81
+    tier: 2
+    songs: []
+  # 38 songs; our top 3: יום חדש נפלא (2007, 824) · המתוקות האחרונות (2007, 180) · הגשמה עצמית (2009, 129)
+  - name: "אריק ברמן"
+    mbid: 8374378f-fc32-4a6a-9a43-f8ee466ae06c
+    tier: 2
+    songs: []
+  # 15 songs; our top 3: אהבה בסוף הקיץ (1978, 16) · אני אוהב אותך לאה (2004, 6) · נאסף תשרי (1998, 12)
+  - name: "צביקה פיק"
+    mbid: b50245ec-7a09-4fba-a0b5-c5fd0e1d9526
+    tier: 2
+    songs: []
+  # 36 songs; our top 3: Knocking from inside (2017, 33) · Triptrap (2015, 72) · I’m Free (2019, 100)
+  - name: "Symbolico"
+    mbid: 9daa5e56-6c44-43a6-bcb5-3fc98c2286e7
+    tier: 2
+    songs: []
+  # 13 songs; our top 3: Exotic on the Speaker (2009, 701) · Put ’em Up (2009, 39) · Daraboukaton (2009, 169)
+  - name: "Soulico"
+    mbid: a3216a67-b84e-4115-98ff-97b0b99611af
+    tier: 2
+    songs: []
+  # 14 songs; our top 3: The Weightlessness Sensation (2007, 55) · Forest Dreams (2009, 8) · Psychotic Episode (2010, 7)
+  - name: "Attoya"
+    mbid: 439068eb-a4c5-40c2-b2fc-571b3cad4895
+    tier: 2
+    songs: []
+  # 24 songs; our top 3: כל קיץ (1997, 22) · נישקתי בחורה (2000, 10) · Mi Zot (2012, 9)
+  - name: "מיקה קרני"
+    mbid: 596c044d-5723-4430-8136-2a797389b6c9
+    tier: 2
+    songs: []
+  # 15 songs; our top 3: State of Mind (2022, 21) · A New Dawn (2019, 15) · Imagination (2019, 24)
+  - name: "Antinomy"
+    mbid: a5f044f0-149f-4672-b877-82867bb388d7
+    tier: 2
+    songs: []
+  # 8 songs; our top 3: Da-Hool (2021, 8) · Deeper (2010, 233) · Chabad (2010, 204)
+  - name: "Audio Junkies"
+    mbid: 5dde6ea3-21ba-49d6-96ed-8ce43331054a
+    tier: 2
+    songs: []
+  # 16 songs; our top 3: Ofek (2021, 84) · Atomica (Yotto remix) (2020, 81) · Place 2 High (2022, 8)
+  - name: "Jos & Eli"
+    mbid: da3921bb-8f81-4902-9a84-8d57463adc9e
+    tier: 2
+    songs: []
+  # 29 songs; our top 3: בלי לומר מילה (2005, 6) · לישון בלי לחלום (2005, 147) · Malachim - Angels (2008, 4)
+  - name: "מטרופולין"
+    mbid: 64b3fe37-3092-441e-8aa6-bcedba870286
+    tier: 2
+    songs: []
+  # 21 songs; our top 3: Mia Fora Thymamai (2008, 77) · Get Control (2006, 10) · The Way You Move (2007, 266)
+  - name: "Stereomatic"
+    mbid: 231cb5aa-369f-4c62-b6fe-c6f724f5b92a
+    tier: 2
+    songs: []
+  # 19 songs; our top 3: Awakening (2017, 17) · The Core (2016, 19) · The Rhythm (2021, 12)
+  - name: "ShivaTree"
+    mbid: 130c872d-50a3-4d7a-a497-77d9ae77734c
+    tier: 2
+    songs: []
+  # 11 songs; our top 3: Crossbow (2021, 489) · Russian Winter (2020, 181) · Show Me Your Pretty Side (2021, 188)
+  - name: "Tamar Aphek"
+    mbid: fd9225b0-862b-44bc-a774-865afa0b4b40
+    tier: 2
+    songs: []
+  # 37 songs; our top 3: נוסע לבד (1994, 27) · לעיתים (1994, 30) · ארוחה (1994, 17)
+  - name: "רעש"
+    mbid: 98c58ed6-047d-4ef3-8b48-baf6915267a0
+    tier: 2
+    songs: []
+  # 13 songs; our top 3: Ghost Can’t Run Away (1989, 18) · Bonus b/EA/S/T (2003, 54) · Sandanya (1989, 154)
+  - name: "Foreign Affair"
+    mbid: 22426520-2309-45c5-a67b-0f965ee20d8b
+    tier: 2
+    songs: []
+  # 17 songs; our top 3: Dance FX (2005, 367) · Father Connection (2007, 356) · Power System (2008, 147)
+  - name: "Silent Hill"
+    mbid: e584871a-de36-4e6f-8597-b6317a93aa12
+    tier: 2
+    songs: []
+  # 6 songs; our top 3: Sub Zero (2004, 268) · Albert Einstein (2006, 141) · Diamond Throw (2011, 31)
+  - name: "Spectrum"
+    mbid: c3bbe5f2-9306-4456-b86f-4ae823479601
+    tier: 2
+    songs: []
+  # 42 songs; our top 3: Deep Float (2017, 9) · Movement (2017, 6) · Psychonauts Temple (2016, 35)
+  - name: "MantisMash"
+    mbid: c7209e14-f93c-4845-baaa-eda6dc754ee8
+    tier: 2
+    songs: []
+  # 15 songs; our top 3: For All Mankind (Hard mix) (2000, 53) · Easy Rider (1999, 69) · XStar (1999, 30)
+  - name: "Passenger"
+    mbid: 20a596bf-569b-4252-97c4-1bc25d01f16d
+    tier: 2
+    songs: []
+  # 25 songs; our top 3: The Messenger (2004, 48) · Escape (2005, 39) · Pedro (2004, 31)
+  - name: "Entropy"
+    mbid: df731341-cb3d-4a0d-8f31-cfab7e785cb3
+    tier: 2
+    songs: []
+  # 16 songs; our top 3: הפרח בגני (1982, 98) · ים של דמעות (1985, 40) · נכון להיום (1982, 22)
+  - name: "זוהר ארגוב"
+    mbid: b7790a1d-de3d-4823-a64c-c0f9ceb15f38
+    tier: 2
+    songs: []
+  # 38 songs; our top 3: Tantibus II (2020, 108) · Concrete Cages (2020, 168) · Stranger (2020, 95)
+  - name: "Scardust"
+    mbid: 3ed8a470-93b1-47d7-b252-d360857ff534
+    tier: 2
+    songs: []
+  # 26 songs; our top 3: Blue (2010, 64) · Every Time She Smiles (2014, 326) · Misguided (2014, 345)
+  - name: "Distorted Harmony"
+    mbid: ff230c4c-9557-4576-b652-2263c51a48b1
+    tier: 2
+    songs: []
+  # 21 songs; our top 3: Fluid (2019, 16) · Disconnected (2020, 14) · Fear of the Unknown (2021, 12)
+  - name: "Modus"
+    mbid: 79756531-107f-450b-991b-d6621de98138
+    tier: 2
+    songs: []
+  # 16 songs; our top 3: איך כש... (1991, 4) · סוזן (1991, 2) · שיר הפאב (1996, 19)
+  - name: "יוסי אלפנט"
+    mbid: b43f7f62-d53d-4cfb-b045-e16d0f3671d4
+    tier: 2
+    songs: []
+  # 25 songs; our top 3: You Try This (SkyHighatrist remix) (2010, 23) · Remember the Alamo (2008, 64) · Indian Remedy (2007, 6)
+  - name: "Faxi Nadu"
+    mbid: a87aff23-b34a-4177-9b24-f01267b1800a
+    tier: 2
+    songs: []
+  # 26 songs; our top 3: עפיפון (?, 4) · ימים לבנים (2005, 35) · ילדי הירח (1990, 21)
+  - name: "שלמה יידוב"
+    mbid: 6dc77672-2ab3-411d-9be7-be9e32dcd296
+    tier: 2
+    songs: []
+  # 31 songs; our top 3: One Shot Killer (2018, 96) · Murder (2015, 17) · Shock Out (2018, 75)
+  - name: "Miss Red"
+    mbid: 0127dd2f-6246-4e6e-98ae-a02b94c22183
+    tier: 2
+    songs: []
+  # 11 songs; our top 3: לו הייתי פירט (1969, 18) · מי מפחד מגברת לוין (1969, 16) · האוהבים את האביב (1969, 7)
+  - name: "השלושרים"
+    mbid: 57a7782e-32ad-47b5-ab38-a79f5a3baf9c
+    tier: 2
+    songs: []
+  # 31 songs; our top 3: Gold Rush (2015, 29) · Casino Café (2015, 40) · East to West (2015, 38)
+  - name: "Yonatan Gat"
+    mbid: 5cb41b23-90fe-4228-a439-cb449714f72a
+    tier: 2
+    songs: []
+  # 11 songs; our top 3: Synergia (2018, 66) · Like Bam Bam Bam (2011, 94) · Final Trip (2011, 72)
+  - name: "Mystical Complex"
+    mbid: f0588064-9edf-4093-83b1-8e0aae97ff9b
+    tier: 2
+    songs: []
+  # 46 songs; our top 3: Make It, Break It (2021, 28) · Dry (?, 386) · Tango (?, 376)
+  - name: "Ofrin"
+    mbid: be47982d-c492-44c2-8503-1a1ec4d1a891
+    tier: 2
+    songs: []
+  # 15 songs; our top 3: על כל אלה (1981, 10) · החופש הגדול (2008, 5) · שירת העשבים (1981, 9)
+  - name: "נעמי שמר"
+    mbid: 40a0a2c6-4a92-4442-b16e-1750111818b2
+    tier: 2
+    songs: []
+  # 8 songs; our top 3: Natural Vibes (2005, 614) · Dreamland (2005, 202) · Welcome To Mexico (2005, 14)
+  - name: "Visual Contact"
+    mbid: 3704ef19-52c6-4f9e-ade9-a402d4926c0c
+    tier: 2
+    songs: []
+  # 20 songs; our top 3: לך איתה (1988, 69) · ציירי לך שפם (1990, 71) · אמסטרדם (1990, 58)
+  - name: "נוער שוליים"
+    mbid: be9438bb-340e-4fc6-a071-0fd65846d95f
+    tier: 2
+    songs: []
+  # 102 songs; our top 3: שני משוגעים (2018, 54) · יעשו לנו כבוד (2019, 26) · חברות שלך (2018, 23)
+  - name: "עומר אדם"
+    mbid: 06dd06a8-5915-4b23-8cd6-d52b74232e6f
+    tier: 2
+    songs: []
+  # 38 songs; our top 3: תן לי להיות (2010, 38) · אורות (2010, 113) · הזמן עושה את שלו (2008, 93)
+  - name: "אברהם טל"
+    mbid: 56700752-75da-4f2b-bf11-ff8823c7a911
+    tier: 2
+    songs: []
+  # 16 songs; our top 3: La La Land (2008, 6) · Sad Movies 2.0 (2013, 6) · Catastrophic (2011, 33)
+  - name: "Orca"
+    mbid: 1ba9a747-7a69-4587-aed5-ef8875224ea2
+    tier: 2
+    songs: []
+  # 5 songs; our top 3: Die Forelle, D. 550 (1995, 17) · La Poule (1969, 426) · Blackbird (1969, 52)
+  - name: "Varda Nishry"
+    mbid: 83671ec2-366f-42c1-b976-e677e46ec784
+    tier: 2
+    songs: []
+  # 10 songs; our top 3: White Dwarf (2017, 96) · Chemistry Business (2017, 9) · Shasha (2019, 10)
+  - name: "Off Limits"
+    mbid: f8248800-bee5-46d5-ad45-ac01654bb166
+    tier: 2
+    songs: []
+  # 10 songs; our top 3: Spy Hunter (Swinging sixties mix) (2002, 6) · Kung Fu Master Blues (2002, 50) · Congo Bongo (Twin Bong mix) (2002, 40)
+  - name: "dor-x"
+    mbid: 861c2ba6-646d-4c9b-936b-2610e9d40398
+    tier: 2
+    songs: []
+  # 35 songs; our top 3: The Fall (2015, 63) · Wow (2009, 21) · The Fall / Eyes of Gold (2017, 19)
+  - name: "Tiny Fingers"
+    mbid: 1882c16e-10c6-425e-a116-f4e9a681122e
+    tier: 2
+    songs: []
+  # 43 songs; our top 3: קיים ונעלם (2009, 37) · לא זמן טוב (2008, 31) · שיר ליל שבת (2011, 10)
+  - name: "יהוא ירון"
+    mbid: 9bfe65e7-6c01-4b70-8aa0-e65c58e4e216
+    tier: 2
+    songs: []
+  # 15 songs; our top 3: ZX (2010, 309) · Run (2010, 263) · Pai's (2010, 257)
+  - name: "Dukatalon"
+    mbid: e9534188-099c-4f53-b39d-886f5489ac8e
+    tier: 2
+    songs: []
+  # 14 songs; our top 3: החדר האינטימי שלי (1991, 63) · אני נסעתי לפה (1991, 15) · גברת לוין (1991, 8)
+  - name: "תערובת אסקוט"
+    mbid: d21b92cf-e73d-4f7c-a639-5fb2943af173
+    tier: 2
+    songs: []
+  # 7 songs; our top 3: Computer Addict (2007, 149) · Arival to Earth (2011, 43) · Here And There (2009, 4)
+  - name: "The Freak Show"
+    mbid: fa7ce002-5924-47d2-80c9-fe13b4197747
+    tier: 2
+    songs: []
+  # 28 songs; our top 3: קול פנימי (2007, 45) · חום אנושי (סקיצה) (2009, 19) · עולה ויורד (2007, 206)
+  - name: "נעם רותם"
+    mbid: cf3f6519-eb0f-4df5-b087-1a06a17d0fd0
+    tier: 2
+    songs: []
+  # 10 songs; our top 3: Yedidim hiou zehirim (2004, 115) · Habib Dyali (2006, 80) · Mahani-Zin (1998, 74)
+  - name: "Emil Zrihan"
+    mbid: 0207f461-83fd-40ae-a3de-8c643513463e
+    tier: 2
+    songs: []
+  # 50 songs; our top 3: The Fall (2025, 263) · HOPE (2024, 190) · Dead End (2025, 137)
+  - name: "Her Last Sight"
+    mbid: 660dcecc-b371-428f-b639-db202d6ab54a
+    tier: 2
+    songs: []
+  # 21 songs; our top 3: Nanu Ney (2014, 28) · Could It Be (2012, 43) · Life Happens (2012, 155)
+  - name: "Ester Rada"
+    mbid: 38d6b5cc-8166-4a7c-b85f-eb2116ef7258
+    tier: 2
+    songs: []
+  # 10 songs; our top 3: Creatures (Faders remix) (2022, 11) · Acid Rain (2019, 222) · Full Throttle (Earthspace remix) (2018, 7)
+  - name: "Alpha Portal"
+    mbid: 442f04b6-a571-4477-8aca-5f7d66cef1ef
+    tier: 2
+    songs: []
+  # 18 songs; our top 3: איך שניצחת (1996, 22) · איפה הסוסים (1996, 15) · תלוי על הצלב (1999, 11)
+  - name: "האחים פורטיס"
+    mbid: fb55fea6-8532-4261-8597-ae43031d4b0d
+    tier: 3
+    songs: []
+  # 44 songs; our top 3: Gal (2013, 72) · The Other Road (2013, 32) · Cinema G (2013, 81)
+  - name: "Shai Maestro Trio"
+    mbid: d33386db-1b21-4864-8d03-e541fea3e903
+    tier: 3
+    songs: []
+  # 35 songs; our top 3: ילדה סוכר (2002, 127) · אלוהים (2005, 110) · עוקף מלמעלה (2005, 103)
+  - name: "מוקי"
+    mbid: 6d6b22bc-042c-4d14-b832-359b280d2160
+    tier: 3
+    songs: []
+  # 42 songs; our top 3: אל תאחר (2012, 28) · Happiness (2009, 51) · אף אחד לא בא לי (2009, 87)
+  - name: "קרולינה"
+    mbid: edb37cde-9c5f-46b9-b28e-77e7d8ac3270
+    tier: 3
+    songs: []
+  # 27 songs; our top 3: Shake Ya Boom Boom (2020, 205) · Tudo bom (2017, 76) · כוסות ריקות (2021, 12)
+  - name: "Static & Ben El"
+    mbid: 70a7cf13-8434-47ab-a030-270017c4c084
+    tier: 3
+    songs: []
+  # 74 songs; our top 3: אם אפגוש את אלוהים (2007, 109) · כל יום מחדש (2010, 32) · יום חדש עולה (2018, 29)
+  - name: "התקווה 6"
+    mbid: da6ca086-c3e4-48aa-b908-b2577440525a
+    tier: 3
+    songs: []
+  # 32 songs; our top 3: Bongos & Tambourines (Simple Symmetry remix) (2018, 77) · I Know (2016, 141) · Asi Keta Ga (2016, 111)
+  - name: "Autarkic"
+    mbid: 57e59b98-8c2c-488b-ae65-ad84ec097d52
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: פתחי לי את הדלת (1972, 44) · העץ הוא גבוה (1972, 61) · יש לי יום הולדת (1972, 47)
+  - name: "אחרית הימים"
+    mbid: 85334fe0-b09b-4a24-8bb5-35c8a9a10605
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: אהוב יקר (1996, 97) · שלום לתמימות (1996, 30) · ועכשיו ניגע (1996, 18)
+  - name: "רונית שחר"
+    mbid: b7f6b537-6400-45a0-8062-be3c1897d9f9
+    tier: 3
+    songs: []
+  # 13 songs; our top 3: Heaven in Hell (2008, 308) · The First Battle (2005, 113) · The Hell in Heaven (2009, 337)
+  - name: "Dagor Dagorath"
+    mbid: cd720f99-0798-45be-b37d-8bf6c2b5cd48
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: Viva Sport (1992, 19) · אלה (1986, 33) · היא תיקח אותך (1986, 20)
+  - name: "דפנה ארמוני"
+    mbid: a68277f7-565e-4f3c-a7bb-7e5ddcdbc90e
+    tier: 3
+    songs: []
+  # 29 songs; our top 3: 2 Months in Bed (1995, 19) · Train (1996, 72) · Kiss (whisper mix) (1996, 31)
+  - name: "Plastic Venus"
+    mbid: f715221e-3713-415a-b6c7-ee5f4408da79
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: Treakilo Wey (2004, 44) · Flip D.B. (2004, 217) · Chop Tip (2004, 9)
+  - name: "Reflex"
+    mbid: cc9f45fe-596b-4e6e-a531-2d7be9c63860
+    tier: 3
+    songs: []
+  # 58 songs; our top 3: אייכה (2008, 168) · מה התכלית (2008, 116) · המשורר (2008, 84)
+  - name: "שולי רנד"
+    mbid: f14c3d52-879d-4509-a0d9-42bb4fdd5320
+    tier: 3
+    songs: []
+  # 13 songs; our top 3: הולכת ממך (1995, 29) · קח אותי לשם (1994, 3) · אדבר איתך (1998, 21)
+  - name: "שרון חזיז"
+    mbid: eec7d096-059c-461f-a7b4-2fad773bc5a1
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: Paradox (2012, 116) · Nothing Isn't Secure (2011, 64) · Strange Noize (Phal:anx remix) (2011, 37)
+  - name: "LIMBO"
+    mbid: ed30e949-0ff9-4e18-ade4-7186a7a1faf9
+    tier: 3
+    songs: []
+  # 21 songs; our top 3: What Remains (2008, 1,168) · One Last Breath (2008, 969) · Voices From Within (2008, 875)
+  - name: "Distorted"
+    mbid: 2a295baa-fbe3-4080-a89c-58e86069d156
+    tier: 3
+    songs: []
+  # 25 songs; our top 3: קר (2005, 21) · קרוע (2005, 20) · רגע (2005, 18)
+  - name: "רם אוריון"
+    mbid: f400653d-3ffd-476e-8f6c-8ce01703949b
+    tier: 3
+    songs: []
+  # 18 songs; our top 3: Through the Mist of Your Eyes (2003, 95) · Zaman El Salaam (1996, 16) · Solo Arak (1996, 68)
+  - name: "Yair Dalal"
+    mbid: 40f83575-5d27-47ff-b7a7-42af5ce140f1
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: Chapati (2014, 282) · Balikali (2020, 181) · Biorhythm (2019, 7)
+  - name: "UnderCover"
+    mbid: d07810d2-5187-47a2-aed6-6a998dcee5b8
+    tier: 3
+    songs: []
+  # 16 songs; our top 3: Vintage (2013, 5) · Evil Echo (2012, 14) · Eat Dust (2010, 73)
+  - name: "2Minds"
+    mbid: e30ad498-d143-41b8-a7f5-f1dc115f205b
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: Flashes (2018, 38) · Shooting Stars (extended version) (2025, 7) · The Invisible World (2020, 26)
+  - name: "Stereo Underground"
+    mbid: 1c456c62-8a16-46ce-bec3-976347090b16
+    tier: 3
+    songs: []
+  # 24 songs; our top 3: Force Major (2022, 12) · My Bubble (Perfect Stranger remix) (2012, 12) · Lift of Love (2020, 52)
+  - name: "Roy Rosenfeld"
+    mbid: c85c41fc-d2a8-486b-8260-c4ccf9dc1932
+    tier: 3
+    songs: []
+  # 29 songs; our top 3: Mishegene Parovoz (2003, 581) · Semitic Tango (2003, 258) · Dangler's Song (2003, 250)
+  - name: "Kruzenshtern & Parohod"
+    mbid: 3e8b4df7-382a-4d54-a743-5e62f8d15ae0
+    tier: 3
+    songs: []
+  # 42 songs; our top 3: Can’t Stop Running (2013, 278) · Flamenco (2013, 124) · Free Fly (2025, 70)
+  - name: "Adam Ben Ezra"
+    mbid: 027b27ac-cb3f-40c8-8abb-aac46eaf16ef
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: Jungle (2023, 11) · Astro (2023, 25) · Ecstasy of Gold (2018, 141)
+  - name: "WHITENO1SE"
+    mbid: bfbea19b-2029-4f2e-a0ef-5ea8276e58a1
+    tier: 3
+    songs: []
+  # 46 songs; our top 3: תגידי לי את (2009, 180) · דאווינים (2017, 4) · בואי ונביא לך ת'פאנק (2004, 227)
+  - name: "מרסדס בנד"
+    mbid: 20a948d5-4ca9-4066-85e7-52baad59a118
+    tier: 3
+    songs: []
+  # 16 songs; our top 3: תשאירי לי מקום לחבק (1995, 104) · בוקר טוב עולם (1995, 56) · נמסים מאהבה (1997, 2)
+  - name: "אבטיפוס"
+    mbid: f624cefb-6f0b-43b5-a206-47b44c8599a2
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: שיר היונה (1974, 12) · ימים לבנים (1994, 17) · לא דיברנו עוד על אהבה (1994, 9)
+  - name: "נתנאלה"
+    mbid: ce27bb9f-9ad5-414e-a6a0-23025ec9a6d3
+    tier: 3
+    songs: []
+  # 41 songs; our top 3: לייק וואנקה (2012, 6) · אם אלה החיים (2006, 271) · איתי (2006, 226)
+  - name: "קרן פלס"
+    mbid: 8293bae5-1d33-428f-a210-477444904519
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: בת 60 (1982, 16) · ים השיבולים (1978, 2) · הוי ארצי מולדתי (1978, 3)
+  - name: "הגבעטרון"
+    mbid: 4ab3336f-53a4-4f15-8700-edad02a1a7a7
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: Crema (2012, 112) · Give a Little Love (Jnkyhead radio edit) (2013, 5) · Juna (original mix) (2014, 5)
+  - name: "Ruby & Tony"
+    mbid: 5b8ab929-2442-4807-b4f7-3fc9e0220793
+    tier: 3
+    songs: []
+  # 25 songs; our top 3: קול גלגל (2004, 176) · אין אני (2000, 149) · ידיעה (2004, 139)
+  - name: "שוטי הנבואה"
+    mbid: 24a2c25f-05b8-4a3d-adcb-dca7f935e989
+    tier: 3
+    songs: []
+  # 18 songs; our top 3: Petite Suite, L. 65: 3. Menuet (2021, 19) · Slavonic Dance, op. 46 no. 1 (1995, 13) · Petite Suite, L. 65: 4. Ballet (2021, 20)
+  - name: "Bracha Eden, Alexander Tamir"
+    mbid: 4af62533-2d92-4a62-9cab-e8e1ba1f9b09
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: Emotional Trauma (2006, 194) · Doctor Satan (2005, 47) · World of Percerption (2005, 44)
+  - name: "Wizard Lizard"
+    mbid: 80526c7b-7cdf-4aca-9d80-2f6e0ad11c5f
+    tier: 3
+    songs: []
+  # 24 songs; our top 3: Black Sea Majic (Autumn) (2023, 82) · Saved From The Jazz (Spring) (2023, 70) · Her Dad (2025, 10)
+  - name: "Eje Eje"
+    mbid: 0cabfee6-905f-4488-817c-e7c1b47cc0e6
+    tier: 3
+    songs: []
+  # 18 songs; our top 3: Adventures of Rabbi Jacob (2006, 121) · The Man With the Golden Reverb (?, 113) · The Adventures of Rabbi Jacob (2005, 142)
+  - name: "The Astroglides"
+    mbid: cea567a2-66d0-400e-94f8-a36a1722bfa4
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: Viking (1997, 197) · Transparent Future (1997, 75) · Una (1997, 42)
+  - name: "Nada"
+    mbid: eb15b486-c845-4344-a8c2-8ff41c9853d7
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: Fruki (2011, 7) · The Voice (Fire Starter remix) (2012, 6) · Slow Motion (2010, 4)
+  - name: "Double Click"
+    mbid: 1de2cfbf-a875-4ef7-9af7-8e78e01e370f
+    tier: 3
+    songs: []
+  # 17 songs; our top 3: Devil’s Calling (2019, 28) · I Follow Rivers (2016, 85) · Save Me (2018, 29)
+  - name: "Roni Alter"
+    mbid: 99770b2e-f0f5-4ec9-90e6-11985c1344f8
+    tier: 3
+    songs: []
+  # 19 songs; our top 3: P Vibe (feat. Ronen Sabo) (1999, 272) · Db Dub (1999, 17) · Selassi Dub (?, 42)
+  - name: "Geemel"
+    mbid: 037a84c5-058e-462e-8185-98cf6e5f5224
+    tier: 3
+    songs: []
+  # 22 songs; our top 3: לראות את האור (2007, 186) · תמיד כשאתה בא (2005, 6) · דיאטה (2005, 3)
+  - name: "אפרת גוש"
+    mbid: dd8ae859-31a7-47a3-b665-612911ff9749
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: Dancing Alone (2005, 174) · Tropical Magic (2004, 109) · Spiritual Sense (2004, 38)
+  - name: "Sixsense"
+    mbid: 456cf7d0-028d-41e8-bb53-6095f3bedcb5
+    tier: 3
+    songs: []
+  # 14 songs; our top 3: Please Do (2018, 335) · Afro Golden Line (2017, 457) · Fish (2017, 58)
+  - name: "Amir Bresler"
+    mbid: 549f72d7-4f0a-467f-b282-218fd39dd81b
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: And Not Very Transparent (2004, 377) · Molten (2007, 296) · Maybe Tomorrow (2004, 296)
+  - name: "Faction"
+    mbid: 6a9c3188-aec7-4d29-975c-ad126212c7b4
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: Milky Way (2004, 316) · Inhere (2004, 33) · The Swinger (2004, 37)
+  - name: "Neo Logic"
+    mbid: f3a1b7b7-c933-433f-8538-ba001b8b5eff
+    tier: 3
+    songs: []
+  # 44 songs; our top 3: לכה דודי (2014, 5) · זה לא ממני רק מהשם (2012, 4) · רבי נחמן (2012, 4)
+  - name: "Itzik Eshel"
+    mbid: 24208b20-e021-4813-8334-0cc4d2ecb3ac
+    tier: 3
+    songs: []
+  # 15 songs; our top 3: Emblazed (2002, 146) · Elastic (2003, 129) · My Wallow (2003, 108)
+  - name: "Nail Within"
+    mbid: 76b131d4-d2eb-4dcf-a533-e220183310bb
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: Boom Boom Pow (2021, 250) · Esso Esso (2020, 9) · Aliyu (2022, 116)
+  - name: "Zafrir"
+    mbid: 84abea23-35fd-4c62-b7e3-026010260010
+    tier: 3
+    songs: []
+  # 28 songs; our top 3: אשם (2006, 117) · מרגיש אחר (2006, 84) · תראי זה אני (2006, 83)
+  - name: "סינרגיה"
+    mbid: 393f8f3a-417a-4723-8a27-215c8a2f7f6c
+    tier: 3
+    songs: []
+  # 18 songs; our top 3: Battlecruisers (2024, 94) · Hang On (2024, 85) · A.T.O.M (2024, 120)
+  - name: "dreamẅalker"
+    mbid: 231e398b-9704-42c5-a90c-9588f62fb262
+    tier: 3
+    songs: []
+  # 27 songs; our top 3: הילדה שרה לנחל (2003, 39) · אני אחכה (2001, 31) · קח אותי (2001, 29)
+  - name: "אפרת בן צור"
+    mbid: f79668c4-c89b-4c87-923a-4d1f336a756d
+    tier: 3
+    songs: []
+  # 23 songs; our top 3: מילים (2010, 3) · כמה עוד אפשר (2006, 167) · ואת (2006, 137)
+  - name: "הראל סקעת"
+    mbid: d668af2b-e35c-48d6-ab38-cba591747e6e
+    tier: 3
+    songs: []
+  # 23 songs; our top 3: לבבתיני (2007, 20) · מה אעשה (2007, 163) · צדק (2007, 100)
+  - name: "ארז לב ארי"
+    mbid: e31fe846-95f6-41bd-8505-3642b67b1e25
+    tier: 3
+    songs: []
+  # 24 songs; our top 3: Montagne Sainte Genevieve (2011, 148) · J'attendrai (2011, 17) · Нога La Senior (2014, 79)
+  - name: "Swing De Gitanes"
+    mbid: c74b6308-1c66-429a-8ddd-ca0463f70ad9
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: Ocean in Motion (2005, 26) · Second Step Above the Sun (Etnoscope remix) (2007, 86) · No Roots (2005, 34)
+  - name: "Sound Field"
+    mbid: 528eaf55-a4f0-44e5-adc4-316956cdafcc
+    tier: 3
+    songs: []
+  # 25 songs; our top 3: Winchester Gun (2005, 134) · Junior Buddha (2005, 114) · Kick the Kill Higher (2005, 84)
+  - name: "Katamine"
+    mbid: cecfc7fa-44fd-4a47-af31-8d4ef1f6cf43
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: You Are the Queen (2008, 5) · Wait for the Night (Suyano edit) (2017, 34) · Heaven (2017, 55)
+  - name: "Rivero"
+    mbid: 74eb8022-4df7-4051-a4a2-3be88679f4d9
+    tier: 3
+    songs: []
+  # 48 songs; our top 3: דע (2008, 83) · ילד יפה (2015, 5) · אגו טריפ (2008, 147)
+  - name: "עלמה זהר"
+    mbid: afddff07-f3e4-4271-973b-2f3aceaf8295
+    tier: 3
+    songs: []
+  # 53 songs; our top 3: כאב של לוחמים (2011, 29) · נגמר (2012, 16) · מקום לשנינו - A Place for Both of Us (2021, 3)
+  - name: "עידן עמדי"
+    mbid: 1e96e328-9fa3-49e9-85fe-e9d9b430a045
+    tier: 3
+    songs: []
+  # 37 songs; our top 3: Rotzoh (1999, 8) · Kulanu (1996, 6) · Ki Heim (1994, 6)
+  - name: "Dedi"
+    mbid: e4227149-9199-4df6-9677-c4799e36a8a4
+    tier: 3
+    songs: []
+  # 31 songs; our top 3: Jat Mahibathi (2011, 103) · Eli (2011, 329) · Um min al yaman (2011, 287)
+  - name: "Yemen Blues"
+    mbid: 07f89d41-1a23-401f-b4c4-b4fe2cd2c752
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: Optimus Prime (2007, 106) · Psycho Piano (Rmx) (2007, 7) · Maniac Police (2004, 49)
+  - name: "Iron Madness"
+    mbid: 444565e5-5ac3-4b1c-b4eb-3e21cf6901d7
+    tier: 3
+    songs: []
+  # 94 songs; our top 3: הלב שלי (2019, 36) · סיבת הסיבות (2021, 28) · Comme les oiseaux (2018, 24)
+  - name: "ישי ריבו"
+    mbid: 4d5abad8-d57b-4c3f-b477-043214e96dc4
+    tier: 3
+    songs: []
+  # 43 songs; our top 3: Lemon (2015, 169) · Strawberry Fields Forever (2014, 113) · Shore (2014, 50)
+  - name: "Tatran"
+    mbid: 5573f9f2-584d-45fb-8bc4-06207154072b
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: Savior in the East (2008, 21) · Equilibrium (2008, 26) · Our Lord & Savior (2008, 24)
+  - name: "The Soul Messengers"
+    mbid: 4bdb7cdb-b981-4ac2-8ca0-b00257590d31
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: ליל חניה (1996, 3) · יונתן הקטן (1994, 3) · ערב שבת (1978, 2)
+  - name: "חנן יובל"
+    mbid: ff43ec6a-945a-475f-a5b1-a5b2ee5ada0a
+    tier: 3
+    songs: []
+  # 25 songs; our top 3: Tum balalayke (2007, 451) · Trinken a bisale vayn (2011, 455) · Der rebe Elimelekh (2011, 454)
+  - name: "Gevolt"
+    mbid: 2d24b252-183c-438d-943d-c4585b97c048
+    tier: 3
+    songs: []
+  # 32 songs; our top 3: Lama Ze Magi'a Lanu (Why Do We Deserve It) (2018, 12) · Achshav Nish’arnu Shney’nu (2021, 9) · Ôdjus Fitxadu (With My Eyes Shut) (2009, 5)
+  - name: "עידן רייכל"
+    mbid: 48b69932-5352-4b2e-9847-b15ec8736d1e
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: חשמל בכפות ידיך (1974, 24) · גשם בעיתו (1974, 10) · שבת המלכה (1975, 4)
+  - name: "רותי נבון"
+    mbid: f37f8513-233e-4314-9d4f-39c91fbf37f9
+    tier: 3
+    songs: []
+  # 18 songs; our top 3: Endless (2022, 9) · Non Stop Techno (2021, 8) · Hashualim (2021, 7)
+  - name: "Rising Dust"
+    mbid: e8aaf276-7d05-41ce-8c22-48b5ef6d4a7f
+    tier: 3
+    songs: []
+  # 28 songs; our top 3: Geula (Redemption) (2009, 5) · מלנכוליה אהובתי (2001, 87) · מכונת השירים הגדולה (2007, 38)
+  - name: "חמי רודנר"
+    mbid: e36dce32-59a4-4435-97a8-ccec6c69232b
+    tier: 3
+    songs: []
+  # 21 songs; our top 3: Ebae (2005, 23) · West Nile Funk (2004, 66) · Lullaby (2011, 51)
+  - name: "Ex-Centric Sound System"
+    mbid: cd613cd9-570a-4cbf-8209-0ecc7f9bdaff
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: שושנת יעקב (2007, 3) · חנוכיה לי יש (1978, 4) · לכבוד החנוכה (2008, 5)
+  - name: "דודו אלהרר"
+    mbid: 4d83f165-4f37-4302-b314-fbb43c6246e3
+    tier: 3
+    songs: []
+  # 22 songs; our top 3: Yeroushalayim shel zahav (1999, 21) · Yeroushalaim Shel Zahav (1998, 8) · Opaline (1999, 8)
+  - name: "Nourith"
+    mbid: a2851159-979d-4598-b2bd-fe57e75e81ea
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: Haze (2017, 7) · Lucky Number Seven (2007, 95) · Out of Nowhere (2011, 40)
+  - name: "Spade"
+    mbid: 1d946632-5478-4bc6-8506-5e2c862d7297
+    tier: 3
+    songs: []
+  # 42 songs; our top 3: Love (2008, 156) · Nine Minute (Or So) Chabad Nigun (2008, 118) · I Believe (2008, 115)
+  - name: "Daniel Zamir"
+    mbid: 29b9c026-3e14-4bf1-99a9-13274c847930
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: תמיד יחכו לך (1997, 65) · חמניות מול השמש (2002, 9) · והגשם (2002, 8)
+  - name: "לאה שבת"
+    mbid: 2d330e56-ed6c-4d75-b115-3cadba398a09
+    tier: 3
+    songs: []
+  # 21 songs; our top 3: מכתבים למיכלי (1995, 57) · דם על הים (2004, 146) · קיטש (2004, 139)
+  - name: "אלג'יר"
+    mbid: 20586e4d-8161-4ca9-a659-7e1aaf592471
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: Revenge of the Benos (2005, 4) · Journey Into Sound (2005, 17) · Alien Intelligence (remix) (2004, 8)
+  - name: "Point"
+    mbid: cf254b40-8582-4a84-832a-ca5f8f9fde9a
+    tier: 3
+    songs: []
+  # 14 songs; our top 3: Klezmer for the Sultan (2005, 136) · The Man in the Mosque (Camideki Adam) (2003, 81) · Blue Camel (2003, 139)
+  - name: "Yinon Muallem"
+    mbid: 3010d0ee-8e98-46c7-b171-607952b9e51c
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: Metal Ethnic (2005, 112) · 4th Dimension (2007, 91) · The Jolly Monster (live) (2007, 7)
+  - name: "Mahamudra"
+    mbid: f427c4a9-4fda-4026-8d95-23f4f79fa30b
+    tier: 3
+    songs: []
+  # 30 songs; our top 3: I Have a Proof. The World Is a Drop of Water Falling Slowly to It's End (2008, 70) · Schnitzel Polka (2012, 68) · Starting My Work With the Daily Rebuilding of the Telescope (2008, 55)
+  - name: "Cherly KaCherly"
+    mbid: f694c7e9-0f0b-4d08-b06b-0ec362ee436d
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: Magical Kingdom of Hallucinations (2007, 300) · Wicked Genre Salad (2007, 200) · Electric Candy (2008, 179)
+  - name: "The Wonderboy"
+    mbid: a8995c3b-5733-44ec-96c4-bace29da135c
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: Gold Rush (2008, 74) · Twister (2004, 41) · Head Poppers (2005, 27)
+  - name: "Silent Scream"
+    mbid: d29fea33-4cae-45f6-a142-11f0d96665e7
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: People of the Light (2004, 37) · Rolling (2005, 22) · Star Tek (2007, 151)
+  - name: "Inner Action"
+    mbid: 99f4300c-583c-4907-b401-351c26e47824
+    tier: 3
+    songs: []
+  # 69 songs; our top 3: סהרה (2021, 10) · כנפיים (2019, 7) · היי בייב (2021, 53)
+  - name: "טונה"
+    mbid: 662de377-4958-4b47-a0af-47d80c708398
+    tier: 3
+    songs: []
+  # 24 songs; our top 3: עכשיו (1995, 102) · אלף ניגונים (1995, 11) · אתן לך פרח (1995, 9)
+  - name: "ג׳וני שועלי"
+    mbid: 83ece9a8-f6bc-4131-9b54-599aa2e964e0
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: ארץ ישראל יפה (1994, 4) · יונה עם עלה של זית (1999, 3) · שבחי מעוז (1994, 5)
+  - name: "להקת פיקוד הדרום"
+    mbid: 34c62de5-1f72-46f1-8bb2-573a5f64fd1e
+    tier: 3
+    songs: []
+  # 13 songs; our top 3: אלף כבאים (1980, 35) · לידיה הלוהטת (1980, 26) · נשר (1980, 13)
+  - name: "דודה"
+    mbid: ead06a8a-8f3d-4fe3-9e19-3a94c52a34d5
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: Jupiter Slice (2010, 86) · Rush Hour (2011, 17) · Acid Pills (2008, 75)
+  - name: "Solaris Vibe"
+    mbid: b4e7e7ed-c629-4214-8146-a48071de4ddb
+    tier: 3
+    songs: []
+  # 24 songs; our top 3: Spring B# (Stevie Winwood) (2001, 51) · Girlfriend (2005, 100) · Sad Song Happy Song (2001, 68)
+  - name: "Shy Nobleman"
+    mbid: 562d5ba0-1b58-49b0-a930-f4c538600832
+    tier: 3
+    songs: []
+  # 47 songs; our top 3: קטנתי (2012, 19) · נווה תלאות (2017, 7) · עוד יום (2008, 26)
+  - name: "יונתן רזאל"
+    mbid: c786e72f-797d-46b9-b747-887e5a0fccf8
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: בוא הביתה (1969, 4) · שני עננים (2008, 3) · תחת כובד התפוח (1969, 3)
+  - name: "שולה חן"
+    mbid: 5bd0063b-4f6f-4a4e-8ce8-f8778159d478
+    tier: 3
+    songs: []
+  # 32 songs; our top 3: Énék Hamaguro (2020, 219) · Overstand (2020, 165) · Lake VU (2020, 133)
+  - name: "Apifera"
+    mbid: abad5459-615f-4ecc-a0d9-01e6d09efb77
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: מי המנטה, מי המסטיק, מי השוקולד? (2003, 6) · הוי ארצי מולדתי (1991, 1) · שלג על עירי (2003, 9)
+  - name: "שוקולד מנטה מסטיק"
+    mbid: d273958b-a036-4031-a774-f221da864063
+    tier: 3
+    songs: []
+  # 170 songs; our top 3: Avinu Malkeinu (2008, 5) · זרעא חייא (2014, 4) · רבונו של עולם (2014, 4)
+  - name: "יוסף משה כהנא"
+    mbid: 30c06285-3ad9-48ec-8478-1676295e1eed
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: On Weed (?, 46) · Simplcity (Part 3) (2011, 6) · Homegrown (Neuron Composts ‘New Foliage’ Mix) (2010, 4)
+  - name: "Sattel Battle"
+    mbid: 6e4a9c8d-bb77-49e3-8e9a-96df2c376615
+    tier: 3
+    songs: []
+  # 23 songs; our top 3: Lya (2019, 100) · April in Paris (2010, 48) · Mood Indigo (2019, 29)
+  - name: "Yonathan Avishai"
+    mbid: 2a25148f-6968-44ba-b3f7-ce5446642599
+    tier: 3
+    songs: []
+  # 15 songs; our top 3: Suite in D minor, HWV 447: Allemande (2012, 224) · Suite in D minor, HWV 447: Courante (2012, 20) · Les Barricades mystérieuses (2012, 24)
+  - name: "David Greilsammer"
+    mbid: 6b2bb2ce-9d44-48da-9efe-bf4b39a9d6da
+    tier: 3
+    songs: []
+  # 23 songs; our top 3: Ducks on Mars (?, 62) · Chu Pe-R00 (2007, 98) · Zoomzoom Baba (2007, 93)
+  - name: "Crazy Ducks"
+    mbid: a3bd034a-47c3-41f2-ad0d-23464a684afc
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: Signorina Concertina (1973, 7) · Bye Bye à bientôt (2002, 7) · Hotel California (1977, 5)
+  - name: "Shuky & Aviva"
+    mbid: 603bbb14-fbcf-4b20-925c-9a9a0c7dbe67
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: עוגה עוגה (1979, 9) · בר כוכבא (1978, 3) · ימינה ימינה (1979, 3)
+  - name: "Hana Laszlo"
+    mbid: ce3d7d6e-4fcc-4894-be9c-6cca66a1110f
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: שמור על העולם (1995, 9) · אצלנו בכפר טודרא (1995, 93) · To Believe (2004, 95)
+  - name: "דוד ד׳אור"
+    mbid: d241fe83-6ec3-40bd-9afe-7cac6810b7c8
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: Clair de lune, for piano (Suite bergamasque no. 3), L. 75/3 (2012, 529) · Caprice basque, op. 24 (1993, 7) · Piano Trio No. 1 in C minor, Op. 8 (2007, 5)
+  - name: "Itamar Golan, Janine Jansen"
+    mbid: cf1e76a8-bfbd-4ae6-9528-21fbf2f8ed7a
+    tier: 3
+    songs: []
+  # 13 songs; our top 3: Darknight Castle (2009, 119) · Psychic Farmers (2009, 111) · Mindless (2009, 99)
+  - name: "Faradize"
+    mbid: 17f37e6d-4b40-4950-b483-d9054d6be08a
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: The Last of Our Kind (2018, 11) · Surreal, Part 2 (2019, 9) · Pangea Proxima (2017, 6)
+  - name: "Daniel Lesden"
+    mbid: c22ee261-832a-4d58-8ac1-18e5b5dac67a
+    tier: 3
+    songs: []
+  # 22 songs; our top 3: User3328 (2019, 23) · Moon (2018, 15) · Further (2018, 14)
+  - name: "TV.OUT"
+    mbid: 7584b253-77d6-4667-a75b-5e2cefadb557
+    tier: 3
+    songs: []
+  # 13 songs; our top 3: Happy Solar Return (2019, 35) · Avocado Dance (2017, 114) · The Librarian (2024, 18)
+  - name: "Sefi Zisling"
+    mbid: 7e751821-2024-4f04-81f1-a73634092e61
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: Moon Light (2014, 11) · Mash Up (2000, 10) · Deep Inside (2011, 87)
+  - name: "Counter Point"
+    mbid: 3574b8eb-2ec5-4738-aa6f-96ac6948ac34
+    tier: 3
+    songs: []
+  # 42 songs; our top 3: Desert Ledge (2025, 27) · All Alone (2017, 8) · Motor Charlie (2018, 107)
+  - name: "The Great Machine"
+    mbid: e7876844-3c7a-47c5-a6ac-ab94bc21a1a3
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: The G Word (2005, 5) · No Game (2004, 29) · After Effect (2004, 22)
+  - name: "Zirkin"
+    mbid: 45bbde3d-42ce-4234-8dc2-8271275c612d
+    tier: 3
+    songs: []
+  # 41 songs; our top 3: Journey (2013, 110) · Tehran (2020, 36) · Drops (2016, 32)
+  - name: "Mark Eliyahu"
+    mbid: 09ebbef4-7a20-4df4-b95c-ccb651d3ffde
+    tier: 3
+    songs: []
+  # 16 songs; our top 3: גידי (1985, 41) · קשה בלעדיך (1985, 33) · אתה בא אלי (1985, 15)
+  - name: "שרון ליפשיץ"
+    mbid: 010abc26-4683-4635-946f-710200bf5e56
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: בואי לאילת (1971, 26) · יעקב ועשו (2003, 2) · באר (1969, 2)
+  - name: "ליאור ייני"
+    mbid: c8bdc982-d9fd-4c20-bf07-e8a4e14a1da0
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: רוח סתיו (1979, 7) · אני הולך לבית שאן (1979, 17) · קפטן ג׳ק (1977, 2)
+  - name: "גרי אקשטיין"
+    mbid: c29ef96e-de11-4d26-9143-72c7cf72fb41
+    tier: 3
+    songs: []
+  # 14 songs; our top 3: Darkness (Minimal Criminal remix) (2013, 4) · Deep Meditation (2011, 7) · Scream (2010, 7)
+  - name: "Pick"
+    mbid: 779e99f3-fb8c-4000-b9d9-265e38a1fd86
+    tier: 3
+    songs: []
+  # 18 songs; our top 3: זרזירים (1998, 55) · (That’s Not) Carol (1998, 45) · את (1998, 32)
+  - name: "הזבובים"
+    mbid: 180d79c8-547b-4367-9d9d-b14975b83050
+    tier: 3
+    songs: []
+  # 68 songs; our top 3: Neo Quest (2014, 37) · Root Out (2016, 25) · The Religion of Music (2016, 12)
+  - name: "Yossi Sassi"
+    mbid: bc42cfc1-776b-447b-8156-060da9df712f
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: Set Me Free (2021, 311) · Feker Libi (2020, 111) · La La Love (2021, 24)
+  - name: "Eden Alene"
+    mbid: 1be7cde4-8c97-4a83-8a85-5fd251da4be8
+    tier: 3
+    songs: []
+  # 27 songs; our top 3: delicate creature (2018, 228) · Bliss (2021, 156) · You, Me, Everyone (2021, 213)
+  - name: "iogi"
+    mbid: f56961f4-3eed-4407-836a-468ef9d6e871
+    tier: 3
+    songs: []
+  # 15 songs; our top 3: Roar (2023, 4) · Gnosis (2016, 27) · Dark Lights (2015, 8)
+  - name: "Tribone"
+    mbid: 44ab19e2-774b-4578-8823-927b04589279
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: State of Mind (2000, 58) · Superfly (2000, 39) · My Old School (2000, 27)
+  - name: "Green House Effect"
+    mbid: 6f45f4de-1929-495b-8099-d0dd6c174d14
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: חופשת מולדת (1992, 10) · רקפת (2014, 5) · שיר נבואי קוסמי עליז (1991, 41)
+  - name: "מזי כהן"
+    mbid: d8e5d3fe-dbfb-45d1-909c-2c6092c54abc
+    tier: 3
+    songs: []
+  # 14 songs; our top 3: When I Get There (2015, 16) · Is It Alright (2011, 183) · Soul Changing (2015, 11)
+  - name: "Maya Isacowitz"
+    mbid: 15b47796-a039-4cd8-9603-af7dad40728b
+    tier: 3
+    songs: []
+  # 44 songs; our top 3: Liar (2014, 16) · Let the Angels Burn (2012, 79) · Stealer of Souls (2012, 78)
+  - name: "Hammercult"
+    mbid: 9b04d315-9951-44e4-8257-95e03f6657a5
+    tier: 3
+    songs: []
+  # 19 songs; our top 3: Turi-Yuri (2010, 6) · Gallant spider (2022, 15) · Scythian nest (2022, 13)
+  - name: "staraya derevnya"
+    mbid: fdddc894-02ec-4a92-937e-b970ac435db6
+    tier: 3
+    songs: []
+  # 30 songs; our top 3: זה בשבילך (1998, 9) · הנשיא (2002, 3) · רנה (2002, 40)
+  - name: "אריאל הורוביץ"
+    mbid: 8c302914-4a19-4dc7-a058-873aa5544077
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: My Intuition (2017, 14) · Gonna Take My Time (2022, 18) · I Love You (Andres remix) (2015, 9)
+  - name: "Nenor"
+    mbid: 9ab0cb68-bf79-4eea-870f-95f681780959
+    tier: 3
+    songs: []
+  # 21 songs; our top 3: No Disco (2019, 77) · Acid Shower (OOO mix) (2024, 16) · Drumatix (OOO mix) (2024, 12)
+  - name: "Out Of Orbit"
+    mbid: 808bb689-be87-42e4-afc4-14a60811c951
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: missed (2017, 28) · Invisible (2019, 10) · Funkemistric (2014, 6)
+  - name: "Bacter"
+    mbid: 463e978b-513d-4967-a92c-48431d191a30
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: Violin Concerto in D minor, op. 47: II. Adagio di molto (1988, 54) · Violin Concerto in D minor, op. 47: I. Allegro moderato (1988, 16) · Violin Concerto in D minor, op. 47: III. Allegro, ma non tanto (1988, 7)
+  - name: "Miriam Fried, Helsingin kaupunginorkesteri, Okko Kamu"
+    mbid: e94aad58-cc67-4955-b1a0-53bd6ea6ff2f
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: תמונה (1981, 34) · בלדה לנאיבית (1981, 3) · גשם הקשב לנשים (1981, 9)
+  - name: "יעל לוי"
+    mbid: f7604a02-359f-4776-a155-a77724288eac
+    tier: 3
+    songs: []
+  # 13 songs; our top 3: 7/8 (1977, 44) · צבעים (1977, 36) · ענבלים (1977, 46)
+  - name: "ששת"
+    mbid: 5683b0f6-7943-43bf-b52d-b8dd801fcbd9
+    tier: 3
+    songs: []
+  # 2 songs; our top 3: Nocturne no. 15 in F minor, op. 55 no. 1 (2006, 444) · Prelude In C Sharp Minor Op. 3, No. 2 (1975, 6)
+  - name: "Ilana Vered"
+    mbid: 4238cfd0-f8fe-45a0-bf06-742baf41b73c
+    tier: 3
+    songs: []
+  # 25 songs; our top 3: סיגפו (2004, 212) · שיר בעיפרון (2004, 181) · עד שבאת (2007, 104)
+  - name: "בית הבובות"
+    mbid: ca3279ad-dda2-49dd-827e-ae8444bbb502
+    tier: 3
+    songs: []
+  # 23 songs; our top 3: Pussycat (2008, 241) · Die (2008, 57) · Marrakesh (2008, 44)
+  - name: "Midnight Peacocks"
+    mbid: 5ea1f103-0265-45e7-b20a-d98e5270bac1
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: מה אברך (1973, 18) · אנשי הדממה (1970, 10) · חסקה (1994, 10)
+  - name: "להקת חיל הים"
+    mbid: 78ea0af3-438c-4498-89b8-141575081efd
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: Kampai (2012, 124) · האלוהים שלי עייף (2009, 13) · מתוך שינה (2011, 22)
+  - name: "בני המה"
+    mbid: e6d649e6-7281-47cb-9169-6214c4fc98d3
+    tier: 3
+    songs: []
+  # 24 songs; our top 3: SugarCrash! 2 (Notice Me Senpai) (2022, 188) · SugarCrash! (2022, 171) · Miss you (2023, 134)
+  - name: "Bemax"
+    mbid: ddf2587f-279e-4006-a80e-1dcbcdee7e25
+    tier: 3
+    songs: []
+  # 2 songs; our top 3: Winter in Canada (1988, 228) · Winter in Kanada (2007, 10)
+  - name: "Elisa Gabbai"
+    mbid: 0632406a-b62a-4ee0-99c0-dab710c63d1a
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: Evil Gene (New mix) (2006, 100) · Collision Course (2008, 60) · Slaughtered Coconut (2008, 60)
+  - name: "Guinea Pigs"
+    mbid: 9e299a2a-3331-4e21-b0c5-c452d9431852
+    tier: 3
+    songs: []
+  # 14 songs; our top 3: Neon Night (2020, 39) · chloe diamond (2022, 23) · Exalt (2020, 14)
+  - name: "almogfx"
+    mbid: c679862d-edcc-4d1f-a063-d3d7aa8c0034
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: The Shield (2022, 40) · Avalanche (2023, 10) · Iron Door (2015, 8)
+  - name: "Lonya"
+    mbid: aedf9357-0d7c-490a-b2e4-7187ebf81c4e
+    tier: 3
+    songs: []
+  # 46 songs; our top 3: Rushing Rapid (2024, 57) · Soul Spark (2024, 24) · The Open Door (2024, 23)
+  - name: "Yosef Gutman"
+    mbid: ab25b7c3-e6fa-43e9-b3af-78384520d78f
+    tier: 3
+    songs: []
+  # 39 songs; our top 3: My Final Relapse (2011, 12) · Angels of Atheism (2021, 19) · Breach (2008, 14)
+  - name: "Prey for Nothing"
+    mbid: 67972cee-cf33-4925-9e9c-da1105c30830
+    tier: 3
+    songs: []
+  # 66 songs; our top 3: Emes Malkeinu (2014, 4) · Ani Maamin (2018, 4) · Or Ein Sof (2023, 6)
+  - name: "Naftali Kempeh"
+    mbid: 09c14d0f-6116-4115-9087-3a5b89830ebf
+    tier: 3
+    songs: []
+  # 19 songs; our top 3: 1983 (2005, 227) · Ghost Head Nebula (2005, 312) · Bicycle (2005, 297)
+  - name: "Lebanon"
+    mbid: ea7b5a10-3710-473f-bb47-dba475a5145c
+    tier: 3
+    songs: []
+  # 26 songs; our top 3: Alternate (2022, 5) · Free Spirit (2022, 4) · State Is Burning (2016, 18)
+  - name: "Yotam Ben Horin"
+    mbid: 5fb1a197-1764-4969-bf0a-83e9026415db
+    tier: 3
+    songs: []
+  # 32 songs; our top 3: סרט של סקס (2005, 113) · בקבוק עלי (2000, 105) · ככה מפנקים (2000, 104)
+  - name: "אינפקציה"
+    mbid: 4b6cc83a-edff-4f04-8a6e-271bdc555c97
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: Childhood (2016, 50) · Clockers (Balanced mix) (2017, 37) · La Nina Del Mar (2021, 6)
+  - name: "Chicola"
+    mbid: ac617c59-e196-422d-827a-d74d30b10719
+    tier: 3
+    songs: []
+  # 21 songs; our top 3: Faith, Death and Aggression (2007, 51) · Concile de Clermont (2008, 62) · Deus Lo Vult (2008, 55)
+  - name: "Kreuzer"
+    mbid: 1d843d96-c7d1-4de0-85d9-c01dbb51c641
+    tier: 3
+    songs: []
+  # 22 songs; our top 3: Lubavitsher Redl (2008, 131) · Oy Gewald a Ganef (2008, 228) · Fin der Shtib (2008, 218)
+  - name: "Oy Division"
+    mbid: a244919f-e411-45ff-810f-b52b5d096c68
+    tier: 3
+    songs: []
+  # 33 songs; our top 3: Joy of Life Intro (2007, 93) · La Camerona (2007, 90) · Homeland (2007, 86)
+  - name: "Third World Love"
+    mbid: 4dece762-e1c9-4d92-9913-703da7213144
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: white enby footwork (2022, 37) · Hyperjazz! (Cipra's Multi-Genre remix) (2021, 18) · Lets Have Se To The Sound Of S3rl Jcore Bootlegs (2021, 20)
+  - name: "BREAKCHiLD"
+    mbid: d75bd92b-f70d-4dcb-8689-ff782267d7ee
+    tier: 3
+    songs: []
+  # 24 songs; our top 3: פעם בשבוע (1989, 16) · גשר אחרון (1995, 7) · כמה פעמים (1989, 20)
+  - name: "רפי פרסקי"
+    mbid: 97e0c041-b2a0-4090-a16e-a17b23317a9e
+    tier: 3
+    songs: []
+  # 31 songs; our top 3: יצאנו לרקוד (2003, 114) · שוב הדיסקו כאן (2003, 111) · עוד לילה (2006, 93)
+  - name: "הדורבנים"
+    mbid: a2e20381-f2b8-4762-a23f-86de744a6747
+    tier: 3
+    songs: []
+  # 15 songs; our top 3: The Self Dreams of Mandi (2000, 7) · איפה כאן עכשיו (2001, 2) · Joke Her (1993, 50)
+  - name: "DXM"
+    mbid: 8fb57639-3200-4f65-ad6f-ce96f46abc2f
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: La Ahada Yalam (No One Knows) (2009, 31) · Ya Ba La La (2005, 16) · Stranger in a Far City (2010, 35)
+  - name: "Amal Murkus"
+    mbid: 5968a4bf-73c6-46d8-9e2d-9eb899b4d88e
+    tier: 3
+    songs: []
+  # 75 songs; our top 3: Nigun (2005, 15) · Elul Nigun, Live (2014, 10) · L'maancha (2005, 19)
+  - name: "Eitan Katz"
+    mbid: 33a388d9-e6f4-451b-b028-baf859cbee06
+    tier: 3
+    songs: []
+  # 15 songs; our top 3: Cut It Out (2010, 110) · הירושימה (2009, 45) · לישון בלעדיי (2009, 40)
+  - name: "דניאלה ספקטור"
+    mbid: f0fec5b1-0cc4-4f7f-bd6b-5a48ec708625
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: גנבים (1985, 11) · ואתם רוקדים (1977, 13) · למון טרי (1977, 2)
+  - name: "דורי בן זאב"
+    mbid: 49126393-ef4d-4fd4-8f64-634ffedb7a86
+    tier: 3
+    songs: []
+  # 14 songs; our top 3: להיות So Far (2007, 50) · Lies (2007, 99) · Ever (2007, 123)
+  - name: "הבנות נחמה"
+    mbid: fda83e11-a691-4e6d-a6cd-35648e83349e
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: Uniting Forces (2007, 47) · Acceleration (2005, 14) · Among Myself (2003, 11)
+  - name: "Noga"
+    mbid: cfc1a7f6-ccd0-4158-97f6-d00fde212999
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: Aimee (2021, 27) · Let It Go (1999, 140) · Sunrising (original mix) (2003, 7)
+  - name: "Choopie & Roni"
+    mbid: 62c72a6f-47a5-488f-b10b-812004175bde
+    tier: 3
+    songs: []
+  # 49 songs; our top 3: ניגון ויז’ניץ (2020, 10) · יהא רעוא (2020, 7) · ואמר ביום ההוא (2020, 7)
+  - name: "Motty Steinmetz"
+    mbid: 53b3b4f4-d196-4b2d-9ace-3b0c2c8d086b
+    tier: 3
+    songs: []
+  # 22 songs; our top 3: Selling Smoke (2005, 205) · Deep Child (album version) (2004, 199) · Even Poets Die (2005, 167)
+  - name: "Solstice Coil"
+    mbid: d07a06cb-51cb-492d-afd7-67394fca892a
+    tier: 3
+    songs: []
+  # 15 songs; our top 3: SeeSaw (2016, 17) · Origami (2019, 105) · Hits (2016, 58)
+  - name: "Totemo"
+    mbid: 5b9e6e72-411d-4704-8819-ac55d4dfa0e8
+    tier: 3
+    songs: []
+  # 28 songs; our top 3: Same Shit, Different Scene (2012, 9) · No Place Like Home (2012, 13) · Love (2012, 12)
+  - name: "Kids Insane"
+    mbid: 7eec6dc8-3aba-462f-b9f7-766b6e9c8023
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: Star Quality (2009, 1,657) · Sally (2009, 1,378) · Conclusions (2009, 1,225)
+  - name: "Carusella"
+    mbid: 2858987e-3baa-4355-87b4-7d3d7cc2670f
+    tier: 3
+    songs: []
+  # 14 songs; our top 3: The Fire in Your Eyes (2008, 30) · אורח בעולם (2009, 17) · מנגן ושר (2007, 2)
+  - name: "בועז מעודה"
+    mbid: c9c70029-be44-422c-ad6a-01fe5de04748
+    tier: 3
+    songs: []
+  # 15 songs; our top 3: Coming to Get You! (?, 409) · Radio On (?, 94) · Dawn of Summer (?, 83)
+  - name: "Electra"
+    mbid: 9d73840c-6b18-4752-a489-926cfaab80c8
+    tier: 3
+    songs: []
+  # 38 songs; our top 3: If You Please (2014, 12) · אין לזה לאן (2024, 6) · As a Stone (2017, 68)
+  - name: "Full Trunk"
+    mbid: 6c9de65f-dbd1-419f-b32b-e7e2426c6f04
+    tier: 3
+    songs: []
+  # 38 songs; our top 3: I Love (This Blue Life of Mine) (2002, 66) · Here Comes the Sun (2012, 50) · Letter (2002, 48)
+  - name: "Ruth Dolores Weiss"
+    mbid: 944d8608-2e1e-4e3c-8974-ec2cd35bb839
+    tier: 3
+    songs: []
+  # 47 songs; our top 3: וידוי (2011, 10) · אולי זה נגמר (2026, 5) · טבע (2026, 4)
+  - name: "הילה רוח"
+    mbid: 0a761980-7bed-404c-9f5f-a07f0421b2c6
+    tier: 3
+    songs: []
+  # 15 songs; our top 3: Balada (2018, 6) · Baileys (2014, 98) · Bass Generation (2016, 29)
+  - name: "Upgrade"
+    mbid: aaa2e42d-01eb-411b-9f48-da59e91ac616
+    tier: 3
+    songs: []
+  # 24 songs; our top 3: Sghayiroun ‐ صغيرون (2025, 14) · Nifrah Farah (DJ Kobayashi Remix) (2018, 8) · Eshrab Kasak Wethanna - ‎اشرب كاسك وتهنّا (2025, 17)
+  - name: "SHIRAN"
+    mbid: 76acb458-f6ff-43b5-871e-fc8b0b065a5b
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: Enemy (2024, 592) · No Complaints (2025, 432) · Escapism. (2024, 487)
+  - name: "Father of Peace"
+    mbid: 945725d3-e3ef-41bf-ab1b-58d8d53d032b
+    tier: 3
+    songs: []
+  # 37 songs; our top 3: בוסר (2009, 68) · נחש בעשב (2009, 62) · יוון (2009, 61)
+  - name: "אביב גדג׳"
+    mbid: 5af8f918-132a-4834-8452-fbc2eb8dd14b
+    tier: 3
+    songs: []
+  # 27 songs; our top 3: full moon party (2001, 4) · מכת שמש (2010, 13) · סדר יום (2001, 1)
+  - name: "יובל בנאי"
+    mbid: 2f1a2085-1215-4ab8-aad3-1779bdb60b3f
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: Atlantis (2007, 6) · Manpower (2007, 166) · Cinnamon Roll (2007, 144)
+  - name: "Onyx"
+    mbid: 171214bc-9310-460a-bd68-63f608f4781b
+    tier: 3
+    songs: []
+  # 32 songs; our top 3: Lament for Soldier's Glory (Order 227) (2011, 85) · Massada Will Never Fall (2011, 15) · Letter of Marque (2011, 16)
+  - name: "Desert"
+    mbid: 7148eb04-4a33-4412-ac19-36582b8e7f34
+    tier: 3
+    songs: []
+  # 64 songs; our top 3: מוזיקה טובה (2013, 21) · בור ועם הארץ (2013, 15) · קפה וסיגריה (2013, 13)
+  - name: "נצ׳י נצ׳"
+    mbid: 2e1a029a-5157-407c-9cab-1e0e302b3274
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: Slave (2005, 37) · Mechanical Turn (2006, 36) · Life Lines (2005, 17)
+  - name: "Mechanix"
+    mbid: c550d92c-617d-4dda-9705-4071206cfc7c
+    tier: 3
+    songs: []
+  # 36 songs; our top 3: בין קודש לחול (2019, 24) · אור גדול (2010, 65) · אבא (2020, 2)
+  - name: "אמיר דדון"
+    mbid: 72dc9adb-b261-4517-a5fa-171184ac3e5b
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: Bherta (2004, 276) · Verdun (1985, 10) · Regaim (2004, 206)
+  - name: "Ahvak"
+    mbid: 0b9d8624-434d-4f5d-aebb-bb38e8d945cd
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: אש (2003, 2) · ארים ראשי (2004, 68) · יום ועוד יומיים (2004, 42)
+  - name: "שי גבסו"
+    mbid: 3d5ab7e0-5fe4-4197-9e2f-42296b2148c2
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: הנסיך הקטן (1974, 2) · ההד (1974, 5) · Spring (1974, 4)
+  - name: "קצת אחרת"
+    mbid: 25e7a543-b010-47b2-8bb0-ec84b0a2df64
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: Vida Loca (2020, 19) · Speed Life (From “Sonic 2” Soundtrack) (2022, 8) · Speed Life (From “Sonic 2, le film”) (2022, 5)
+  - name: "Stephane Legar"
+    mbid: 630f7b31-ff31-4db7-9201-4f5bcfad479d
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: Sophia's Culture (2016, 19) · Invisible Sense (2012, 6) · Come Down to Earth (2014, 5)
+  - name: "Sonic Sense"
+    mbid: 74a14755-5cdc-47bd-8c19-12de6c580bd5
+    tier: 3
+    songs: []
+  # 13 songs; our top 3: Conflict (2008, 7) · Bluetooth Generation (2005, 7) · Better-Fly (2005, 7)
+  - name: "PTX"
+    mbid: 20172774-8997-4256-b593-e53769f8b16b
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: Shalmiel (2005, 993) · Astaroth (2005, 862) · Ygal (2005, 850)
+  - name: "Jamie Saft Trio"
+    mbid: 641a6c2d-2779-40f4-a927-e2b23d819531
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: נשקי אותי (1996, 94) · כרטיס טיסה (2006, 3) · ללב שלי אין בית (2006, 2)
+  - name: "סיון שביט"
+    mbid: def46021-7d4e-4c98-a20d-f915bfc7c406
+    tier: 3
+    songs: []
+  # 22 songs; our top 3: Sun Is Coming (2018, 160) · Tana Num 170bpm (2017, 44) · Anima Mea (2020, 38)
+  - name: "Sajanka"
+    mbid: 40e5f959-3d95-4b3c-a994-995d36805533
+    tier: 3
+    songs: []
+  # 17 songs; our top 3: Hack Till Gravy (2005, 260) · Gut Her Like a Pig (2009, 223) · The Draining Laboratory (2009, 211)
+  - name: "Viscera Trail"
+    mbid: ee4b1d9f-ef1e-48de-bfaa-b9e3b3c2de5b
+    tier: 3
+    songs: []
+  # 39 songs; our top 3: חומות חימר (1991, 2) · המנון האגודה (1998, 12) · עוד יהיה לי (1990, 3)
+  - name: "מרגלית צנעני"
+    mbid: 997569ef-56b7-4a46-b00c-352a335501d4
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: ולא היה בינינו אלא זהר (2003, 6) · שיר חורף יוגוסלבי (2002, 2) · עזור לי (1978, 2)
+  - name: "צילה דגן"
+    mbid: e38eee5a-624f-4579-9b54-86c9c4cf1ca8
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: כשבאתי לקחת אותה מהעננים (1982, 29) · לא יכולתי לעשות כלום (1982, 24) · אני הולך במישור (1982, 21)
+  - name: "אילן וירצברג ושמעון גלבץ"
+    mbid: d40045e5-48a8-45d1-ada5-fd6b141369e4
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: Systec (2005, 18) · Fly On (2008, 139) · Lock Head (2008, 17)
+  - name: "Systemic"
+    mbid: 3d28ff92-8f2b-467d-9bef-467c1ca308ee
+    tier: 3
+    songs: []
+  # 19 songs; our top 3: War of Chaos (2002, 154) · World of Ice (2002, 137) · Controlled (2010, 136)
+  - name: "Eternal Gray"
+    mbid: 828a4d40-1f28-413b-ad72-6fbaab7f5d08
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: בארץ אהבתי השקד פורח (2003, 12) · חלומות (1998, 2) · הנה באה התזמורת (1979, 5)
+  - name: "רוחמה רז"
+    mbid: 5c16d658-3e93-4ac1-a0c3-31609c74b53e
+    tier: 3
+    songs: []
+  # 74 songs; our top 3: Hashem Melech (2000, 9) · Mikimi (2000, 9) · Ani Ma’amin (2000, 7)
+  - name: "Yosef Karduner"
+    mbid: 0357fb79-87ef-4e98-a219-9a09ed39cd25
+    tier: 3
+    songs: []
+  # 34 songs; our top 3: קשורים (1995, 4) · כמו פעם (?, 15) · שבוע נשאר (2002, 9)
+  - name: "ג׳נגו"
+    mbid: 633b5299-102c-40f6-899a-83227ae3ca5b
+    tier: 3
+    songs: []
+  # 18 songs; our top 3: בין האצבעות (2023, 8) · לכבות את האורות (2023, 6) · מה לעשות עם הזאב (2023, 23)
+  - name: "עלמה גוב"
+    mbid: 2d6f1941-1ff2-46ea-9359-c09625717b36
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: Beat of a Preacher Man (2010, 160) · As Opose To (2011, 33) · Playing Games With Love (2011, 29)
+  - name: "Shimi Sonic"
+    mbid: c8b103b9-2d64-425b-84af-70e8b4e4b7c3
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: רצים באוויר (2013, 9) · בא לי לדבר (2015, 8) · שמים בוערים (2015, 8)
+  - name: "גיא ויהל"
+    mbid: 590b7a9b-389f-4220-8d2c-5e79b8afe890
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: Utopia (2017, 9) · Strangers In Paradise (2012, 9) · Essence of Life (2018, 6)
+  - name: "Impact"
+    mbid: d90caaa1-f8f2-4ecc-a2a0-efe2219957f7
+    tier: 3
+    songs: []
+  # 15 songs; our top 3: Magnanimous (2019, 36) · Pillars of Creation (2019, 74) · Seven (2019, 56)
+  - name: "Obsidian Tide"
+    mbid: 66a71502-5c46-4487-98dc-9241612299a0
+    tier: 3
+    songs: []
+  # 2 songs; our top 3: Technodisco (Rob Mayth Radio Edit) (2004, 769) · Technodisco (Rob Mayth Remix) (2004, 522) · Hava Nagila (2005, 234)
+  - name: "Alex M. vs. Marc van Damme"
+    mbid: 99b0c6f4-3a42-4052-9caa-c5320b3596bc
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: If You Come Back (Chris Cox club) (2003, 52) · Sculptured (Do-Dee-Dee-Deem-Dum) (2005, 15) · Sculptured (2006, 186)
+  - name: "Calanit"
+    mbid: 6a098cbc-ad9a-4958-8cff-aa92eb0d199a
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: Dezile al mi amor (2006, 166) · Oud Solo (?, 32) · Sherifa (?, 26)
+  - name: "Kol Oud Tof Trio"
+    mbid: abe019c4-f391-4bd5-885e-9f167c863fdb
+    tier: 3
+    songs: []
+  # 15 songs; our top 3: Leaking Wounds (2013, 55) · Different Heart (2013, 70) · Distant Similarities (2013, 58)
+  - name: "Reign of The Architect"
+    mbid: ca0fb081-5d74-4a9b-b6ae-899ef6b64ad2
+    tier: 3
+    songs: []
+  # 13 songs; our top 3: Rain (2013, 91) · Rujum (2016, 5) · Wind (2016, 5)
+  - name: "Faran"
+    mbid: 1297dbd2-bdae-4b65-9f31-b0eda22f1183
+    tier: 3
+    songs: []
+  # 22 songs; our top 3: יסמין (2009, 134) · שיר על הים (2009, 65) · אדון יאוש (2009, 40)
+  - name: "הפיל הכחול"
+    mbid: 24c98c7d-91e2-42ad-8323-614d34555098
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: ירושלים של זהב (1967, 2) · אנא אלי (2011, 5) · Jerusalem of Gold (1967, 3)
+  - name: "שולי נתן"
+    mbid: e5ab966a-25e8-4d54-80d4-f4f964df5aa1
+    tier: 3
+    songs: []
+  # 2 songs; our top 3: Hedonism (2007, 480) · Internal Affairs (2007, 149)
+  - name: "ReShuffle"
+    mbid: 2a424c42-7e86-45de-9471-9c97ea9f170a
+    tier: 3
+    songs: []
+  # 55 songs; our top 3: ג'ננתני (2016, 6) · כל העיר שלנו (2016, 3) · דרך השלום (2014, 21)
+  - name: "פאר טסי"
+    mbid: f6eddaa4-c7f3-4f2d-a67d-4d1fef509163
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: Pletorax (1997, 33) · Defish (1998, 16) · Brightness (1996, 14)
+  - name: "P. Cok"
+    mbid: 7a4433ce-4123-41e0-81d7-89effa67990d
+    tier: 3
+    songs: []
+  # 44 songs; our top 3: שקיעות אדומות (2020, 33) · את חסרה לי (2020, 25) · סיבובים (2020, 23)
+  - name: "עדן חסון"
+    mbid: 94d92992-76d3-4125-8f99-c2c118db697d
+    tier: 3
+    songs: []
+  # 20 songs; our top 3: טיפה (2008, 38) · האדון הרופא (2012, 5) · נמשים (2008, 26)
+  - name: "אמילי קרפל"
+    mbid: c66c2ce7-9e4e-480d-9a03-8124992d8eab
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: לילה לי (1979, 13) · כד קטן (2008, 6) · אל תכה (1979, 5)
+  - name: "יוריק בן דוד"
+    mbid: 40d9ef8c-33de-4cb0-b86f-79ff539757c8
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: Spacecake (1996, 18) · Shadow World (2008, 265) · Wacky (1997, 5)
+  - name: "Enertopia"
+    mbid: d094ab3d-be9c-4977-a761-de126e7207dc
+    tier: 3
+    songs: []
+  # 37 songs; our top 3: תגידו לה (2010, 46) · לא מוותר (2010, 11) · כסף ואלכוהול (2010, 22)
+  - name: "דודו אהרון"
+    mbid: 41d3bdf6-dcc6-4dd8-9e30-cf2c62cdea3c
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: Plato Caliente (2012, 16) · Single Snapshot (2014, 9) · Travel Pack (2021, 5)
+  - name: "Roger Rabbit"
+    mbid: 748c87ff-7e5c-45c1-9e9e-edb6bfdd5d68
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: World Summit (2014, 167) · Groovy Movie (2012, 127) · The Shire (Synchronice remix) (2013, 52)
+  - name: "Modulation"
+    mbid: 3e101d87-fbee-49e1-aa25-4bdac8904833
+    tier: 3
+    songs: []
+  # 15 songs; our top 3: AnA HaNa Ha ! Part 2 (2007, 202) · T.O.P (The Original Part) (2007, 167) · kA BoOm Part 1 (2007, 260)
+  - name: "Koolfox"
+    mbid: 87be7e87-2a2c-4ab1-9aab-605a916391d8
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: My Friend Ego (2009, 50) · Forest Funk (2010, 45) · Digital Syllable (2011, 39)
+  - name: "LiquidNoize"
+    mbid: b98c342a-d92c-473c-ac90-5ab8339c2eeb
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: Reanimator (2005, 72) · I Feel Infected (2007, 49) · Cauze U Crazy (2007, 9)
+  - name: "Syntrax"
+    mbid: a975cbb3-ff89-4a3c-9786-11e04f57c710
+    tier: 3
+    songs: []
+  # 25 songs; our top 3: Takasin Bayati (?, 88) · Exploration (?, 65) · Enayim (?, 75)
+  - name: "Amos Hoffman"
+    mbid: 93d2545d-cd59-4608-8b38-46ea419cba04
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: Into the Silence (2012, 49) · Criminality (Part 2) (2011, 14) · Echoes Of Atlantis (2011, 7)
+  - name: "Mind Complex"
+    mbid: 5b74ab37-4664-41a9-94b1-0a53009d6a00
+    tier: 3
+    songs: []
+  # 23 songs; our top 3: Graveyard Violin (1989, 27) · זה אתה (2010, 2) · Don Juan Triumphant /Travel Through Time (1989, 21)
+  - name: "Misha Segal"
+    mbid: 26d75c0d-c5ba-4ae9-9024-4f4fc524ca88
+    tier: 3
+    songs: []
+  # 20 songs; our top 3: נר על החלון (1994, 35) · משחקים אסורים (1994, 13) · אישתר (1992, 13)
+  - name: "סטלה מאריס"
+    mbid: 78135858-a199-4881-b6d5-ed439761a48b
+    tier: 3
+    songs: []
+  # 22 songs; our top 3: הנער (2003, 5) · Brave New (2009, 29) · NYU (2001, 10)
+  - name: "Hadara Levin Areddy"
+    mbid: 3b893dd2-49e0-4574-9253-0349c0e47254
+    tier: 3
+    songs: []
+  # 27 songs; our top 3: השמלה הסגולה (2011, 2) · YALLA GEVER (2008, 19) · Ganelin (2008, 18)
+  - name: "Malox"
+    mbid: f3915013-b604-4e4a-95b6-1c47640f64e4
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: Control Machine (2020, 50) · Round Trip (2017, 7) · Cobra (2018, 13)
+  - name: "No Comment"
+    mbid: 5bdc44d9-6843-4344-bc3d-c5d7cfe84b0d
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: אל נא תאמר לי שלום (1973, 4) · האמיני יום יבוא (1998, 4) · כל היונים (2002, 11)
+  - name: "יפה ירקוני"
+    mbid: fbb412e9-099c-42ea-a555-b779afe65b14
+    tier: 3
+    songs: []
+  # 51 songs; our top 3: ראשון בבוקר (2022, 8) · שיכורים מאהבה (2015, 7) · כולם באילת (2017, 7)
+  - name: "Eden Ben Zaken"
+    mbid: 21770f58-cf1d-429c-bb29-e7b8bb2ceded
+    tier: 3
+    songs: []
+  # 22 songs; our top 3: שלחי אותו (2012, 12) · ככלות הקול והתמונה (2009, 2) · סתם שני אנשים (2013, 11)
+  - name: "רוני דלומי"
+    mbid: 52a97d62-1ff9-4244-8e76-2dda25a41f4e
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: Mandala (2016, 14) · Darkness (2013, 7) · Shanghai (2017, 6)
+  - name: "Kopel"
+    mbid: 171ac56c-ffd6-4915-95e0-4d80a6998164
+    tier: 3
+    songs: []
+  # 19 songs; our top 3: מחכה (2011, 37) · אין פה מקום (2011, 17) · כל פעם קצת (2011, 13)
+  - name: "עידן חביב"
+    mbid: ad32417f-9cb6-4765-8fbc-7c57048c9f6c
+    tier: 3
+    songs: []
+  # 14 songs; our top 3: Sameyach (2000, 29) · בורגר ראנץ' (2000, 5) · שמייח (2000, 4)
+  - name: "פינגפונג"
+    mbid: b43228fa-ec01-4dd7-b391-3f6d3c32a416
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: Saints and Dates (2003, 951) · Rampel (2006, 747) · Zafiel (2006, 660)
+  - name: "Koby Israelite"
+    mbid: eafa8416-c139-42bf-a48f-fc5530492d94
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: Sab Sam (2017, 13) · Selam (2017, 17) · Africa (2017, 30)
+  - name: "Gili Yalo"
+    mbid: 4720ffca-9bb9-4003-bf71-fbaa9f2afca0
+    tier: 3
+    songs: []
+  # 29 songs; our top 3: Twelve (2013, 7) · Autumn In New York (2013, 6) · Giant Steps (2006, 65)
+  - name: "Eli Degibri"
+    mbid: 6cdba100-0ade-4043-8da9-203cd9041c53
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: Modify Your Brain (2013, 9) · Changing Direction (2013, 6) · What the World Become (2013, 5)
+  - name: "Simply Wave"
+    mbid: 3f75d61d-72b1-4adb-a2ab-ac7b14239967
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: Past (1999, 28) · Hop She Goes... (1999, 53) · Papa (1999, 22)
+  - name: "Diablo"
+    mbid: 7644fd2d-b8dc-434a-96d8-2001298e1482
+    tier: 3
+    songs: []
+  # 14 songs; our top 3: Blonde (2004, 27) · The Girl From Yesterday (2006, 64) · Rush (2006, 20)
+  - name: "The Girls"
+    mbid: 8bb8ed5d-0dab-4a1b-a83f-ff7317bb23c6
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: Senses (Sphere mix) (2004, 44) · Electronic Addiction (2006, 19) · Intro (2006, 15)
+  - name: "Liam Shachar"
+    mbid: 3ff04665-a510-4ee0-8324-795aefeab794
+    tier: 3
+    songs: []
+  # 57 songs; our top 3: ויקיפדיה (2017, 12) · עטלף עיוור (2023, 11) · מה אתה רוצה ממני (2017, 7)
+  - name: "חנן בן ארי"
+    mbid: eced93df-6c3d-4f44-81a1-b7768bdaecf9
+    tier: 3
+    songs: []
+  # 35 songs; our top 3: לפעמים אני מרגיש (2006, 9) · הקדמה (2002, 17) · חלום של כל גבר (2015, 15)
+  - name: "סאבלימינל"
+    mbid: 5b30fd00-8b38-4fe1-8356-6f4223ea43cb
+    tier: 3
+    songs: []
+  # 14 songs; our top 3: HateGrenade (2011, 62) · Hair With Eyes (2011, 37) · Holy Divine (2011, 35)
+  - name: "Lovegrenade"
+    mbid: fbeedee3-b10e-47ad-8854-6103da6d6ca2
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: הניצוץ (1996, 19) · לא אהבתי (2003, 9) · ארוץ אליך (2003, 50)
+  - name: "שרון רוטר"
+    mbid: e9a06fd7-b75f-4ecf-8686-86036999f8d1
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: Heavy Progg (2007, 75) · 9 Pills & 5 Blotters (2006, 22) · Flying to Heaven (2007, 80)
+  - name: "PsyShark"
+    mbid: 1338fbee-6d5a-4aa4-90db-0b26ee55dad0
+    tier: 3
+    songs: []
+  # 16 songs; our top 3: מחכה שתשוב (2012, 10) · The Silence That Remains (2005, 9) · נשימה (2019, 3)
+  - name: "שירי מימון"
+    mbid: f51f06d9-450a-4633-9ca0-a438754d812b
+    tier: 3
+    songs: []
+  # 35 songs; our top 3: Hurricane (2013, 41) · Tango (2013, 25) · Not Afraid (2022, 14)
+  - name: "מארינה מקסימיליאן"
+    mbid: 598852df-86a9-49fa-9928-01435bdd5ed7
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: על גגות תל אביב (1990, 27) · תיאטרון רחוב (1990, 6) · שרה (1990, 13)
+  - name: "אלונה דניאל"
+    mbid: ca800b02-ee87-4a55-9c20-600f3c782113
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: Spiritual Evolution (1996, 34) · Psyquest (1996, 18) · Aqua Darkness (?, 16)
+  - name: "Bell Size Park"
+    mbid: d33736f7-ede3-45c6-9628-4d697d4087fe
+    tier: 3
+    songs: []
+  # 18 songs; our top 3: Lady of Shalott (1977, 144) · Cuckoo (Love's Lobour's Lost) (1977, 103) · Love Is Waiting for a Lover (1977, 100)
+  - name: "Atmosphera"
+    mbid: 87a6f9b7-f643-4e40-8bf1-ab0d9ba10246
+    tier: 3
+    songs: []
+  # 18 songs; our top 3: Ancient Future (2021, 11) · Primordial Black Hole (2021, 9) · Golden Hour (2025, 13)
+  - name: "Dekel"
+    mbid: a36cbbb0-510f-414b-a1cd-58ad2b93bea6
+    tier: 3
+    songs: []
+  # 25 songs; our top 3: The Unspeakable World (2018, 72) · Remember Last Winter (2016, 75) · Good to Be Alive (2018, 27)
+  - name: "Adi Goldstein"
+    mbid: 884b3bb8-0424-43f2-8086-c47b17e64d6c
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: מי שחלם (1994, 15) · לילה ראשון בלי אמא (1994, 5) · שריונים 69 (1994, 3)
+  - name: "להקת גייסות השריון"
+    mbid: 7309b24f-9ac8-4ab3-a0af-8cfa4234e228
+    tier: 3
+    songs: []
+  # 14 songs; our top 3: חמימות חולפת (1998, 14) · בוכה לך (2000, 12) · שובי לביתך (2008, 53)
+  - name: "דנה ברגר"
+    mbid: 58258fdf-ffa8-4a36-bdcd-2930fc205621
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: דם חם (1981, 7) · לעולם בעקבות השמש (1996, 15) · זה הרגע לאהוב (1995, 6)
+  - name: "שרי"
+    mbid: 076c8939-7d6a-4d59-ac4a-0c702f9ac030
+    tier: 3
+    songs: []
+  # 27 songs; our top 3: אל תסתכלי אחורה (1998, 3) · אבא נהייתי דוס (1998, 14) · איזה כיף להיות יהודי (1998, 8)
+  - name: "עדי רן"
+    mbid: 067832b9-e20f-4c02-b0b3-8058e4e017c9
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: Music for 18 Musicians: Pulses II (2023, 202) · Jacob’s Ladder: I. Genesis 28:12 (2025, 71) · Jacob’s Ladder: II. Vayachalom (And he dreamed) (2025, 53)
+  - name: "Synergy Vocals, New York Philharmonic, Jaap van Zweden"
+    mbid: 83749c79-19ed-4c85-ad30-2a2fcf23ac31
+    tier: 3
+    songs: []
+  # 39 songs; our top 3: מה שהיה (2010, 5) · בן של מלך (2010, 6) · מראה כהן (2009, 6)
+  - name: "מידד טסה"
+    mbid: 77d2ba81-9626-4d9a-b573-1ee762871fe8
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: Middle East (2021, 13) · Müde (2023, 14) · Pure Mind (2022, 6)
+  - name: "Samra"
+    mbid: 3e5294aa-8103-436c-b504-9357186aef80
+    tier: 3
+    songs: []
+  # 78 songs; our top 3: Ki Tov Hashem (2020, 6) · Nigun Chabad (2020, 5) · Nigun Viznitz (2012, 4)
+  - name: "Ahrele Samet"
+    mbid: 3dbb5d39-2440-4b86-9994-05f34c208e64
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: לא ביום ולא בלילה (1965, 3) · אל הציפור (1998, 3) · מחר (1967, 2)
+  - name: "נחמה הנדל"
+    mbid: 7637e03c-3a76-49a7-b412-804c8ca5bd06
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: Convolution (2009, 67) · King of the Night (Koen Groeneveld remix) (2011, 17) · Trombone (2014, 9)
+  - name: "Flippers"
+    mbid: 47ac4e5c-bb16-44fe-bd23-7d2dc753897f
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: הדרך אל הכפר (1986, 13) · על כפיו יביא (1995, 2) · היורדת (1986, 2)
+  - name: "רבקה זוהר"
+    mbid: f1bda199-e09d-46ae-9d4d-282857b9e30e
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: Lost in the Woods (2010, 25) · Too Doors Down (2010, 11) · Demon Side (2009, 7)
+  - name: "Post Traumatic"
+    mbid: cdb8f1e6-2940-4938-8d3c-65b73cd21020
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: Suffecation (2004, 64) · Sars (Toxic Remix) (2005, 11) · No Rules (2005, 47)
+  - name: "Winter Demon"
+    mbid: dbe925ac-692a-4a13-afb7-294a57582b10
+    tier: 3
+    songs: []
+  # 75 songs; our top 3: פתיחה (2010, 4) · מכניסי רחמים (2014, 4) · מצאתי חן (2013, 3)
+  - name: "יצחק מאיר"
+    mbid: b2a108f5-0147-4f3a-97de-8b22af1b0a4b
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: Search for God (1999, 22) · Golem (2000, 61) · Aural Morph (2001, 99)
+  - name: "Liquid Metal"
+    mbid: dce0bbe3-d7cb-4e21-9a94-bee0d49ccc21
+    tier: 3
+    songs: []
+  # 25 songs; our top 3: Jesus Christ the Nazarene Runs in the Streets of Tel Aviv Shouting Allah Hu Akbar; Invocation (2009, 58) · Allenby Vagina Street (2009, 57) · Holy Bond (2009, 50)
+  - name: "פיסוק רחב"
+    mbid: a47a496f-3f45-4df9-b7d4-ed4accbea6de
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: Internal Fire (2009, 275) · My Oath (2009, 258) · Acts of Disgrace (2009, 253)
+  - name: "Edgend"
+    mbid: b88ff628-4f70-4c17-a1de-53020e79b3fc
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: ציפורים בראש (1992, 3) · שתי ציפורים (1992, 5) · איש הרחוב (1992, 5)
+  - name: "לא אכפת להם"
+    mbid: 4697e4ec-0163-46a4-918f-0758bb40334e
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: ונצואלה (1959, 12) · גרמניה (1960, 2) · צו קריאה (1958, 1)
+  - name: "בצל ירוק"
+    mbid: bb3e74e7-b3d7-4603-bf8b-301dedab45ca
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: אבא שלי (1968, 2) · עשר אצבעות לי (1968, 7) · הדובים (1968, 3)
+  - name: "אסנת פז"
+    mbid: 2bfc5900-c4a4-4145-80e3-f40e663e7011
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: Ani Yeshena (2017, 13) · Yoshevet Beganim (2009, 10) · Aleph Bet / Hoshana (2017, 29)
+  - name: "Victoria Hanna"
+    mbid: 7f294ae9-da49-4dff-be02-699a0fd442e4
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: Deep Circles (2019, 29) · DNA (2020, 11) · Odyssey (2023, 6)
+  - name: "Adama"
+    mbid: de742c05-9b0c-42de-9a68-bddda5fd7772
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: The Valenzetti Equation (2010, 60) · The Bipolar Magician (2009, 19) · Space Deranger (2009, 6)
+  - name: "OneirOmaniX"
+    mbid: a2688901-6437-42ae-a1e6-94861014ae39
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: מקום לצידך (2009, 65) · רציתי (2009, 42) · בין החלומות (2009, 33)
+  - name: "דור דניאל"
+    mbid: a73fd5a7-d810-444a-90b0-5a4ba37a2bbb
+    tier: 3
+    songs: []
+  # 53 songs; our top 3: וופ (2004, 9) · מגיע לי יותר (2004, 12) · אני בני בשן (2007, 11)
+  - name: "בני בשן"
+    mbid: c495f9f1-96f9-451d-a331-22fb45c49c0e
+    tier: 3
+    songs: []
+  # 24 songs; our top 3: שדה חיטה (2010, 14) · שיר סיום (2011, 4) · אם תבוא (2010, 13)
+  - name: "צח דרורי"
+    mbid: c5f17a0f-a9ab-4ea8-8a25-5f103df03856
+    tier: 3
+    songs: []
+  # 23 songs; our top 3: מוכרת לי מפעם (2006, 63) · ימי בנימינה (2008, 41) · סודותיי (2006, 34)
+  - name: "דין דין אביב"
+    mbid: a632df83-bdfa-4cd7-ad32-dc84d886b32e
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: במקום הכי נמוך בתל אביב (1981, 22) · עברתי רק כדי לראות (1977, 22) · Gachliliot (Fireflies) (2009, 16)
+  - name: "אסתר שמיר"
+    mbid: 45bcc5a3-b965-4ae1-bf63-f88799d773a2
+    tier: 3
+    songs: []
+  # 25 songs; our top 3: Yosef Hashem (2007, 5) · Melech (2003, 4) · Lecha Eten (2007, 4)
+  - name: "משה מרדכי (מונה) רוזנבלום"
+    mbid: cb2a628f-2d87-4887-a3ed-2de18193c39a
+    tier: 3
+    songs: []
+  # 23 songs; our top 3: שכינה ביניהם (2025, 5) · Roked Li (2025, 6) · Chagiga Meshagaat (2015, 2)
+  - name: "Itzik Dadya"
+    mbid: 612ccce1-5ba4-40c8-83f1-44b7b47b4370
+    tier: 3
+    songs: []
+  # 2 songs; our top 3: Friendzone (2001, 440) · Amazone Hunt (1998, 84)
+  - name: "Avalanche"
+    mbid: 52ce12cb-fd45-43b7-8365-63a6d84906df
+    tier: 3
+    songs: []
+  # 17 songs; our top 3: Destruction (2024, 11) · That BASSSS (2020, 26) · We Hate Minimal, We Love Minimal (2019, 18)
+  - name: "Y do I"
+    mbid: b561a76f-b509-4a48-a253-a637a6b133a4
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: Natural Sound (2003, 86) · Space Ride (2004, 29) · Power Supply (2003, 15)
+  - name: "Groovemates"
+    mbid: 4d6b3d02-d62c-4b5a-a413-f31924016898
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: תמונות (2012, 3) · Same Heart (2014, 86) · שאריות של החיים (2009, 2)
+  - name: "מיי פיינגולד"
+    mbid: b30079f6-123a-4c23-82b5-b7f00bb32ab3
+    tier: 3
+    songs: []
+  # 25 songs; our top 3: נפתלי הדג (2008, 50) · חייל להשכיר (2008, 44) · סוס (1999, 40)
+  - name: "יהלי סובול"
+    mbid: 0366c1af-559d-4ffb-bc44-bb5c54bc2591
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: שובי דובי (2008, 4) · על ענפי שיטה (2005, 13) · דוגית נוסעת (2008, 3)
+  - name: "האחים והאחיות"
+    mbid: 34e65cc6-7142-4397-a97a-79a85ae32068
+    tier: 3
+    songs: []
+  # 41 songs; our top 3: חורף 23 (2023, 3) · עובד בכפר (2024, 18) · מה איתך אבא (2021, 2)
+  - name: "אודיה"
+    mbid: d964a3c2-03e6-4609-89ac-4fa7ec6263a7
+    tier: 3
+    songs: []
+  # 15 songs; our top 3: אודיסאה (2013, 129) · העולם אבד מזמן (2013, 76) · קצף על המים (2013, 57)
+  - name: "ועדת חריגים"
+    mbid: c6985d87-2125-4fef-9463-9c5d88315dbc
+    tier: 3
+    songs: []
+  # 28 songs; our top 3: בשדות (2006, 38) · תפילה צעד 11 (2006, 37) · בית חדש (1999, 34)
+  - name: "גבריאל בלחסן"
+    mbid: dfd1b1ec-3fc3-4d63-a680-aa9143218442
+    tier: 3
+    songs: []
+  # 32 songs; our top 3: Beat It (instrumental) (2020, 22) · Zombie (2019, 12) · Bella Ciao (2020, 10)
+  - name: "Kfir Ochaion"
+    mbid: 1d080053-2dbd-4b86-bdfd-a0e00d8c054b
+    tier: 3
+    songs: []
+  # 24 songs; our top 3: Big Girls (2007, 51) · I Choose You (2007, 50) · Slide (2007, 45)
+  - name: "דנה עדיני"
+    mbid: f450e38f-ce9c-4b01-a8d9-9d4a7deda4b9
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: Golden Boy (2015, 223) · Good Vibes (2015, 17) · Ulay Nedaber (2017, 15)
+  - name: "Nadav Guedj"
+    mbid: c5ca85f9-da3a-49fd-81af-44dad615f603
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: In the Darkwoods Sovereignity (1996, 53) · At Dark (1996, 79) · The Immortal Warrior Spirit (1996, 63)
+  - name: "Grimoire"
+    mbid: 2b840563-775b-449c-92bf-aec4a2e9edaa
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: Parallels (2016, 10) · Recent Waves (2011, 9) · Remain (2012, 5)
+  - name: "Guy Gelem"
+    mbid: 73c2b1f4-e80b-46e7-9704-f2082446bb0c
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: State of Flux (2012, 34) · Lucid Dream (2014, 7) · Deep Hole (Ghost Rider remix) (2013, 5)
+  - name: "Darma"
+    mbid: 729bdb8e-1834-44cb-8d98-f992da663855
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: Haven (2021, 55) · Something Different (2020, 122) · Sonorous (2018, 26)
+  - name: "Derpcat"
+    mbid: 26a9db81-5f55-4bd4-bd80-8461d1bb4e45
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: Going Mad (2010, 49) · Atom Fallout (2009, 35) · Fractal Family (2008, 6)
+  - name: "Energy Loop"
+    mbid: 10a239b4-ce00-46ac-b54c-6fb743a9a6cb
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: Gey Ben Henom (1995, 9) · Reptile (2003, 53) · Iconoclastic (2003, 52)
+  - name: "Lehavoth"
+    mbid: 29e290b6-d588-4c97-8e98-c3caa51ec3f9
+    tier: 3
+    songs: []
+  # 18 songs; our top 3: מה שלא הספקתי לומר (2007, 37) · בואי נעזוב (2007, 84) · אני אש (2007, 62)
+  - name: "רן דנקר ועילי בוטנר"
+    mbid: 38995aa0-27f6-498b-a6a0-3d8ef7aa9e3e
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: Pump It (2009, 24) · Megasonics (2007, 92) · I Want More (2011 mix) (2009, 9)
+  - name: "Switch"
+    mbid: 84a32dbe-7fca-4b66-a1da-e3860fafb01a
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: Royal Flash (Tokyo Hands remix) (2014, 27) · Fancy (2014, 40) · Trifecta (?, 14)
+  - name: "VesperTown"
+    mbid: ed02b945-fa18-49ed-86c0-be96a416fd3d
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: ג'ינג'יות (1994, 69) · L.A. (1994, 61) · ביפ (1994, 73)
+  - name: "ג'ינג'יות"
+    mbid: fe5660d2-767b-4e91-97a9-24b2c9d54ba8
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: לילה בדרום (1968, 6) · מנדלבאום (1967, 6) · זמר המפוחית (1968, 6)
+  - name: "עדנה גורן"
+    mbid: 55d8fb7d-7770-4ef4-8189-d5dad30543ea
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: דמעות של מלאכים (1975, 3) · בלוז שקט מהדרך (1975, 5) · ערב בתל אביב (1975, 2)
+  - name: "ארבע־עשרה אוקטבות"
+    mbid: 744a9cce-c60d-459e-abc8-08ad7aa38fe7
+    tier: 3
+    songs: []
+  # 22 songs; our top 3: What the Hell (2015, 54) · Something (2017, 16) · Grandma’s Hands (2014, 42)
+  - name: "Lucille Crew"
+    mbid: 90acfd4b-d0d9-4e3a-9c57-07ae9c3cb005
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: Mental Model (2007, 127) · High Damage (2007, 7) · Chemical Reaction (2008, 5)
+  - name: "Ziki vs. Ananda Shake"
+    mbid: e55b3606-4045-43dd-b586-4c90d8caf9fe
+    tier: 3
+    songs: []
+  # 2 songs; our top 3: Destruct (2006, 354) · Toaster (2007, 100)
+  - name: "Maori"
+    mbid: 124b9ded-c162-4a41-b62c-960130aea9b2
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: Aladdin (1998, 10) · Illuminate Future (2002, 15) · Good Morning Israel (1998, 12)
+  - name: "Zootrax"
+    mbid: bb67f229-68ea-4cab-ae7b-207963a9e480
+    tier: 3
+    songs: []
+  # 34 songs; our top 3: גלגוליו של דורבן (2009, 15) · שק לי בשקר (2011, 8) · שנת החרב (2009, 22)
+  - name: "יאפים עם ג'יפים"
+    mbid: 3c14b79a-e4db-4131-bb69-ddfacf37b70d
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: Deefrica (Mass Digital Remix) (2020, 21) · Space Drum (Itai Biri remix) (2010, 30) · Changes (2014, 24)
+  - name: "Roi Okev"
+    mbid: e949d4bf-ced5-4d74-ab3c-4f37a5c0f27f
+    tier: 3
+    songs: []
+  # 58 songs; our top 3: אני אחר (2020, 6) · תן לי את היום הזה (2019, 7) · דרור יקרא (1999, 5)
+  - name: "אהרן רזאל"
+    mbid: 61007a0d-5401-4300-a5d4-d4919c6f1397
+    tier: 3
+    songs: []
+  # 62 songs; our top 3: לכה דודי (2021, 4) · ניגון קרלין (2020, 3) · לב טהור (2020, 6)
+  - name: "ישיבת רמת גן"
+    mbid: 384ca8c6-af3c-434b-b8ea-b753c03767f5
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: En Electronique (2007, 107) · Groove Seductive (2006, 84) · Sonifunk (2005, 73)
+  - name: "Sonify"
+    mbid: ae9a8391-ecc2-4e6c-b04a-f7487a02a461
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: The Hairy Frogfish and the Finger Dragonet (2022, 160) · Starfish (2022, 90) · Hermit Crabs (intro) (2022, 24)
+  - name: "Tomer Baruch"
+    mbid: c747b30f-ede8-4ac7-96cb-9e663dd32d73
+    tier: 3
+    songs: []
+  # 26 songs; our top 3: ירח דבש (2022, 6) · לבד במדבר (2015, 36) · רוצה שנתממש (2015, 27)
+  - name: "גיא מזיג"
+    mbid: 48bbb8f3-f832-4780-bf23-b833e862e420
+    tier: 3
+    songs: []
+  # 72 songs; our top 3: Veyizku Legadlo (2025, 4) · עד אנה (2010, 4) · Siyum Slichot (2025, 3)
+  - name: "Yanky Daskal"
+    mbid: 98fca794-3cc5-484d-926a-cc6c7638e298
+    tier: 3
+    songs: []
+  # 2 songs; our top 3: Raw Anger (2009, 184) · Brother of Blasphemy (2010, 5)
+  - name: "Mondo Gecko"
+    mbid: 8ee006de-56ca-418d-8b59-f271a89a72d0
+    tier: 3
+    songs: []
+  # 21 songs; our top 3: שוב לבד (2010, 16) · מישהו שומע אותי (2008, 54) · היא אוהבת (2005, 38)
+  - name: "פיטר רוט"
+    mbid: 1a549459-3106-4662-be8e-5035230a7d86
+    tier: 3
+    songs: []
+  # 16 songs; our top 3: Words for Love (2003, 22) · עשינו היסטוריה (2016, 5) · דוקטור (2001, 3)
+  - name: "ליאור נרקיס"
+    mbid: 043640c5-5728-40e5-9122-6ee30103b2a9
+    tier: 3
+    songs: []
+  # 2 songs; our top 3: The Holy Land Spirit (DJ Shah Balearic Sundown radio mix) (1999, 183) · The Holy Land Spirit (DJ Shah’s dub mix) (2007, 111)
+  - name: "The Nomads"
+    mbid: 6b7b2a04-2faa-4c09-821a-0aa7731a86ff
+    tier: 3
+    songs: []
+  # 20 songs; our top 3: Black Book (2017, 58) · On the Floor (2017, 44) · There's No One Else (2017, 12)
+  - name: "Ori"
+    mbid: 919333b6-b905-470e-aa67-e503345563fc
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: Travel (1999, 10) · Joy (1999, 10) · Many Kisses (1998, 8)
+  - name: "Ananda"
+    mbid: f729fd77-2578-4195-a295-835a966521de
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: Gefilte Kabab (2018, 38) · Shdemati (2018, 24) · Dawn of Machine (2018, 24)
+  - name: "HAGO"
+    mbid: dd31d94d-db49-402c-a2f0-83da2fb2ddf6
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: LSD (2022, 5) · Reresurrection (2020, 12) · Things in the Sky (2021, 5)
+  - name: "Cosmic Flow"
+    mbid: 56ccc654-9145-417c-b69a-f1a34a211e0c
+    tier: 3
+    songs: []
+  # 2 songs; our top 3: Herpes (2003, 321) · Cost Me (2001, 287)
+  - name: "SX"
+    mbid: e330e381-bc56-4e75-8225-849a930c1085
+    tier: 3
+    songs: []
+  # 30 songs; our top 3: בוקר טוב (2000, 26) · עולם (2004, 25) · תראי (2004, 22)
+  - name: "דיקלה"
+    mbid: 145b4a41-e045-40bd-8e30-5ebfc04bf6d4
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: תודה (1986, 11) · התמונות שבאלבום (1998, 2) · תן לזמן ללכת (1984, 9)
+  - name: "Haïm Moshe"
+    mbid: d2269ed4-5496-4077-b595-33aa24a60282
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: בשנה הבאה (1970, 2) · עם אחד לב אחד (1972, 2) · ישראל שלי חוגגת (1972, 2)
+  - name: "אילן ואילנית"
+    mbid: d6555a3d-84b0-477d-aca6-b0a049b9dfca
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: Interstellar (2022, 43) · My Mind (2022, 5) · Frau Blau (2019, 12)
+  - name: "Kadosh & Yost Koen"
+    mbid: 390e005f-70bf-401d-8e9f-511b958bad11
+    tier: 3
+    songs: []
+  # 2 songs; our top 3: Ten Minutes to Sunset (1999, 175) · Living Without Your Love (rework) (2021, 8)
+  - name: "Interactive"
+    mbid: a9421049-8bb5-470f-9c0b-25172f641337
+    tier: 3
+    songs: []
+  # 17 songs; our top 3: To the Source (2003, 10) · Resistance (2003, 14) · Mirage (2003, 12)
+  - name: "Yuval Ron feat. Omar Faruk Tekbilek, Yair Dalal & Azam Ali"
+    mbid: 197a2729-d5a2-4a89-9c31-13b910056ef3
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: Shma IL (WhoMadeWho remix) (2019, 18) · Rhythm One (2023, 11) · Shma IL (2020, 12)
+  - name: "Magit Cacoon"
+    mbid: 44f53252-21da-496c-a3ac-2e9166cf88ae
+    tier: 3
+    songs: []
+  # 16 songs; our top 3: Autopilot (?, 84) · Overboard (?, 31) · Fist Fed Up (?, 30)
+  - name: "The Selfish Gene"
+    mbid: 6baf6527-dbde-414c-9383-2ffd2a5169fe
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: Goetia (1995, 8) · Call Upon Immortal Flame (2000, 60) · Eternal Quest of Vengance (2000, 51)
+  - name: "Azazel"
+    mbid: d2b2e71d-b6c7-421d-9fb8-ab7525280b21
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: Bubble Toy (2024, 15) · Grand Slammin' (2024, 14) · Ghustown (2021, 13)
+  - name: "Olsvangèr"
+    mbid: c9cdb1e3-d734-4335-a469-5038935b9902
+    tier: 3
+    songs: []
+  # 16 songs; our top 3: Roads (2024, 42) · In the Corner of a Dead End Street (2020, 83) · Muaka (2024, 43)
+  - name: "Tomorrow’s Rain"
+    mbid: c329972d-40f7-460f-ac6f-0c01e8c8358f
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: Dirt (2009, 162) · Fixation (2010, 7) · Leverage (2010, 5)
+  - name: "Dual Core"
+    mbid: 9da3b8d0-bc09-49ce-af43-3574c220d05e
+    tier: 3
+    songs: []
+  # 16 songs; our top 3: Esqueca Do Mundo (Forget the World) (2017, 18) · By Your Side (2012, 27) · Blues in Tel Aviv (2012, 25)
+  - name: "Lazer Lloyd"
+    mbid: 7467ec4c-e7ad-4509-a911-2c4ee7489240
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: Hypersphere (2018, 15) · Modular Sense (2021, 5) · Cosmic Creativity (2020, 17)
+  - name: "Skizologic"
+    mbid: 24847de6-3737-46ac-a655-e09d2c28d704
+    tier: 3
+    songs: []
+  # 2 songs; our top 3: Cat Skin (2010, 286) · Mariana Trench (4 Zombi edit) (2007, 49)
+  - name: "Igal Magitman"
+    mbid: e84aa413-282e-454f-8d25-0f13faf8a59b
+    tier: 3
+    songs: []
+  # 1 songs; our top 3: Yeroushalaim Chel Zahav (Jerusalem of Gold) (1993, 1,448)
+  - name: "Hana Tzur, Ramat-Gan Chamber Choir"
+    mbid: 3c549049-1a6d-4cac-8c4d-77463438299b
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: Porno Topic (2009, 36) · Arabic (2011, 30) · Socobus (2008, 13)
+  - name: "Cosmic Iron"
+    mbid: cb9f8d0b-61ee-4333-a7d5-b3da7426776a
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: Trip Of The Luna King (2007, 7) · Purity (2009, 115) · In The Middle Of The Desert (2007, 10)
+  - name: "New Born"
+    mbid: bccf5c5b-54db-4980-87ae-1dd694a110ed
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: World of Images (2019, 9) · The Invisibles (2019, 11) · Revolution (2020, 24)
+  - name: "Volcano On Mars"
+    mbid: 62a3bf8e-830b-4118-b53d-95cf09d04470
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: תני לי להחליט (1996, 3) · ימי ראשית הקיץ (1973, 8) · אצלי הכל בסדר (1973, 2)
+  - name: "ג׳וזי כץ"
+    mbid: c7d9b466-af10-4f31-af63-52775f3b8128
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: לשיר זה כמו להיות ירדן (1973, 8) · הבלדה על חדווה ושלומיק (1996, 4) · הבלדה על חדוה ושמוליק (1998, 4)
+  - name: "מירי אלוני"
+    mbid: f96aa0b9-85e9-4de8-a546-418c20d6c4b1
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: Tapuah (2006, 37) · מעבר לתכלת (2011, 2) · Al Mishkavi (2006, 30)
+  - name: "Ayelet Rose Gottlieb"
+    mbid: 81957072-51de-4bd2-9ec5-1bb431173c0b
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: Rubber Dove (2022, 27) · Muzika Salim (2015, 8) · Adama (2023, 37)
+  - name: "Florian"
+    mbid: be8dd279-cc09-4362-86e2-936bf25efc58
+    tier: 3
+    songs: []
+  # 24 songs; our top 3: מסיבה (2020, 34) · ככה עדיף לי (2020, 24) · כמה מתוק (2020, 21)
+  - name: "יסמין מועלם"
+    mbid: 33b87ae6-9c10-4f62-8f4b-d3040cdf1fd3
+    tier: 3
+    songs: []
+  # 24 songs; our top 3: את יפה (2007, 34) · בא הביתה (2007, 17) · חכי לי (2007, 14)
+  - name: "עידן יניב"
+    mbid: 91093e98-740c-48af-9598-f1104926cbe5
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: Papa Was an Alligator (2013, 7) · Oblivion (2007, 66) · Buzzraiser (2007, 59)
+  - name: "Buzzer"
+    mbid: dc53127d-676d-45ec-881a-590510c2a0c0
+    tier: 3
+    songs: []
+  # 25 songs; our top 3: ליבינג דה דרים (2022, 31) · גוליית 2 (2022, 3) · בנים (2022, 2)
+  - name: "נונו"
+    mbid: 54e2b14c-3390-4ede-999d-ee84014b512b
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: Digital Day Dream (2005, 146) · Breaking Through the Frequencies (2004, 23) · Limbo Sketches (2007, 5)
+  - name: "Ido Govrin"
+    mbid: 8a2254ff-a917-40c5-a02a-97bb4ae8f47f
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: Breaking Point (2019, 260) · Black Widow (2018, 16) · 5am (2019, 15)
+  - name: "Dan Mayo"
+    mbid: bda4d18b-9c2e-4354-9a52-51ebec019232
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: מסיבת כיתה (2007, 144) · בוא (2007, 45) · הכל הסתבך (2007, 44)
+  - name: "העברית"
+    mbid: 813c4799-a339-43b0-8eac-a5a100d14974
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: Hurricane (2024, 324) · TAXI (2023, 26) · Beautiful Horizon (2025, 6)
+  - name: "Eden Golan"
+    mbid: 86a4c009-aee7-47bb-b1cf-a8db9d216916
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: Искусство лгать (?, 90) · Мечты (?, 86) · Город-Недотрога (?, 122)
+  - name: "Злые Куклы"
+    mbid: 954140aa-2fdb-47a7-a2ea-6b1794560d25
+    tier: 3
+    songs: []
+  # 14 songs; our top 3: נפשי (2007, 7) · על הגבול (2007, 22) · נעלי הבית (2007, 22)
+  - name: "שאנן סטריט"
+    mbid: 487ea534-3d9b-4332-a5ce-8658470031de
+    tier: 3
+    songs: []
+  # 15 songs; our top 3: עשרים שנה (2010, 19) · כיבוי אורות (2010, 6) · אספרסו קצר (2010, 6)
+  - name: "חיה מילר"
+    mbid: 98377d5e-551f-49d1-bf94-b14af0d1e0cf
+    tier: 3
+    songs: []
+  # 31 songs; our top 3: ללמוד לעוף (2024, 6) · אל תעזבי ידיים (2019, 19) · פשוטים (2020, 9)
+  - name: "עקיבא"
+    mbid: dfe18ff7-9363-4f9d-883e-02159b2e54c5
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: Patterns (2006, 247) · Bird (2006, 172) · Happy War Holiday (2006, 236)
+  - name: "Sympozion"
+    mbid: 137156b7-51d9-47c0-9b52-5711ea9867e2
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: גדלתי בשנה (1979, 3) · בין הרים ובין סלעים (1979, 2) · כל הארץ דגלים (1978, 2)
+  - name: "Effi Ben Israel & Dudu Zar"
+    mbid: c641eb49-32f6-481d-8db2-e50fcdd1a98e
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: Neama Shivaya (1998, 9) · Hayo Haya (1998, 21) · Feel of Guitar (1998, 17)
+  - name: "Sonichaos"
+    mbid: 6d8254bb-aafc-49e0-a185-d1d0340b6899
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: Sika Rondo (2001, 136) · Ya rayah (1999, 14) · Bint Bladi (1999, 4)
+  - name: "Orchestre Andalou d'Israël"
+    mbid: d8275e98-a56a-4baf-92f1-0b5ef31959ac
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: Conjured by Weather (1997, 27) · Adagio I (1997, 33) · Demon-Side Fulfillment (1997, 31)
+  - name: "Mid Autumn Nights"
+    mbid: 54846ab8-4aec-4065-907f-7e95991fa209
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: Mistakes (2023, 22) · Why Does (2024, 29) · Tell Me (2025, 32)
+  - name: "Roni Kaspi"
+    mbid: 907bf2df-8f45-4913-8a51-e3cb84d8ea89
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: ברבאבא (1988, 5) · שירו שירו ילדים (?, 3) · אפצ'י (?, 2)
+  - name: "ציפי שביט"
+    mbid: 993cb7b2-91f4-40fa-ab4c-6bc793b7eb30
+    tier: 3
+    songs: []
+  # 24 songs; our top 3: קולנוע לב (2017, 12) · מה שחשוב (2017, 29) · רוצה לבכות (2017, 14)
+  - name: "ג׳יין בורדו"
+    mbid: 413ae880-4c26-42f3-8fd3-e57d9a060644
+    tier: 3
+    songs: []
+  # 16 songs; our top 3: יהודה יהודה (1998, 15) · בדרך הביתה (1998, 15) · היו לי פעם חברים (1998, 13)
+  - name: "השמחות"
+    mbid: db1a9d14-72b9-416f-9e33-251f375dc63b
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: In Haze of Time (2002, 108) · Creatures of the Night (2002, 99) · Orpheus Suite (2002, 92)
+  - name: "Trespass"
+    mbid: 87391409-f04e-4d89-9bd1-08e17104c3c9
+    tier: 3
+    songs: []
+  # 19 songs; our top 3: מיליון פעם (2007, 45) · אח יפני (2007, 26) · מאבדת את הראש (2007, 23)
+  - name: "מלכת הפלקט"
+    mbid: a20a01bd-3e2f-42d1-8a57-f35891b77472
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: Metta Love (2022, 6) · Naked (2019, 6) · Karnaval (Guy Mantzur remix) (2020, 14)
+  - name: "Eli Nissan"
+    mbid: 6401b392-9413-4087-80a5-7be513cf1f06
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: It Takes a Lot to Try (2023, 224) · All My Love's in Vain (2023, 34) · All I Want Is the Truth (2023, 25)
+  - name: "Aviram"
+    mbid: 4fb8f6e7-e9ee-477c-897d-704b4ceff214
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: Matemática (2024, 15) · Intensidade (Rina remix) (2023, 23) · Tudo bom (2018, 9)
+  - name: "Abrão"
+    mbid: c07d1f88-c322-43ad-9e9e-b881390a8f3f
+    tier: 3
+    songs: []
+  # 13 songs; our top 3: The Missing Piece (2024, 8) · 100% Light (2009, 88) · Alice (2009, 83)
+  - name: "Yael Deckelbaum"
+    mbid: 714b0d10-c95f-4525-9ec4-0cc67f912002
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: יברכך (1970, 2) · שיר הדרך (1960, 1) · לילך רוצה לקטוף את הירח (1970, 2)
+  - name: "אילנה רובינא"
+    mbid: 82e7fe90-72d2-46af-a978-e11b2dbd8189
+    tier: 3
+    songs: []
+  # 48 songs; our top 3: כתפוח (2018, 6) · לב טהור (2018, 5) · מעין עולם הבא (2018, 5)
+  - name: "Dudi Kalish"
+    mbid: 662128ca-e462-4bd9-9cf2-e81967e8bd83
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: דפנה פיק (2006, 98) · חבר ערבי (2006, 93) · איזה גבר (2006, 72)
+  - name: "דפנה והעוגיות"
+    mbid: d509aac2-a289-4af9-ab94-b71e26b7da16
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: דברים שרציתי לומר (2008, 28) · ריקוד רומנטי (2009, 9) · כלניות (2008, 23)
+  - name: "בוסה"
+    mbid: 0a7a5bcb-74f3-4a9b-9ed9-7629a3926e4d
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: הדודאים (1979, 7) · רדיו (1996, 3) · נולדתי לשלום (1999, 2)
+  - name: "סקסטה"
+    mbid: 6560b602-053a-4837-817e-9a5d094a89ef
+    tier: 3
+    songs: []
+  # 14 songs; our top 3: מנסים להגיע (1992, 7) · תלי אותי (1992, 7) · עכביש (1992, 7)
+  - name: "אלגנט"
+    mbid: f22849c0-4d81-4b4d-9329-ca5920fcd815
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: Fractured Memories (Animal Picnic remix) (2015, 5) · Anamnesis (2015, 9) · Riptide (Philipp Kempnich remix) (2016, 5)
+  - name: "Ran Salman"
+    mbid: 21de8a22-5ab9-4334-ba97-ab4b18c5f39e
+    tier: 3
+    songs: []
+  # 21 songs; our top 3: Lie Like This (2022, 9) · On My Mind (2025, 32) · הכל שקוף (2019, 6)
+  - name: "Mergui"
+    mbid: e64eef7f-c698-469d-a2b3-75837934ec77
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: Summer Strings (2010, 60) · On the Vsix (2011, 6) · Orbit (Synaptic Remix) (2012, 5)
+  - name: "I-Drop"
+    mbid: c5e919d4-cc22-4797-9b7e-f4a54bdcbff2
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: אהובתי שלי לבנת צוואר (2011, 13) · קצת אהבה לא תזיק (2015, 38) · לבנה שלי (2015, 2)
+  - name: "אלון עדר"
+    mbid: 62340ac3-3d6a-4623-bc4b-f6a0323cc49d
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: Bansury (2018, 22) · Sunset (2018, 13) · Bleed in the Same Way (2018, 7)
+  - name: "Pettra"
+    mbid: fa59c4a6-6605-4c83-ae21-032b1d0dd66c
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: הקיץ האחרון (1991, 59) · אהבה (1994, 2) · נוגעת לא נוגעת (1991, 2)
+  - name: "שפיות זמנית"
+    mbid: 17e99699-be2f-480e-bd9d-11af54f04d16
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: High Mind (2021, 67) · Kan Seumoto (2020, 5) · Crystalizer (2020, 12)
+  - name: "Aquiver"
+    mbid: 33345286-5bad-41d4-b046-47aa613967b6
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: לשים לך דיסק (2009, 89) · רוקדת עם כולם (2009, 73) · אם הייתי יודע (2009, 44)
+  - name: "הקרטל"
+    mbid: cbe82874-b9d8-4cad-9171-faf0db2fb709
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: Pretty Ugly (2010, 88) · Lamb (2010, 70) · Somewhere (2010, 70)
+  - name: "Phototaxis"
+    mbid: 2d1e24ed-987c-4e37-9f23-cec24691e1e3
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: Inka (2021, 33) · Full Moon (2009, 5) · Kundalini (2018, 30)
+  - name: "Terra"
+    mbid: 84db835e-dfb6-4357-9ae0-989cb33040b4
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: מדוע הילד צחק בחלום (2001, 21) · הלא ידענו (2001, 20) · כמו פרפר (2001, 13)
+  - name: "קרני פוסטל"
+    mbid: 681b4891-276b-4210-85de-412198d39655
+    tier: 3
+    songs: []
+  # 45 songs; our top 3: טוב הבעל שם טוב (2021, 5) · במסתרים (2023, 4) · ניגון קראקוב (2024, 6)
+  - name: "Pini Einhorn"
+    mbid: d2f90990-11ef-46ee-9b63-74a242526bf7
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: I am Something (?, 87) · Swallow my Gum (?, 147) · Swallow my Gum 2 (?, 111)
+  - name: "Lorena B"
+    mbid: f3c8604f-978c-48e4-92b5-3ee84b4988bb
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: Extremely Well (2014, 5) · Tripping on Acid (2015, 10) · The Truth (2014, 8)
+  - name: "NitroDrop"
+    mbid: 9e1fa08d-a826-4e91-9b41-ccc84025eea6
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: Jerusalem (2004, 16) · Send Me an Angel (?, 20) · Adagio (?, 14)
+  - name: "Liel"
+    mbid: dee6f4f6-d97c-4d93-b643-163b73e38f3b
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: Attention (Solaris Vibe remix) (2012, 31) · Loops of Life (2015, 14) · Night and Day (2012, 54)
+  - name: "Timeless"
+    mbid: 773e8192-7df2-4143-a6a5-5440d9e2bcf4
+    tier: 3
+    songs: []
+  # 18 songs; our top 3: דוד (2005, 24) · ער וחי (2008, 4) · איש אילם גבוה ודק (2008, 38)
+  - name: "דודי לוי"
+    mbid: 5f738b47-96b0-49d6-be71-f9f7ceaf2c5d
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: Edine (2020, 11) · KSR KSR KSR (2019, 23) · Desert Hafla (2020, 12)
+  - name: "Zenobia زنّوبيا"
+    mbid: 1d2ce198-fe42-4f18-bae8-dc1cbaa58973
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: You Are It (2001, 53) · Shell (2001, 27) · Plastic Zeus (2000, 13)
+  - name: "Gorlation Corporation"
+    mbid: 45a69803-1dc2-4da8-bcf9-4e5d85dad124
+    tier: 3
+    songs: []
+  # 24 songs; our top 3: רכב חלל (2008, 9) · אם את בעניין (2008, 21) · סתיו (2008, 13)
+  - name: "מלכה באיה"
+    mbid: 03b070ee-d3af-46a0-b3a5-8db8f61ad319
+    tier: 3
+    songs: []
+  # 14 songs; our top 3: כנראה שאהבתי אותך (1998, 11) · חיים משל עצמי (1998, 14) · חבר (1998, 7)
+  - name: "בן ארצי"
+    mbid: bbabd73c-50ca-402d-978b-8b71a08001d5
+    tier: 3
+    songs: []
+  # 40 songs; our top 3: Make It Happen (2014, 7) · Just Do It (2011, 6) · מתי תגדל (2018, 5)
+  - name: "Kinderlach"
+    mbid: 47ff2066-bf7f-4fa6-8ebb-48864892c036
+    tier: 3
+    songs: []
+  # 1 songs; our top 3: Kasbah (2002, 372)
+  - name: "Gaia"
+    mbid: 1926355f-a1dc-47d4-9834-9d647cc08828
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: I'm Com'un Home (In the Morn'un) (2015, 22) · They Don't Know (2015, 8) · All In (2016, 6)
+  - name: "Men of North Country"
+    mbid: 16de72d4-bcd3-4f63-aa15-e60bbc36bcee
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: גם כשאני איתך (1995, 22) · ללכת (1995, 17) · תרשום לי אויר (1995, 15)
+  - name: "ביקיני"
+    mbid: facc8032-925e-4466-88b5-4fefe8a39516
+    tier: 3
+    songs: []
+  # 22 songs; our top 3: Departure (2005, 24) · A Falling Leaf (2005, 21) · Breaking the Water (2005, 17)
+  - name: "Assif Tsahar & Tatsuya Nakatani"
+    mbid: ea17dbfc-f53d-4c3e-b96f-455b901b55c5
+    tier: 3
+    songs: []
+  # 2 songs; our top 3: On the Road (2008, 90) · Sawayaka (2008, 52)
+  - name: "Eitonin"
+    mbid: b5db7967-f7c6-4357-a22a-4d793d605fbb
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: Naim Ragon (Poso Mou Lipi) (2006, 7) · מונו (2009, 26) · האמנם (אל תלכי בשדה) (2008, 3)
+  - name: "שלומי סרנגה"
+    mbid: 9c1a97f7-710b-45f5-b785-8aa63b9a65b1
+    tier: 3
+    songs: []
+  # 25 songs; our top 3: One Note (2020, 12) · Dopefully (2020, 12) · Epic Start (2020, 7)
+  - name: "Duo Brothers"
+    mbid: c41a1508-8112-413f-b8ca-494cd10a1bf7
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: Waters of Abyss (2009, 105) · Silent Mourning (2009, 96) · Among the Shadows of Erebus (2009, 54)
+  - name: "Ekho"
+    mbid: aaa79c70-1e53-4365-bb62-9eec1efeb97e
+    tier: 3
+    songs: []
+  # 22 songs; our top 3: מי ימלל (2021, 5) · הללוהו (2016, 2) · Meolam Vad Olam (2025, 4)
+  - name: "זאנוויל וויינבערגער"
+    mbid: c79c86a3-7191-41cb-801b-ce705c13727b
+    tier: 3
+    songs: []
+  # 6 songs; our top 3: Odin's Ballad (2020, 7) · m1cr0rgan1sm (2018, 27) · Over Ending (2018, 15)
+  - name: "Earth Connect"
+    mbid: a27d3189-716b-48ee-8da3-43c9a63eee85
+    tier: 3
+    songs: []
+  # 2 songs; our top 3: Spiegel im Spiegel (2004, 1,346) · Fratres For Violin and Piano (2004, 150)
+  - name: "Angela Yoffe, Vadim Gluzman"
+    mbid: b3196f96-04bb-4aef-89a1-5fdbed6339a7
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: Secret Way to Heaven (2016, 5) · Tododo (2019, 20) · Chop Suey (2016, 8)
+  - name: "Moran Magal"
+    mbid: 35e9a845-20cd-45b9-8281-09a30c9d609e
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: Deep (2005, 119) · Hope and Destruction (2005, 103) · Innocence (2005, 117)
+  - name: "Eyal Maoz"
+    mbid: dbca90fa-eecc-47e0-918f-8e0393d910f6
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: זה רק ספורט (1998, 14) · Viva Sport (2000, 5) · Ze Rak Sport (?, 45)
+  - name: "Dafna"
+    mbid: 8320cbb1-3270-4dd5-a133-2890c44082c5
+    tier: 3
+    songs: []
+  # 14 songs; our top 3: לך לישון (2022, 51) · מי זאת (2022, 33) · אולסטאר וגופיות (2023, 15)
+  - name: "Anna Zak"
+    mbid: 4b682288-d046-4865-91ff-9ad503edd752
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: Malina (original mix) (2016, 6) · Renaissance (Giuseppe Ottaviani remix) (2017, 8) · Flash (2018, 6)
+  - name: "Rafael Osmo"
+    mbid: 8a78b29d-9f21-4ced-9a35-a3b1435e9025
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: One Day I Smile (1988, 80) · Exercise (1988, 69) · Special Guest (1988, 7)
+  - name: "Jean Conflict"
+    mbid: c74848b0-b7ed-4cfc-a50a-4c54329e68ae
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: Sirens (2012, 80) · Karev Yom (2012, 67) · The Secret Message (2012, 66)
+  - name: "Folo"
+    mbid: de164084-f0ec-4a11-96aa-87b9783c798e
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: אני גיטרה (1993, 3) · הן אפשר (1966, 1) · ויתרתי (1982, 3)
+  - name: "בני אמדורסקי"
+    mbid: e164818d-a261-4bd6-8464-a56daffa53b4
+    tier: 3
+    songs: []
+  # 3 songs; our top 3: Inside Your Head (2020, 8) · Forest Tales (2021, 7) · Eye of Perception (2022, 7)
+  - name: "SOME1"
+    mbid: f54f045f-51f1-49f4-90cd-c0200bee3118
+    tier: 3
+    songs: []
+  # 10 songs; our top 3: Elephant on Elephant (2011, 19) · Get a Gun (2009, 23) · Satanic Bible (2009, 22)
+  - name: "Uzbeks"
+    mbid: adb07cc1-7dfc-4dae-99ba-a899e02193fc
+    tier: 3
+    songs: []
+  # 11 songs; our top 3: שולה (1995, 19) · שיר הקטר (1998, 18) · יום סבבה (?, 9)
+  - name: "אטרף"
+    mbid: 3bdab3e5-930f-43d3-84c1-5d525e1a1a31
+    tier: 3
+    songs: []
+  # 23 songs; our top 3: Niggun Simcha – Chabad (2009, 4) · B’syiato Dishmayo (2018, 3) · Lulei (2015, 3)
+  - name: "Shloime Cohen"
+    mbid: 449b6a61-7ef4-4619-ac44-e98abf6b58f0
+    tier: 3
+    songs: []
+  # 2 songs; our top 3: Getting Up (2008, 140) · Humanized Robot (2008, 6)
+  - name: "Mixed Emotions"
+    mbid: b085663e-bc22-42ae-9a41-84afb19ddcea
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: Rumors (2021, 113) · Amazing (2021, 52) · Rumors (six impala remix) (2022, 13)
+  - name: "Maria Domark"
+    mbid: 71157c50-42a5-4420-801e-0398391036ec
+    tier: 3
+    songs: []
+  # 15 songs; our top 3: You Are Holy (2012, 10) · Adonai (2018, 8) · Spirit and the Bride (2020, 7)
+  - name: "Joshua Aaron"
+    mbid: 883d3351-09ea-47a6-90c6-1b3aca111dc2
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: Five Hebrew Love Songs: Lárov (Mostly) (1997, 174) · Five Hebrew Love Songs: Temuná (A Picture) (1997, 154) · Five Hebrew Love Songs: Kalá Kallá (Light Bride) (1997, 153)
+  - name: "Hila Plitmann, Megumi Okura, Eric Whitacre"
+    mbid: 50373669-3d16-449d-a349-34b8d08737e1
+    tier: 3
+    songs: []
+  # 2 songs; our top 3: Beyond Imagination (2012, 48) · Son of Sam (2012, 32)
+  - name: "Cymbalta"
+    mbid: b73d50ec-7d20-4804-8ab6-e4d288e77515
+    tier: 3
+    songs: []
+  # 7 songs; our top 3: Nocturnal (2025, 42) · Enemy (2024, 5) · Carnage (2025, 17)
+  - name: "Adam Sellouk & Doriann"
+    mbid: 1ed1967b-342e-41b8-96d9-82d72ea95c17
+    tier: 3
+    songs: []
+  # 15 songs; our top 3: מסע (2019, 42) · תמיד חלמתי (2018, 19) · אור (2016, 16)
+  - name: "Eliad"
+    mbid: 21665930-ef5d-4cc2-912b-125f95820400
+    tier: 3
+    songs: []
+  # 12 songs; our top 3: למה (1998, 15) · ריח (1998, 15) · רע (1998, 12)
+  - name: "נעליים"
+    mbid: f99ff782-ea8a-422a-bd56-e3c48b9719d4
+    tier: 3
+    songs: []
+  # 9 songs; our top 3: Divine Realm of Existence (2020, 26) · Dawn of the Beholders (2020, 24) · Taste the Celestial Blood (2020, 23)
+  - name: "Venomous Skeleton"
+    mbid: 424ddeb7-13a5-4c28-9ce8-0f24506c26a3
+    tier: 3
+    songs: []
+  # 4 songs; our top 3: Pinkish Dolphin (2019, 5) · Electronic Disco (Curses remix) (2021, 26) · Ani Cham (2021, 10)
+  - name: "Modular Project"
+    mbid: a3ca29a6-864c-4ad7-bb89-7cf57bff32bf
+    tier: 3
+    songs: []
+  # 5 songs; our top 3: The Mundane Corruption (2008, 298) · Iron Lotus (2008, 265) · Fueled by Causality (2008, 251)
+  - name: "They:Swarm"
+    mbid: ef943566-6e6a-4dad-ba91-41ec2e49ce7b
+    tier: 3
+    songs: []
+  # 38 songs; our top 3: בדרך אמונה בחרתי (2025, 3) · בדרך אל האור (2022, 3) · תאיר את דרכי (2021, 6)
+  - name: "משה קליין"
+    mbid: 917f057c-6969-4781-936a-c572e8eaff12
+    tier: 3
+    songs: []
+  # 1 songs; our top 3: Out There (1998, 105)
+  - name: "Solaris"
+    mbid: 157eefae-90fd-46fe-8cc3-7683bc02da41
+    tier: 3
+    songs: []
+  # 8 songs; our top 3: Il Tredici (2011, 129) · Dark Age (2011, 112) · Overture (2011, 127)
+  - name: "Sanhedrin"
+    mbid: 5f9d0d51-85a6-4517-96ab-14aabb25d529
+    tier: 3
+    songs: []

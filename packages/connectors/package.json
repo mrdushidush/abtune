@@ -1,0 +1,17 @@
+{
+  "name": "@abtune/connectors",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ABTune playlist destinations: file export (M3U, CSV, XSPF, JSON); Spotify in M5.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p . && tsc -p tsconfig.test.json"
+  },
+  "dependencies": {
+    "@abtune/engine": "workspace:*"
+  }
+}

@@ -18,6 +18,13 @@ export interface SessionConfig {
   /** Enabled packs, sorted. */
   readonly packs: readonly string[];
   readonly ai: boolean;
+  /**
+   * Random per session (16 hex chars), so a retake asks other cards; null = deterministic §8.3.
+   * Same seed + same answers → same path (locked decision #3 as amended by the owner, D7).
+   */
+  readonly quiz_seed?: string | null;
+  /** Question ids of the previous session: a family's variant avoids them. */
+  readonly avoid?: readonly string[];
 }
 
 /** HANDOFF §8.1: the whole session. Everything else is derived. */
@@ -72,7 +79,23 @@ export function createSession(bank: Bank, config: Partial<SessionConfig> = {}): 
   const length = config.length ?? 50;
   if (!Number.isInteger(mode) || mode < 1) throw new SessionError(`Invalid mode ${mode}.`);
   if (!Number.isInteger(length) || length < 1) throw new SessionError(`Invalid length ${length}.`);
-  return { config: { mode, length, packs, ai: config.ai ?? false }, answer_log: [], seed_salt: 0 };
+  const quizSeed = config.quiz_seed ?? null;
+  if (quizSeed !== null && !/^[0-9a-f]{16}$/.test(quizSeed))
+    throw new SessionError(`Invalid quiz seed "${quizSeed}".`);
+  const avoid = [...new Set(config.avoid ?? [])].sort();
+  // Deterministic sessions keep the M2 shape, so their states (and digests over them) don't change.
+  return {
+    config: {
+      mode,
+      length,
+      packs,
+      ai: config.ai ?? false,
+      ...(quizSeed !== null ? { quiz_seed: quizSeed } : {}),
+      ...(avoid.length > 0 ? { avoid } : {}),
+    },
+    answer_log: [],
+    seed_salt: 0,
+  };
 }
 
 /** Throws if the log references unknown questions, repeats one, or has an invalid choice. */
@@ -107,6 +130,7 @@ export function viewSession(
     new Set(state.config.packs),
     position,
     options,
+    { seed: state.config.quiz_seed ?? null, avoid: state.config.avoid ?? [] },
   );
   return question
     ? { ...base, status: "asking", question }

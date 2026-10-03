@@ -1,5 +1,5 @@
 import type { TasteVector } from "../taste.ts";
-import { type CatalogColumns, NONE } from "./columns.ts";
+import { type CatalogColumns, NONE, TIER_TAIL } from "./columns.ts";
 import type { GeneratorParams } from "./params.ts";
 
 /**
@@ -11,6 +11,8 @@ export interface Eligibility {
   readonly decades: Uint8Array;
   /** Language index every track must have, or -1 for any language. */
   readonly language: number;
+  /** Deepest popularity tier allowed (TIER_HITS … TIER_TAIL). */
+  readonly maxTier: number;
 }
 
 /** A (primary cluster, decade) cell with at least one eligible track (HANDOFF §9.2). */
@@ -81,13 +83,15 @@ export function coverMass(p: readonly number[], mass: number): Uint8Array {
 
 /**
  * relax 0: §9.2.1 prefilter plus the language hard filter. relax 1: language filter only.
- * relax 2: everything (used only when the stricter sets can't fill the playlist).
+ * relax 2: everything (used only when the stricter sets can't fill the playlist). Only tracks of
+ * tier ≤ `maxTier` are eligible.
  */
 export function eligibility(
   columns: CatalogColumns,
   taste: TasteVector,
   params: GeneratorParams,
   relax: 0 | 1 | 2,
+  maxTier: number = TIER_TAIL,
 ): Eligibility {
   const { genres, decades } = columns.dimensions;
   const all = (k: number) => new Uint8Array(k + 1).fill(1);
@@ -109,6 +113,7 @@ export function eligibility(
         ? coverMass(taste.decades, params.prefilterMass)
         : all(decades.length),
     language,
+    maxTier,
   };
 }
 
@@ -135,13 +140,14 @@ export function planCells(
   const nCells = (G + 1) * (D + 1);
   const cellOf = new Int16Array(columns.n);
   const counts = new Int32Array(nCells);
-  const { primary, decade, lang } = columns;
+  const { primary, decade, lang, tier } = columns;
   for (let i = 0; i < columns.n; i++) {
     const g = primary[i] as number;
     const d = decade[i] as number;
     const gb = g === NONE ? G : g;
     const db = d === NONE ? D : d;
     if (
+      (tier[i] as number) <= elig.maxTier &&
       elig.genres[gb] === 1 &&
       elig.decades[db] === 1 &&
       (elig.language < 0 || lang[i] === elig.language)

@@ -1,0 +1,367 @@
+# Widely known hits, for the eval's canon metric (hits per 100 playlist tracks). Hand-made by the
+# M4 research agents (2026-10-02) before looking at catalog rankings: a non-circular check of the hit
+# signal. Columns: market, artist credit alternatives, title alternatives (comma-separated). A
+# catalog track matches when its artist credit contains an artist alternative and its normalized
+# title equals a title alternative (case, accents and punctuation ignored).
+intl	Elvis Presley	Jailhouse Rock
+intl	Elvis Presley	Can't Help Falling in Love
+intl	Ben E. King	Stand by Me
+intl	Frank Sinatra	My Way
+intl	Frank Sinatra	Fly Me to the Moon
+intl	Ray Charles	Hit the Road Jack
+intl	Bill Haley	Rock Around the Clock
+intl	Buddy Holly	Peggy Sue
+intl	Louis Armstrong	What a Wonderful World
+intl	Dean Martin	That's Amore
+intl	Little Richard	Tutti Frutti
+intl	The Beatles	Hey Jude
+intl	The Beatles	Let It Be
+intl	The Beatles	Yesterday
+intl	The Beatles	Here Comes the Sun
+intl	The Beatles	Help!
+intl	The Rolling Stones	Paint It Black
+intl	The Beach Boys	Good Vibrations
+intl	The Beach Boys	Wouldn't It Be Nice
+intl	Bob Dylan	Like a Rolling Stone
+intl	Simon & Garfunkel	The Sound of Silence
+intl	The Doors	Light My Fire
+intl	The Animals	The House of the Rising Sun
+intl	Jimi Hendrix	Purple Haze
+intl	Aretha Franklin	Respect
+intl	Marvin Gaye	I Heard It Through the Grapevine
+intl	The Kinks	You Really Got Me
+intl	The Mamas & the Papas	California Dreamin'
+intl	Creedence Clearwater Revival	Fortunate Son
+intl	The Supremes	Stop! In the Name of Love
+intl	Nancy Sinatra	These Boots Are Made for Walkin'
+intl	Led Zeppelin	Stairway to Heaven
+intl	Led Zeppelin	Whole Lotta Love
+intl	Queen	Bohemian Rhapsody
+intl	Queen	We Will Rock You
+intl	Queen	Don't Stop Me Now
+intl	Eagles	Hotel California
+intl	Pink Floyd	Another Brick in the Wall
+intl	Pink Floyd	Wish You Were Here
+intl	Fleetwood Mac	Dreams
+intl	Fleetwood Mac	Go Your Own Way
+intl	ABBA	Dancing Queen
+intl	ABBA	Mamma Mia
+intl	Bee Gees	Stayin' Alive
+intl	Gloria Gaynor	I Will Survive
+intl	Elton John	Rocket Man
+intl	Elton John	Your Song
+intl	David Bowie	Heroes
+intl	David Bowie	Space Oddity
+intl	Lynyrd Skynyrd	Sweet Home Alabama
+intl	Bob Marley	No Woman, No Cry
+intl	Bob Marley	Three Little Birds
+intl	Stevie Wonder	Superstition
+intl	Earth, Wind & Fire	September
+intl	John Lennon	Imagine
+intl	The Clash	London Calling
+intl	Ramones	Blitzkrieg Bop
+intl	Bruce Springsteen	Born to Run
+intl	Black Sabbath	Paranoid
+intl	Deep Purple	Smoke on the Water
+intl	AC/DC	Highway to Hell
+intl	Donna Summer	I Feel Love
+intl	Chic	Le Freak
+intl	Boney M.	Rasputin
+intl	Michael Jackson	Billie Jean
+intl	Michael Jackson	Beat It
+intl	Michael Jackson	Thriller
+intl	Madonna	Like a Prayer
+intl	Madonna	Like a Virgin
+intl	Prince	Purple Rain
+intl	Prince	When Doves Cry
+intl	Whitney Houston	I Wanna Dance With Somebody
+intl	Whitney Houston	I Will Always Love You
+intl	Cyndi Lauper	Girls Just Want to Have Fun
+intl	a-ha	Take On Me
+intl	Toto	Africa
+intl	Journey	Don't Stop Believin'
+intl	Bon Jovi	Livin' on a Prayer
+intl	Guns N' Roses	Sweet Child o' Mine
+intl	Europe	The Final Countdown
+intl	Survivor	Eye of the Tiger
+intl	Dire Straits	Sultans of Swing
+intl	U2	With or Without You
+intl	Tears for Fears	Everybody Wants to Rule the World
+intl	Depeche Mode	Enjoy the Silence
+intl	Depeche Mode	Personal Jesus
+intl	The Police	Every Breath You Take
+intl	Duran Duran	Hungry Like the Wolf
+intl	Soft Cell	Tainted Love
+intl	Wham!	Last Christmas
+intl	Wham!	Wake Me Up Before You Go-Go
+intl	Rick Astley	Never Gonna Give You Up
+intl	Kim Wilde	Kids in America
+intl	Pet Shop Boys	West End Girls
+intl	Bonnie Tyler	Total Eclipse of the Heart
+intl	Phil Collins	In the Air Tonight
+intl	Queen	Another One Bites the Dust
+intl	Run-D.M.C.	Walk This Way
+intl	Metallica	Enter Sandman
+intl	Metallica	Nothing Else Matters
+intl	Iron Maiden	The Trooper
+intl	Nirvana	Smells Like Teen Spirit
+intl	Nirvana	Come as You Are
+intl	Oasis	Wonderwall
+intl	Oasis	Don't Look Back in Anger
+intl	Radiohead	Creep
+intl	R.E.M.	Losing My Religion
+intl	Red Hot Chili Peppers	Californication
+intl	Red Hot Chili Peppers	Under the Bridge
+intl	The Cranberries	Zombie
+intl	Blur	Song 2
+intl	Pearl Jam	Alive
+intl	Alanis Morissette	Ironic
+intl	No Doubt	Don't Speak
+intl	Spice Girls	Wannabe
+intl	Backstreet Boys	I Want It That Way
+intl	Britney Spears	…Baby One More Time
+intl	Britney Spears	Oops!… I Did It Again
+intl	Britney Spears	Toxic
+intl	Christina Aguilera	Genie in a Bottle
+intl	Ricky Martin	Livin' la Vida Loca
+intl	Celine Dion	My Heart Will Go On
+intl	Mariah Carey	All I Want for Christmas Is You
+intl	Mariah Carey	Fantasy
+intl	TLC	No Scrubs
+intl	TLC	Waterfalls
+intl	Destiny's Child	Say My Name
+intl	Coolio	Gangsta's Paradise
+intl	2Pac	California Love
+intl	The Notorious B.I.G.	Juicy
+intl	Will Smith	Men in Black
+intl	Vanilla Ice	Ice Ice Baby
+intl	MC Hammer	U Can't Touch This
+intl	Haddaway	What Is Love
+intl	Snap!	Rhythm Is a Dancer
+intl	Aqua	Barbie Girl
+intl	Los del Río	Macarena
+intl	Ace of Base	All That She Wants
+intl	Ace of Base	The Sign
+intl	Gala	Freed From Desire
+intl	Fugees	Killing Me Softly
+intl	Shania Twain	Man! I Feel Like a Woman!
+intl	Green Day	Basket Case
+intl	The Verve	Bitter Sweet Symphony
+intl	Robbie Williams	Angels
+intl	Savage Garden	Truly Madly Deeply
+intl	Santana	Smooth
+intl	Eminem	Lose Yourself
+intl	Eminem	The Real Slim Shady
+intl	Eminem	Without Me
+intl	50 Cent	In da Club
+intl	OutKast	Hey Ya!
+intl	Beyoncé	Crazy in Love
+intl	Rihanna	Umbrella
+intl	Rihanna	Diamonds
+intl	Rihanna	We Found Love
+intl	Shakira	Hips Don't Lie
+intl	Shakira	Whenever, Wherever
+intl	Usher	Yeah!
+intl	Nelly Furtado	Promiscuous
+intl	Gnarls Barkley	Crazy
+intl	Amy Winehouse	Rehab
+intl	Amy Winehouse	Back to Black
+intl	Coldplay	Viva la Vida
+intl	Coldplay	Yellow
+intl	Coldplay	The Scientist
+intl	The White Stripes	Seven Nation Army
+intl	Linkin Park	In the End
+intl	Linkin Park	Numb
+intl	Evanescence	Bring Me to Life
+intl	System of a Down	Chop Suey!
+intl	Avril Lavigne	Complicated
+intl	Kelly Clarkson	Since U Been Gone
+intl	Green Day	Boulevard of Broken Dreams
+intl	Black Eyed Peas	I Gotta Feeling
+intl	Lady Gaga	Poker Face
+intl	Lady Gaga	Bad Romance
+intl	Lady Gaga	Just Dance
+intl	Katy Perry	I Kissed a Girl
+intl	Katy Perry	Firework
+intl	Katy Perry	Roar
+intl	Kylie Minogue	Can't Get You Out of My Head
+intl	Daft Punk	One More Time
+intl	Daft Punk	Get Lucky
+intl	Daft Punk	Around the World
+intl	Justin Timberlake	SexyBack
+intl	Justin Timberlake	Cry Me a River
+intl	Timbaland	The Way I Are
+intl	Kanye West	Gold Digger
+intl	Kanye West	Stronger
+intl	Snow Patrol	Chasing Cars
+intl	James Blunt	You're Beautiful
+intl	Leona Lewis	Bleeding Love
+intl	Mika	Grace Kelly
+intl	Sean Paul	Temperature
+intl	Daddy Yankee	Gasolina
+intl	O-Zone	Dragostea din tei
+intl	Las Ketchup	Aserejé
+intl	Cascada	Everytime We Touch
+intl	Eric Prydz	Call on Me
+intl	Benny Benassi	Satisfaction
+intl	Adele	Rolling in the Deep
+intl	Adele	Someone Like You
+intl	Adele	Hello
+intl	Ed Sheeran	Shape of You
+intl	Ed Sheeran	Thinking Out Loud
+intl	Ed Sheeran	Perfect
+intl	Bruno Mars	Uptown Funk
+intl	Mark Ronson	Uptown Funk
+intl	Bruno Mars	Just the Way You Are
+intl	Bruno Mars	Grenade
+intl	Bruno Mars	24K Magic
+intl	Pharrell Williams	Happy
+intl	Taylor Swift	Shake It Off
+intl	Taylor Swift	Blank Space
+intl	Taylor Swift	Love Story
+intl	Taylor Swift	You Belong With Me
+intl	Taylor Swift	Anti-Hero
+intl	Carly Rae Jepsen	Call Me Maybe
+intl	Gotye	Somebody That I Used to Know
+intl	PSY	Gangnam Style
+intl	LMFAO	Party Rock Anthem
+intl	LMFAO	Sexy and I Know It
+intl	Avicii	Wake Me Up
+intl	Avicii	Levels
+intl	Calvin Harris	Summer
+intl	Calvin Harris	This Is What You Came For
+intl	David Guetta	Titanium
+intl	Swedish House Mafia	Don't You Worry Child
+intl	Major Lazer	Lean On
+intl	The Chainsmokers	Closer
+intl	Imagine Dragons	Radioactive
+intl	Imagine Dragons	Believer
+intl	Imagine Dragons	Thunder
+intl	OneRepublic	Counting Stars
+intl	Maroon 5	Moves Like Jagger
+intl	Maroon 5	Sugar
+intl	Justin Bieber	Sorry
+intl	Justin Bieber	Baby
+intl	Justin Bieber	Love Yourself
+intl	Sia	Chandelier
+intl	Sia	Cheap Thrills
+intl	Lorde	Royals
+intl	Arctic Monkeys	505
+intl	Foster the People	Pumped Up Kicks
+intl	Lana Del Rey	Summertime Sadness
+intl	Lana Del Rey	Video Games
+intl	Macklemore & Ryan Lewis	Thrift Shop
+intl	Macklemore & Ryan Lewis	Can't Hold Us
+intl	Robin Thicke	Blurred Lines
+intl	Hozier	Take Me to Church
+intl	Sam Smith	Stay With Me
+intl	John Legend	All of Me
+intl	Meghan Trainor	All About That Bass
+intl	Ellie Goulding	Love Me Like You Do
+intl	Clean Bandit	Rather Be
+intl	Passenger	Let Her Go
+intl	Lukas Graham	7 Years
+intl	Shawn Mendes	Treat You Better
+intl	Camila Cabello	Havana
+intl	Dua Lipa	New Rules
+intl	Dua Lipa	Don't Start Now
+intl	Dua Lipa	Levitating
+intl	Billie Eilish	bad guy
+intl	Billie Eilish	Happier Than Ever
+intl	Billie Eilish	ocean eyes
+intl	Lewis Capaldi	Someone You Loved
+intl	Tones and I	Dance Monkey
+intl	Lil Nas X	Old Town Road
+intl	The Weeknd	Blinding Lights
+intl	The Weeknd	Starboy
+intl	The Weeknd	Save Your Tears
+intl	The Weeknd	Can't Feel My Face
+intl	Post Malone	Circles
+intl	Post Malone	rockstar
+intl	Post Malone	Sunflower
+intl	Drake	Hotline Bling
+intl	Drake	God's Plan
+intl	Drake	One Dance
+intl	Kendrick Lamar	Alright
+intl	Travis Scott	SICKO MODE
+intl	Cardi B	Bodak Yellow
+intl	Harry Styles	As It Was
+intl	Harry Styles	Watermelon Sugar
+intl	Olivia Rodrigo	drivers license
+intl	Olivia Rodrigo	good 4 u
+intl	Miley Cyrus	Flowers
+intl	Miley Cyrus	Wrecking Ball
+intl	Doja Cat	Say So
+intl	Glass Animals	Heat Waves
+intl	Måneskin	Beggin'
+intl	Luis Fonsi	Despacito
+intl	J Balvin	Mi Gente
+intl	Bad Bunny	Tití me preguntó
+intl	Rosalía	Despechá
+intl	BTS	Dynamite
+intl	BTS	Butter
+intl	PSY	Gentleman
+intl	BLACKPINK	DDU-DU DDU-DU
+intl	Stromae	Alors on danse
+intl	Stromae	Papaoutai
+intl	Édith Piaf	La Vie en rose
+intl	Édith Piaf	Non, je ne regrette rien
+intl	Gipsy Kings	Bamboléo
+il	Ofra Haza	Im Nin'alu
+il	Netta	Toy
+il	Dana International	Diva
+il	Infected Mushroom	Becoming Insane
+il	עומר אדם	תל אביב
+il	עומר אדם	שני משוגעים
+il	אריק איינשטיין	אני ואתה
+il	אריק איינשטיין	עוף גוזל
+il	אריק איינשטיין	סע לאט
+il	שלמה ארצי	ירח
+il	שלמה ארצי	תרקוד
+il	כוורת	שיר המכולת
+il	כוורת	יו יה
+il	משינה	רכבת לילה לקהיר
+il	משינה	הכוכבים דולקים על אש קטנה
+il	זוהר ארגוב	הפרח בגני
+il	נעמי שמר	ירושלים של זהב
+il	הדג נחש	שירת הסטיקר
+il	אביב גפן	עכשיו מעונן
+il	עידן רייכל	ממעמקים
+il	שרית חדד	כמו סינדרלה
+il	מתי כספי	ברית עולם
+il	גידי גוב	שיר אהבה בדואי
+il	אייל גולן	מי שמאמין
+intl	Chuck Berry	johnny b goode
+intl	The Rolling Stones	i cant get no satisfaction,satisfaction
+intl	Beyoncé,Beyonce	single ladies,single ladies put a ring on it
+intl	The Black Eyed Peas,Black Eyed Peas	i gotta feeling
+intl	Bob Marley	could you be loved
+intl	Village People	ymca,y m c a
+intl	Lou Bega	mambo no 5,mambo no 5 a little bit of
+il	אייל גולן,Eyal Golan	צליל מיתר,tzlil meitar
+il	אייל גולן,Eyal Golan	מלכת היופי,מלכת היופי שלי
+il	אריק איינשטיין,Arik Einstein	עטור מצחך
+il	כוורת,Kaveret	נתתי לה חיי,natati la chayai,natati la khayay
+il	עפרה חזה,Ofra Haza	אם ננעלו,im nin alu,im ninalu,im nin alou
+il	עפרה חזה,Ofra Haza	חי,hai,chai
+il	שרית חדד,Sarit Hadad	light a candle
+il	סטטיק,Static	טודו בום,tudo bom
+il	Noa Kirel,נועה קירל	unicorn
+il	Noa Kirel,נועה קירל	קילר,killer
+il	עידן רייכל,Idan Raichel	בואי,boee,bo ee,bo i
+il	חיים משה,Haim Moshe	אהבת חיי,ahavat chayai
+il	זוהר ארגוב,Zohar Argov	אלינור,elinor
+il	אביב גפן,Aviv Geffen	לבכות לך,livkot lecha
+il	שולי נתן,נעמי שמר,Shuli Natan,Naomi Shemer	ירושלים של זהב,yerushalayim shel zahav,jerusalem of gold
+il	גלי עטרי,חלב ודבש,Gali Atari,Milk and Honey	הללויה,hallelujah,halleluyah
+il	יזהר כהן,Izhar Cohen	אבניבי,א ב ני בי,abanibi,a ba ni bi
+il	ריטה,Rita	שביל הבריחה,shvil habricha
+il	הראל סקעת,Harel Skaat	מילים,milim
+il	טיפקס,Teapacks	push the button
+il	שלום חנוך,Shalom Hanoch	מחכים למשיח,mechakim lamashiach
+il	שושנה דמארי,Shoshana Damari	כלניות,kalaniyot
+il	מוש בן ארי,Mosh Ben Ari	עוד יבוא שלום עלינו
+il	אהוד בנאי,Ehud Banai	עבודה שחורה,avoda shchora
+il	אילנית,Ilanit	אי שם,ey sham,ei sham
+il	שירי מימון,Shiri Maimon	השקט שנשאר,hasheket shenishar,the silence that remains
+il	חוה אלברשטיין,Chava Alberstein	לו יהי,lu yehi

@@ -58,16 +58,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      - name: Install the committed 5k fixture as the catalog
+        run: cp -r data/catalog-fixture data/catalog/fixture
       - run: docker compose up -d --build
-      - name: Wait for /api/health
+      - name: Wait for /api/health and the catalog
         run: |
-          for i in $(seq 1 60); do
-            if curl -sf http://127.0.0.1:8787/api/health; then echo; exit 0; fi
+          for i in $(seq 1 90); do
+            if curl -sf http://127.0.0.1:8787/api/health | jq -e '.catalog.status == "ready"' >/dev/null; then
+              curl -s http://127.0.0.1:8787/api/health; echo; exit 0
+            fi
             sleep 1
           done
+          curl -s http://127.0.0.1:8787/api/health
           docker compose logs
           exit 1
       - name: Serves the web app
         run: curl -sf http://127.0.0.1:8787/ | grep -q "<title>ABTune</title>"
+      - name: Generates a playlist, identically twice
+        run: |
+          BODY=$(curl -sf http://127.0.0.1:8787/api/health | jq -c '{
+            taste: {target: [0,0,0,0,0,0,0,0,0], weight: [0,0,0,0,0,0,0,0,0], decades: null, genres: null, languages: null},
+            seed: "0123456789abcdef", length: 50,
+            engine_version: .engine_version, catalog_version: .catalog.version}')
+          post() { curl -sf -X POST -H "content-type: application/json" -d "$BODY" http://127.0.0.1:8787/api/playlist | jq -c "[.tracks[].track_id]"; }
+          A=$(post); B=$(post)
+          echo "$A" | jq length
+          test "$(echo "$A" | jq length)" = 50
+          test "$A" = "$B"
       - if: always()
         run: docker compose down

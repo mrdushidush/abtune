@@ -19,7 +19,7 @@ describe("loadCatalog on the committed fixture", async () => {
 
   it("has every row, in track_id order", () => {
     expect(columns.n).toBe(5000);
-    expect(columns.version).toBe("catalog-2026.09");
+    expect(columns.version).toBe("catalog-2026.09.2");
     fixture.tracks.forEach((t, i) => {
       expect(cat.trackId(i)).toBe(t.track_id);
     });
@@ -87,6 +87,9 @@ describe("loadCatalog on the committed fixture", async () => {
       title: fixture.tracks[7]?.title,
       artist_credit: fixture.tracks[7]?.artist_credit,
       isrcs: fixture.tracks[7]?.isrcs,
+    });
+    rows.forEach((r, j) => {
+      expect(r.length_ms).toBe(fixture.tracks[[42, 7, 4999][j] as number]?.length_ms);
     });
     expect(() => cat.trackId(5000)).toThrow();
   });

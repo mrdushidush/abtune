@@ -23,6 +23,7 @@ const question = z.strictObject({
   weight: z.number().positive().optional(),
   sensitive: z.string().min(1).optional(),
   unlock_if: unlockIf.optional(),
+  family: z.string().min(1).optional(),
   a: option,
   b: option,
 });

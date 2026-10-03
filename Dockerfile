@@ -13,6 +13,7 @@ COPY packages/bank/package.json packages/bank/
 COPY packages/cli/package.json packages/cli/
 COPY packages/catalog/package.json packages/catalog/
 COPY packages/eval/package.json packages/eval/
+COPY packages/connectors/package.json packages/connectors/
 COPY apps/web/package.json apps/web/
 
 FROM manifests AS build
@@ -30,6 +31,8 @@ COPY packages/catalog/src packages/catalog/src
 COPY packages/eval/src packages/eval/src
 COPY packages/cli/src packages/cli/src
 COPY apps/web/src/server apps/web/src/server
+# The client/server API contract (the server imports a constant from it).
+COPY apps/web/src/api-types.ts apps/web/src/api-types.ts
 COPY data/questions data/questions
 COPY data/personas data/personas
 COPY --from=build /app/apps/web/dist apps/web/dist

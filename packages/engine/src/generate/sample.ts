@@ -1,6 +1,7 @@
 import type { Rng } from "../rng.ts";
 import type { Cell, CellPlan } from "./cells.ts";
 import type { CatalogColumns } from "./columns.ts";
+import type { FamiliarityWindow } from "./familiarity.ts";
 import type { GeneratorParams } from "./params.ts";
 import { SCORE_SCALE } from "./score.ts";
 
@@ -18,16 +19,22 @@ export class Picks {
   private readonly columns: CatalogColumns;
   private readonly cap: number;
 
-  constructor(columns: CatalogColumns, cap: number) {
+  /**
+   * `previous`: tracks already in the playlist (an earlier page). They count toward §9.3 but are
+   * never picked again. With `cap` 0, a pick's artist must be new to the playlist (a swap).
+   */
+  constructor(columns: CatalogColumns, cap: number, previous: readonly number[] = []) {
     this.columns = columns;
     this.cap = cap;
+    for (const i of previous) this.mark(i);
   }
 
   /** §9.3: not picked yet, artist under its cap, normalized title not taken. */
   fits(i: number): boolean {
+    const count = this.perArtist.get(this.columns.artist[i] as number) ?? 0;
     return (
       !this.used.has(i) &&
-      (this.perArtist.get(this.columns.artist[i] as number) ?? 0) < this.cap &&
+      (this.cap === 0 ? count === 0 : count < this.cap) &&
       !this.titles.has(this.columns.titleKey[i] as number)
     );
   }
@@ -36,6 +43,10 @@ export class Picks {
     this.tracks.push(i);
     this.scores.push(score);
     this.cells.push(cell);
+    this.mark(i);
+  }
+
+  private mark(i: number): void {
     this.used.add(i);
     const a = this.columns.artist[i] as number;
     this.perArtist.set(a, (this.perArtist.get(a) ?? 0) + 1);
@@ -45,9 +56,16 @@ export class Picks {
 
 /**
  * Member offsets of a cell's `k` best tracks: score descending, then track index ascending
- * (members are stored in ascending index order, so offset order is index order).
+ * (members are stored in ascending index order, so offset order is index order). With `keep`,
+ * only offsets it accepts are considered.
  */
-export function topK(scores: Int32Array, start: number, size: number, k: number): number[] {
+export function topK(
+  scores: Int32Array,
+  start: number,
+  size: number,
+  k: number,
+  keep?: (offset: number) => boolean,
+): number[] {
   const kk = Math.min(k, size);
   if (kk <= 0) return [];
   // Min-heap on "worse first": lower score, or same score and higher offset.
@@ -71,6 +89,7 @@ export function topK(scores: Int32Array, start: number, size: number, k: number)
     }
   };
   for (let o = start; o < start + size; o++) {
+    if (keep && !keep(o)) continue;
     if (len < kk) {
       let pos = len++;
       heap[pos] = o;
@@ -106,20 +125,33 @@ export interface PickContext {
   readonly params: GeneratorParams;
   readonly rng: Rng;
   readonly picks: Picks;
+  /** Familiarity window (null: every track in a cell may be picked). */
+  readonly window: FamiliarityWindow | null;
 }
 
 /**
  * HANDOFF §9.2.3: pick up to `want` tracks from a cell. The pool is its top poolFactor × want
  * tracks; each pick is a seeded draw, softmax over (score − λ·similarity to the closest pick so
- * far) at temperature T, among pool tracks that satisfy §9.3. The pool grows (doubling) only when
- * nothing in it fits. Returns how many were picked; fewer than `want` means the cell is exhausted.
+ * far) at temperature T, among pool tracks that satisfy §9.3. Only tracks inside the familiarity
+ * window count. The pool grows (doubling) only when nothing in it fits, and the window widens
+ * (doubling) once the pool holds all of it. Returns how many were picked; fewer than `want` means
+ * the cell is exhausted.
  */
 export function pickFromCell(ctx: PickContext, cell: Cell, want: number): number {
-  const { columns, plan, scores, params, rng, picks } = ctx;
+  const { columns, plan, scores, params, rng, picks, window } = ctx;
   if (want <= 0) return 0;
   const sampleSize = Math.max(1, Math.ceil(params.poolFactor * want));
+  let level = 0;
+  const keep = window
+    ? (offset: number) => window.has(plan.members[offset] as number, level, sampleSize)
+    : undefined;
   let k = Math.min(cell.size, sampleSize);
-  let pool = topK(scores, cell.start, cell.size, k);
+  let pool = topK(scores, cell.start, cell.size, k, keep);
+  // A window smaller than the pool would leave the draw no real choice: widen it first.
+  while (window && pool.length < k && level < window.fullLevel) {
+    level++;
+    pool = topK(scores, cell.start, cell.size, k, keep);
+  }
   let maxSim = similarities(ctx, pool);
   let got = 0;
   const cand: number[] = [];
@@ -130,9 +162,15 @@ export function pickFromCell(ctx: PickContext, cell: Cell, want: number): number
       if (picks.fits(plan.members[pool[p] as number] as number)) cand.push(p);
     }
     if (cand.length === 0) {
-      if (k >= cell.size) break;
-      k = Math.min(cell.size, k * 2);
-      pool = topK(scores, cell.start, cell.size, k);
+      if (pool.length < k) {
+        // The pool already holds the whole window: widen it, unless it holds the whole cell.
+        if (!window || level >= window.fullLevel) break;
+        level++;
+      } else {
+        if (k >= cell.size) break;
+        k = Math.min(cell.size, k * 2);
+      }
+      pool = topK(scores, cell.start, cell.size, k, keep);
       maxSim = similarities(ctx, pool);
       continue;
     }

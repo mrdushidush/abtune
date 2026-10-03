@@ -1,0 +1,418 @@
+# yaml-language-server: $schema=./schema.json
+# More questions (owner decision D7, 2026-10-03): the quiz should vary between sessions and have
+# more cards. Two kinds:
+#   - Variants (`family: <id>`): the same contrast as a seed question in other words or faces,
+#     with the same fx keys and A/B meaning. A family is asked once; the session's quiz seed picks
+#     which variant, so a retake rarely repeats a card. Without a seed only the seed question is asked.
+#   - New cards: modern artist pairs, song-vs-song cards, moments, deep follow-ups for thin genres.
+# Authoring rules: docs/HANDOFF.md §8.4 (no identity choice maps to a genre or language).
+
+version: 1
+
+questions:
+
+# ───────────────────────── VARIANTS: CORE ─────────────────────────
+
+- id: springsteen_aguilera
+  pack: core
+  pri: 95
+  family: bonjovi_britney
+  a: { label: "Bruce Springsteen", emoji: "🎸", fx: { classic_rock: 1, dec80: 0.8, energy: 0.5, intensity: 0.3, acoustic: 0.2 } }
+  b: { label: "Christina Aguilera", emoji: "💃", fx: { pop: 0.8, dance_pop: 0.8, dec00: 0.6, dec90: 0.4, dance: 0.6, acoustic: -0.5 } }
+
+- id: gnr_spicegirls
+  pack: core
+  pri: 95
+  family: bonjovi_britney
+  a: { label: "Guns N' Roses", emoji: "🌹", fx: { classic_rock: 1, dec80: 0.8, energy: 0.5, intensity: 0.3, acoustic: 0.2 } }
+  b: { label: "Spice Girls", emoji: "✌️", fx: { pop: 0.8, dance_pop: 0.8, dec90: 0.6, dec00: 0.4, dance: 0.6, acoustic: -0.5 } }
+
+- id: partying_sadsongs
+  pack: core
+  pri: 90
+  family: dancefloor_carcry
+  q: "Tonight's mood?"
+  a: { label: "Dance till sunrise", emoji: "🪩", fx: { dance: 0.9, energy: 0.7, valence: 0.5 } }
+  b: { label: "Sad songs in bed", emoji: "🛏️", fx: { valence: -0.7, energy: -0.4, dance: -0.4 } }
+
+- id: club_rainywindow
+  pack: core
+  pri: 90
+  family: dancefloor_carcry
+  q: "Your music video is set…"
+  a: { label: "In a strobe-lit club", emoji: "🪩", fx: { dance: 0.9, energy: 0.7, valence: 0.5 } }
+  b: { label: "By a rainy window", emoji: "🌧️", fx: { valence: -0.7, energy: -0.4, dance: -0.4 } }
+
+- id: mosh_slowdance
+  pack: core
+  pri: 88
+  family: heavy_smooth
+  q: "Mosh pit or slow dance?"
+  a: { label: "Mosh pit", emoji: "🤘", fx: { intensity: 0.9, energy: 0.7, tempo: 0.4, metal: 0.3, punk: 0.2 } }
+  b: { label: "Slow dance", emoji: "💞", fx: { intensity: -0.8, energy: -0.5, tempo: -0.3, rnb_soul: 0.2, chill_ambient: 0.2 } }
+
+- id: thunder_velvet
+  pack: core
+  pri: 88
+  family: heavy_smooth
+  q: "Your sound is…"
+  a: { label: "Thunder", emoji: "⛈️", fx: { intensity: 0.9, energy: 0.7, tempo: 0.4, metal: 0.3, punk: 0.2 } }
+  b: { label: "Velvet", emoji: "🧸", fx: { intensity: -0.8, energy: -0.5, tempo: -0.3, rnb_soul: 0.2, chill_ambient: 0.2 } }
+
+- id: byheart_surprise
+  pack: core
+  pri: 86
+  family: hits_gems
+  q: "Your playlist should be…"
+  a: { label: "Songs I know by heart", emoji: "🎤", fx: { mainstream: 0.9 } }
+  b: { label: "Full of surprises", emoji: "🎁", fx: { mainstream: -0.8 } }
+
+- id: charts_crates
+  pack: core
+  pri: 86
+  family: hits_gems
+  a: { label: "Top of the charts", emoji: "📈", fx: { mainstream: 0.9 } }
+  b: { label: "Crate-digging finds", emoji: "📦", fx: { mainstream: -0.8 } }
+
+- id: disco_y2k
+  pack: core
+  pri: 85
+  family: dec70_dec00
+  a: { label: "Disco era", emoji: "🕺", fx: { dec70: 1 } }
+  b: { label: "Y2K era", emoji: "📱", fx: { dec00: 1 } }
+
+- id: vinyl_burnedcds
+  pack: core
+  pri: 85
+  family: dec70_dec00
+  q: "Which sounds like home?"
+  a: { label: "Vinyl & 8-tracks", emoji: "💽", fx: { dec70: 1 } }
+  b: { label: "Burned CDs & MP3s", emoji: "💿", fx: { dec00: 1 } }
+
+- id: feelgood_sadsongs
+  pack: core
+  pri: 80
+  family: happy_sad
+  a: { label: "Feel-good songs", emoji: "😄", fx: { valence: 0.9 } }
+  b: { label: "Sad songs, loud", emoji: "😭", fx: { valence: -0.7, energy: 0.3 } }
+
+- id: smiles_heartbreak
+  pack: core
+  pri: 80
+  family: happy_sad
+  a: { label: "Instant smiles", emoji: "😁", fx: { valence: 0.9 } }
+  b: { label: "Heartbreak anthems", emoji: "💔", fx: { valence: -0.7, energy: 0.3 } }
+
+- id: woodstock_coachella
+  pack: core
+  pri: 80
+  family: dec60_dec10
+  a: { label: "Woodstock", emoji: "🌼", fx: { dec60: 1 } }
+  b: { label: "Coachella", emoji: "🎡", fx: { dec10: 1 } }
+
+- id: flowerpower_selfies
+  pack: core
+  pri: 80
+  family: dec60_dec10
+  q: "Which era's soundtrack?"
+  a: { label: "Flower power", emoji: "🌸", fx: { dec60: 1 } }
+  b: { label: "The selfie decade", emoji: "🤳", fx: { dec10: 1 } }
+
+- id: sprint_stroll
+  pack: core
+  pri: 78
+  family: fast_slow
+  q: "Your music should feel like a…"
+  a: { label: "Sprint", emoji: "🏃", fx: { tempo: 0.9, energy: 0.5 } }
+  b: { label: "Stroll", emoji: "🚶", fx: { tempo: -0.9, energy: -0.4 } }
+
+- id: racingheart_lazysunday
+  pack: core
+  pri: 78
+  family: fast_slow
+  a: { label: "Racing heartbeat", emoji: "💓", fx: { tempo: 0.9, energy: 0.5 } }
+  b: { label: "Lazy Sunday", emoji: "🛋️", fx: { tempo: -0.9, energy: -0.4 } }
+
+- id: mostlyenglish_anylanguage
+  pack: core
+  pri: 74
+  family: english_world
+  q: "Lyrics in…"
+  a: { label: "English, mostly", emoji: "🗣️", fx: { lang_en: 1 } }
+  b: { label: "Any language goes", emoji: "🌍", fx: { lang_other: 0.6, world: 0.6, latin: 0.3, lang_en: -0.4 } }
+
+- id: ukus_passport
+  pack: core
+  pri: 74
+  family: english_world
+  q: "Your playlist's passport:"
+  a: { label: "UK & US stamps", emoji: "🛂", fx: { lang_en: 1 } }
+  b: { label: "Stamps everywhere", emoji: "🌍", fx: { lang_other: 0.6, world: 0.6, latin: 0.3, lang_en: -0.4 } }
+
+- id: jazzclub_technobunker
+  pack: core
+  pri: 72
+  family: jazz_techno
+  a: { label: "Jazz club", emoji: "🎷", fx: { jazz: 1, acoustic: 0.6, complexity: 0.6 } }
+  b: { label: "Techno bunker", emoji: "🔁", fx: { house_techno: 1, acoustic: -0.9, dance: 0.6 } }
+
+- id: milesdavis_berlintechno
+  pack: core
+  pri: 72
+  family: jazz_techno
+  a: { label: "Miles Davis", emoji: "🎺", fx: { jazz: 1, acoustic: 0.6, complexity: 0.6 } }
+  b: { label: "Berlin techno", emoji: "🔁", fx: { house_techno: 1, acoustic: -0.9, dance: 0.6 } }
+
+- id: orchestra_rave
+  pack: core
+  pri: 68
+  family: classical_edm
+  q: "Tonight you're at…"
+  a: { label: "The orchestra", emoji: "🎻", fx: { classical: 1, acoustic: 0.9, vocal: -0.6, complexity: 0.6 } }
+  b: { label: "A rave", emoji: "🎆", fx: { edm: 1, energy: 0.8, acoustic: -0.9 } }
+
+- id: mozart_avicii
+  pack: core
+  pri: 68
+  family: classical_edm
+  a: { label: "Mozart", emoji: "🎻", fx: { classical: 1, acoustic: 0.9, vocal: -0.6, complexity: 0.6 } }
+  b: { label: "Avicii", emoji: "🎆", fx: { edm: 1, energy: 0.8, acoustic: -0.9 } }
+
+- id: earworm_growsonyou
+  pack: core
+  pri: 62
+  family: simple_complex
+  a: { label: "Instant earworm", emoji: "🐛", fx: { complexity: -0.8, mainstream: 0.4 } }
+  b: { label: "Grows on you", emoji: "🌱", fx: { complexity: 0.9, mainstream: -0.3 } }
+
+- id: threechords_oddmeters
+  pack: core
+  pri: 62
+  family: simple_complex
+  a: { label: "Three chords", emoji: "🎸", fx: { complexity: -0.8, mainstream: 0.4 } }
+  b: { label: "Odd time signatures", emoji: "🧮", fx: { complexity: 0.9, mainstream: -0.3 } }
+
+# ───────────────────────── VARIANTS: VIBE ─────────────────────────
+
+- id: thriller_sitcom
+  pack: vibe
+  pri: 54
+  family: horror_comedy
+  a: { label: "Thriller", emoji: "🔪", fx: { valence: -0.6, intensity: 0.4 } }
+  b: { label: "Sitcom", emoji: "📺", fx: { valence: 0.7 } }
+
+- id: hauntedhouse_waterpark
+  pack: vibe
+  pri: 54
+  family: horror_comedy
+  a: { label: "Haunted house", emoji: "🏚️", fx: { valence: -0.6, intensity: 0.4 } }
+  b: { label: "Water park", emoji: "🛝", fx: { valence: 0.7 } }
+
+- id: robotbarista_grandmaskitchen
+  pack: vibe
+  pri: 64
+  family: ai_handmade
+  a: { label: "Robot barista", emoji: "🤖", fx: { acoustic: -0.6, dec20: 0.3 } }
+  b: { label: "Grandma's kitchen", emoji: "👵", fx: { acoustic: 0.7 } }
+
+- id: smartwatch_pocketwatch
+  pack: vibe
+  pri: 64
+  family: ai_handmade
+  a: { label: "Smartwatch", emoji: "⌚", fx: { acoustic: -0.6, dec20: 0.3 } }
+  b: { label: "Pocket watch", emoji: "🕰️", fx: { acoustic: 0.7 } }
+
+- id: bat_dove
+  pack: vibe
+  pri: 68
+  family: black_white
+  a: { label: "Bat", emoji: "🦇", fx: { valence: -0.4, intensity: 0.4 } }
+  b: { label: "Dove", emoji: "🕊️", fx: { valence: 0.4, intensity: -0.3, acoustic: 0.2 } }
+
+- id: blackleather_whitelinen
+  pack: vibe
+  pri: 68
+  family: black_white
+  a: { label: "Black leather", emoji: "🧥", fx: { valence: -0.4, intensity: 0.4 } }
+  b: { label: "White linen", emoji: "👕", fx: { valence: 0.4, intensity: -0.3, acoustic: 0.2 } }
+
+- id: greynovember_firstspring
+  pack: vibe
+  pri: 54
+  family: rain_sun
+  a: { label: "Grey November", emoji: "🍂", fx: { valence: -0.5, energy: -0.3 } }
+  b: { label: "First day of spring", emoji: "🌷", fx: { valence: 0.7 } }
+
+- id: fog_rainbow
+  pack: vibe
+  pri: 54
+  family: rain_sun
+  a: { label: "Foggy morning", emoji: "🌫️", fx: { valence: -0.5, energy: -0.3 } }
+  b: { label: "Rainbow after rain", emoji: "🌈", fx: { valence: 0.7 } }
+
+# ───────────────────────── NEW: CORE ─────────────────────────
+
+- id: weeknd_billie
+  pack: core
+  pri: 72
+  a: { label: "The Weeknd", emoji: "🌃", fx: { rnb_soul: 0.6, synth_newwave: 0.4, dance_pop: 0.3, dec10: 0.6, dec20: 0.5, dance: 0.5, acoustic: -0.6 } }
+  b: { label: "Billie Eilish", emoji: "🖤", fx: { pop: 0.6, alt_indie: 0.4, dec10: 0.4, dec20: 0.7, energy: -0.5, valence: -0.5 } }
+
+- id: bohemian_billiejean
+  pack: core
+  pri: 70
+  q: "Which one are you turning up?"
+  a: { label: "Bohemian Rhapsody", emoji: "👑", fx: { classic_rock: 0.8, dec70: 0.8, complexity: 0.8, vocal: 0.5 } }
+  b: { label: "Billie Jean", emoji: "🕺", fx: { pop: 0.6, funk_disco: 0.4, dec80: 0.8, dance: 0.9 } }
+
+- id: sheeran_brunomars
+  pack: core
+  pri: 66
+  a: { label: "Ed Sheeran", emoji: "🎸", fx: { pop: 0.6, folk: 0.5, dec10: 0.8, acoustic: 0.7, vocal: 0.6 } }
+  b: { label: "Bruno Mars", emoji: "🕺", fx: { funk_disco: 0.7, rnb_soul: 0.4, dec10: 0.8, dance: 0.8, valence: 0.6 } }
+
+- id: despacito_shapeofyou
+  pack: core
+  pri: 62
+  q: "Which one gets stuck in your head?"
+  a: { label: "Despacito", emoji: "🌶️", fx: { latin: 0.8, lang_es: 0.5, dance: 0.6, dec10: 0.7 } }
+  b: { label: "Shape of You", emoji: "🎶", fx: { pop: 0.8, dance_pop: 0.3, lang_en: 0.3, dec10: 0.7 } }
+
+- id: sweetchild_likeaprayer
+  pack: core
+  pri: 60
+  q: "Which one are you turning up?"
+  a: { label: "Sweet Child O' Mine", emoji: "🌹", fx: { classic_rock: 1, dec80: 0.8, intensity: 0.4 } }
+  b: { label: "Like a Prayer", emoji: "🙏", fx: { pop: 0.7, dance_pop: 0.4, dec80: 0.8, vocal: 0.5 } }
+
+- id: elvis_sinatra
+  pack: core
+  pri: 58
+  a: { label: "Elvis", emoji: "🕺", fx: { classic_rock: 0.7, dec50: 0.9, energy: 0.5, dance: 0.4 } }
+  b: { label: "Frank Sinatra", emoji: "🎩", fx: { jazz: 0.8, dec50: 0.6, dec60: 0.5, energy: -0.4, vocal: 0.8 } }
+
+# ───────────────────────── NEW: CONTEXT (moments) ─────────────────────────
+
+- id: pregame_sundaymorning
+  pack: context
+  pri: 64
+  q: "Soundtrack for…"
+  a: { label: "Pre-game hype", emoji: "🔥", fx: { energy: 0.9, intensity: 0.5, hiphop: 0.3, edm: 0.3 } }
+  b: { label: "Sunday morning", emoji: "🥞", fx: { energy: -0.6, acoustic: 0.6, valence: 0.4, folk: 0.3 } }
+
+- id: karaoke_listeningparty
+  pack: context
+  pri: 60
+  q: "Your perfect music night:"
+  a: { label: "Karaoke with friends", emoji: "🎤", fx: { mainstream: 0.6, vocal: 0.7, valence: 0.4 } }
+  b: { label: "A listening party", emoji: "🎧", fx: { complexity: 0.4, mainstream: -0.4, vocal: -0.2 } }
+
+- id: eurovision_glastonbury
+  pack: context
+  pri: 58
+  a: { label: "Eurovision", emoji: "🎇", fx: { pop: 0.6, dance_pop: 0.5, valence: 0.6, mainstream: 0.5 } }
+  b: { label: "Glastonbury", emoji: "⛺", fx: { alt_indie: 0.6, classic_rock: 0.3, acoustic: 0.3, mainstream: -0.2 } }
+
+# ───────────────────────── NEW: DEEP (thin genres) ─────────────────────────
+
+- id: zeppelin_floyd
+  pack: deep
+  pri: 64
+  unlock_if: { any: ["bonjovi_britney=a", "rock_pop=a", "hiphop_rock=b", "classic_grunge=a"], top_genres: [classic_rock] }
+  a: { label: "Led Zeppelin", emoji: "⚡", fx: { classic_rock: 1, blues: 0.4, dec70: 0.8, intensity: 0.6 } }
+  b: { label: "Pink Floyd", emoji: "🌈", fx: { classic_rock: 0.7, dec70: 0.8, complexity: 0.9, energy: -0.4 } }
+
+- id: linkinpark_greenday
+  pack: deep
+  pri: 62
+  unlock_if: { any: ["heavy_smooth=a", "rock_pop=a", "country_metal=b"], top_genres: [metal, punk, alt_indie] }
+  a: { label: "Linkin Park", emoji: "🧢", fx: { metal: 0.6, hiphop: 0.3, dec00: 0.9, intensity: 0.8, acoustic: -0.5 } }
+  b: { label: "Green Day", emoji: "🧷", fx: { punk: 1, dec90: 0.4, dec00: 0.6, tempo: 0.7, valence: 0.3 } }
+
+- id: kendrick_travis
+  pack: deep
+  pri: 62
+  unlock_if: { any: ["hiphop_rock=a", "eminem_drake=a", "eminem_drake=b"], top_genres: [hiphop] }
+  a: { label: "Kendrick Lamar", emoji: "📝", fx: { hiphop: 1, dec10: 0.8, complexity: 0.7, vocal: 0.6 } }
+  b: { label: "Travis Scott", emoji: "🌵", fx: { hiphop: 0.9, dec10: 0.7, dec20: 0.4, acoustic: -0.8, energy: 0.5, complexity: -0.3 } }
+
+- id: dolly_cash
+  pack: deep
+  pri: 60
+  unlock_if: { any: ["country_metal=a"], top_genres: [country, folk] }
+  a: { label: "Dolly Parton", emoji: "🦋", fx: { country: 0.9, dec70: 0.6, dec80: 0.3, valence: 0.6, vocal: 0.7 } }
+  b: { label: "Johnny Cash", emoji: "🖤", fx: { country: 0.8, folk: 0.3, dec50: 0.5, dec60: 0.5, valence: -0.4 } }
+
+- id: amy_norah
+  pack: deep
+  pri: 58
+  unlock_if: { any: ["rnb_indie=a", "jazz_techno=a", "party_dinner=b"], top_genres: [jazz, rnb_soul] }
+  a: { label: "Amy Winehouse", emoji: "🍷", fx: { rnb_soul: 0.8, jazz: 0.4, dec00: 0.9, intensity: 0.2 } }
+  b: { label: "Norah Jones", emoji: "🎹", fx: { jazz: 0.7, dec00: 0.8, acoustic: 0.8, energy: -0.6 } }
+
+- id: stevie_aretha
+  pack: deep
+  pri: 58
+  unlock_if: { any: ["rnb_indie=a", "madonna_prince=b", "mj_whitney=b"], top_genres: [rnb_soul, funk_disco] }
+  a: { label: "Stevie Wonder", emoji: "🎹", fx: { rnb_soul: 0.8, funk_disco: 0.4, dec70: 0.8, valence: 0.5 } }
+  b: { label: "Aretha Franklin", emoji: "👑", fx: { rnb_soul: 1, dec60: 0.8, vocal: 0.8 } }
+
+- id: calvinharris_skrillex
+  pack: deep
+  pri: 58
+  unlock_if: { any: ["classical_edm=b", "band_dj=b", "guitar_synth=b"], top_genres: [edm, dance_pop] }
+  a: { label: "Calvin Harris", emoji: "🌴", fx: { edm: 0.7, dance_pop: 0.5, dance: 0.7, mainstream: 0.5, dec10: 0.7 } }
+  b: { label: "Skrillex", emoji: "💥", fx: { edm: 0.9, intensity: 0.8, energy: 0.8, dec10: 0.7 } }
+
+- id: badbunny_shakira
+  pack: deep
+  pri: 58
+  unlock_if: { any: ["latin_reggae=a", "kpop_latinpop=b"], top_genres: [latin] }
+  a: { label: "Bad Bunny", emoji: "🐰", fx: { latin: 1, hiphop: 0.3, dec20: 0.7, lang_es: 0.6 } }
+  b: { label: "Shakira", emoji: "💃", fx: { latin: 0.7, pop: 0.5, dec00: 0.6, lang_es: 0.5 } }
+
+- id: zimmer_williams
+  pack: deep
+  pri: 56
+  unlock_if: { any: ["score_lofi=a", "classical_edm=a"], top_genres: [soundtrack] }
+  a: { label: "Hans Zimmer", emoji: "🌌", fx: { soundtrack: 1, intensity: 0.5, acoustic: -0.2, dec10: 0.4 } }
+  b: { label: "John Williams", emoji: "⭐", fx: { soundtrack: 1, acoustic: 0.6, dec70: 0.4, dec80: 0.4 } }
+
+- id: bts_blackpink
+  pack: deep
+  pri: 52
+  unlock_if: { any: ["kpop_latinpop=a"], top_genres: [kpop] }
+  a: { label: "BTS", emoji: "💜", fx: { kpop: 1, pop: 0.3, dec10: 0.5, dec20: 0.5, vocal: 0.4 } }
+  b: { label: "BLACKPINK", emoji: "🖤", fx: { kpop: 1, dance_pop: 0.5, dec10: 0.5, dec20: 0.5, intensity: 0.3 } }
+
+# ───────────────────────── NEW: VIBE ─────────────────────────
+
+- id: rollercoaster_ferriswheel
+  pack: vibe
+  pri: 52
+  a: { label: "Roller coaster", emoji: "🎢", fx: { energy: 0.6, intensity: 0.3 } }
+  b: { label: "Ferris wheel", emoji: "🎡", fx: { valence: 0.4, energy: -0.3 } }
+
+- id: volcano_glacier
+  pack: vibe
+  pri: 50
+  a: { label: "Volcano", emoji: "🌋", fx: { intensity: 0.5, energy: 0.4 } }
+  b: { label: "Glacier", emoji: "🧊", fx: { acoustic: -0.3, valence: -0.2, energy: -0.3 } }
+
+- id: fireworks_candles
+  pack: vibe
+  pri: 50
+  a: { label: "Fireworks", emoji: "🎆", fx: { energy: 0.6, dance: 0.3 } }
+  b: { label: "Candlelight", emoji: "🕯️", fx: { energy: -0.5, acoustic: 0.3 } }
+
+- id: train_plane
+  pack: vibe
+  pri: 48
+  a: { label: "Night train", emoji: "🚆", fx: { acoustic: 0.3, tempo: -0.2 } }
+  b: { label: "Red-eye flight", emoji: "✈️", fx: { tempo: 0.3, acoustic: -0.3 } }
+
+- id: graffiti_watercolor
+  pack: vibe
+  pri: 46
+  a: { label: "Graffiti", emoji: "🎨", fx: { intensity: 0.4, acoustic: -0.3 } }
+  b: { label: "Watercolor", emoji: "🖌️", fx: { acoustic: 0.4, valence: 0.3 } }

@@ -1,11 +1,11 @@
 {
   "name": "abtune-catalog",
-  "catalog_version": "catalog-2026.09",
-  "schema_version": 1,
+  "catalog_version": "catalog-2026.09.2",
+  "schema_version": 2,
   "kind": "fixture",
   "tracks": 5000,
-  "digest": "5b0b8f1f6a5dfc75b0ea383a6a7171ca989911da0a390b00d49a2887cf3c184e",
-  "created_at": "2026-10-02T07:05:16.378Z",
+  "digest": "e725365ceeb5a6c948ab0c98f81b88046cb89bd92582fcdd97d9fa3b7ad85ccb",
+  "created_at": "2026-10-03T06:01:35.733Z",
   "license": {
     "id": "CC-BY-NC-SA-3.0-US",
     "url": "https://creativecommons.org/licenses/by-nc-sa/3.0/us/",
@@ -258,8 +258,15 @@
     },
     "api": true,
     "minLengthMs": 30000,
-    "version": "catalog-2026.09",
-    "tag_map_sha256": "05ee52ad9659cc3cb1cc04b4c8fd20812e8f111400c3d916f751fae5bf915202"
+    "hits": {
+      "topSongs": 3,
+      "decadeShare": 0.1,
+      "vaWeight": 0.5,
+      "ilFallbackArtists": 700
+    },
+    "version": "catalog-2026.09.2",
+    "tag_map_sha256": "05ee52ad9659cc3cb1cc04b4c8fd20812e8f111400c3d916f751fae5bf915202",
+    "il_artists_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
   },
   "dimensions": {
     "genres": [
@@ -309,13 +316,13 @@
   "files": [
     {
       "name": "tracks.jsonl.gz",
-      "bytes": 1113413,
-      "sha256": "62abb7ac6093fb67bbc2bb94ec6da281320cf8283f8fba2823e28e8e48d2f8ce"
+      "bytes": 1256757,
+      "sha256": "b9257cc97d6b783f766e1256fb212730955cb7dbc0ced8e9a7c6187664bd9118"
     }
   ],
   "derived_from": {
-    "catalog_version": "catalog-2026.09",
-    "digest": "06651393e80eea278925ba183d6a36ef73ba0996cd5e09213082a2d0ff24a3a0",
+    "catalog_version": "catalog-2026.09.2",
+    "digest": "5fb2d7c3989d2814bdc4470c9542bce5510d5058946814c56b099cfba7cc6f2c",
     "tracks": 2000000
   }
 }

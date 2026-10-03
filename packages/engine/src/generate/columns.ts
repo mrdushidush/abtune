@@ -7,6 +7,16 @@ export const LANG_INSTRUMENTAL = 254;
 /** Clusters stored per track (the catalog keeps the top 4). */
 export const CLUSTER_SLOTS = 4;
 
+/** Popularity tiers (catalog `tier`). */
+export const TIER_HITS = 0;
+/** Another song by an artist with a hit: a deep cut by an artist you know. */
+export const TIER_DEEP = 1;
+export const TIER_TAIL = 2;
+
+/** Markets (catalog `market`): songs are ranked against others of their market. */
+export const MARKETS = ["intl", "il"] as const;
+export type Market = (typeof MARKETS)[number];
+
 /**
  * The catalog as typed arrays, one entry per track, in track_id order (HANDOFF §5.2 CatalogReader).
  * Categorical columns hold indices into `dimensions` (bank declaration order).
@@ -34,6 +44,14 @@ export interface CatalogColumns {
   readonly titleKey: Int32Array;
   /** First release year, 0 = unknown. */
   readonly year: Int16Array;
+  /** Popularity tier: TIER_HITS (the hits view), TIER_DEEP or TIER_TAIL. */
+  readonly tier: Uint8Array;
+  /** Index into MARKETS. */
+  readonly market: Uint8Array;
+  /** Hit-key percentile within (decade, market), 1 = the best-known. */
+  readonly hit: Float32Array;
+  /** Rank within the first artist (1 = their best-known song), capped at 255. */
+  readonly artistRank: Uint8Array;
 }
 
 /** One track as plain data, for building columns in tests and small tools. */
@@ -49,6 +67,14 @@ export interface ColumnRow {
   readonly artist: number;
   readonly titleKey: number;
   readonly year: number | null;
+  /** Missing = TIER_HITS. */
+  readonly tier?: number;
+  /** Missing = intl. */
+  readonly market?: Market;
+  /** Missing = 0.5. */
+  readonly hit?: number;
+  /** Missing = 1. */
+  readonly artistRank?: number;
 }
 
 function indexOf(keys: readonly string[], key: string | null, what: string): number {
@@ -80,6 +106,10 @@ export function buildColumns(
     artist: new Int32Array(n),
     titleKey: new Int32Array(n),
     year: new Int16Array(n),
+    tier: new Uint8Array(n),
+    market: new Uint8Array(n),
+    hit: new Float32Array(n),
+    artistRank: new Uint8Array(n),
   };
   rows.forEach((row, i) => {
     dimensions.scalar.forEach((dim, d) => {
@@ -100,6 +130,10 @@ export function buildColumns(
     cols.artist[i] = row.artist;
     cols.titleKey[i] = row.titleKey;
     cols.year[i] = row.year ?? 0;
+    cols.tier[i] = row.tier ?? TIER_HITS;
+    cols.market[i] = MARKETS.indexOf(row.market ?? "intl");
+    cols.hit[i] = row.hit ?? 0.5;
+    cols.artistRank[i] = Math.min(255, row.artistRank ?? 1);
   });
   return { version, dimensions, n, scalars, ...cols };
 }

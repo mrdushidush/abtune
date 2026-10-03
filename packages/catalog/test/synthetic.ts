@@ -13,6 +13,8 @@ import { writeTar } from "../src/tar.ts";
 
 const CC0 = "Creative Commons Legal Code\n\nCC0 1.0 Universal\n";
 const NCSA = "              Attribution-NonCommercial-ShareAlike 3.0 US\n";
+/** MusicBrainz's real "Various Artists" id: the build recognizes hit compilations by it. */
+const VARIOUS_ARTISTS = "89ad4ac3-39f7-470e-963a-56509c546377";
 
 /** Deterministic UUIDs: one namespace digit per entity kind. */
 export const uuid = (kind: number, n: number) =>
@@ -51,6 +53,8 @@ export interface Recording {
   work?: number;
   /** User ids that have this recording in their top list. */
   users?: number[];
+  /** Compilation releases (ids) that also carry this recording. */
+  comps?: number[];
   ab?: { energy: number; happy: number } | null;
   tags?: [string, number][];
   bpm?: number;
@@ -58,7 +62,7 @@ export interface Recording {
 
 /** Hand-built scenarios plus seeded filler so the ridge model has data. */
 export function scenario() {
-  const artists = [
+  const artists: { id: number; name: string; area: number | null }[] = [
     { id: 1, name: "Bon Jovi", area: 3 },
     { id: 2, name: "Omer Adam", area: 2 }, // Tel Aviv → Israel
     { id: 3, name: "Various Artists", area: null },
@@ -67,8 +71,10 @@ export function scenario() {
     { id: 6, name: "A Comedian", area: 3 },
     { id: 7, name: "Static & Ben El", area: 2 },
     { id: 8, name: "Hebrew Singer", area: null },
+    { id: 9, name: "Rihanna", area: 3 },
+    { id: 10, name: "Hit Maker", area: 3 },
   ];
-  const releases = [
+  const releases: { id: number; rg: number; name: string; lang: string; va?: boolean }[] = [
     { id: 1, rg: 1, name: "Slippery When Wet", lang: "eng" },
     { id: 2, rg: 2, name: "Greatest Hits (Remastered)", lang: "eng" },
     { id: 3, rg: 3, name: "Live in Tokyo", lang: "eng" },
@@ -78,6 +84,9 @@ export function scenario() {
     { id: 7, rg: 7, name: "Compilation", lang: "eng" },
     { id: 8, rg: 8, name: "Stand-up Night", lang: "eng" },
     { id: 9, rg: 9, name: "Bli Safa", lang: "und" }, // no language recorded
+    // Various Artists hit compilations.
+    { id: 20, rg: 20, name: "Now Hits 1", lang: "eng", va: true },
+    { id: 21, rg: 21, name: "Now Hits 2", lang: "eng", va: true },
   ];
   const range = (a: number, b: number) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
   const recordings: Recording[] = [
@@ -206,6 +215,39 @@ export function scenario() {
     { id: 14, artist: 8, title: "שיר ערש", year: 2010, release: 9, users: range(1, 35), ab: null },
     // An IL artist's song in nobody's top list: only the popularity API can rank it.
     { id: 15, artist: 7, title: "תודה", year: 2021, release: 9, users: [], ab: null },
+    // A 14 s snippet that soaked up the listens, and the full-length song (Rihanna's "Umbrella").
+    {
+      id: 16,
+      artist: 9,
+      title: "Umbrella",
+      year: 2007,
+      release: 6,
+      lengthMs: 14_000,
+      users: range(1, 50),
+      ab: null,
+    },
+    { id: 17, artist: 9, title: "Umbrella", year: 2007, release: 6, users: range(1, 10), ab: null },
+    // An album cut with more top-list listeners than the artist's hit, which compilations carry.
+    {
+      id: 18,
+      artist: 10,
+      title: "Album Cut",
+      year: 2012,
+      release: 6,
+      users: range(1, 30),
+      ab: null,
+    },
+    {
+      id: 19,
+      artist: 10,
+      title: "The Hit",
+      year: 2012,
+      release: 6,
+      users: range(1, 25),
+      comps: [20, 21],
+      ab: null,
+    },
+    { id: 20, artist: 10, title: "B-Side", year: 2012, release: 6, users: range(1, 20), ab: null },
   ];
   // Filler: 20 artists × 12 songs with AcousticBrainz data and genre tags.
   const random = rng(42);
@@ -316,31 +358,55 @@ export async function writeSyntheticDumps(): Promise<{
     recording: recRows,
     recording_gid_redirect: [[uuid(9, 2), 2, null]], // an old MBID merged into recording 2
     // Years come from release events: each recording also sits on a dated single (release 10000 + id).
-    track: recordings.map((r) => [
-      r.id,
-      uuid(9, 1000 + r.id),
-      r.id,
-      10_000 + r.id,
-      1,
-      "1",
-      r.title,
-      r.artist,
-      null,
-      0,
-      null,
-      "f",
-    ]),
-    medium: recordings.map((r) => [
-      10_000 + r.id,
-      10_000 + r.id,
-      1,
-      null,
-      "",
-      0,
-      null,
-      1,
-      uuid(9, 5000 + r.id),
-    ]),
+    track: [
+      ...recordings.map((r) => [
+        r.id,
+        uuid(9, 1000 + r.id),
+        r.id,
+        10_000 + r.id,
+        1,
+        "1",
+        r.title,
+        r.artist,
+        null,
+        0,
+        null,
+        "f",
+      ]),
+      // Compilation tracks: one medium per compilation release (30000 + release id).
+      ...recordings.flatMap((r) =>
+        (r.comps ?? []).map((rel, k) => [
+          50_000 + r.id * 10 + k,
+          uuid(9, 50_000 + r.id * 10 + k),
+          r.id,
+          30_000 + rel,
+          1 + k,
+          String(1 + k),
+          r.title,
+          r.artist,
+          null,
+          0,
+          null,
+          "f",
+        ]),
+      ),
+    ],
+    medium: [
+      ...recordings.map((r) => [
+        10_000 + r.id,
+        10_000 + r.id,
+        1,
+        null,
+        "",
+        0,
+        null,
+        1,
+        uuid(9, 5000 + r.id),
+      ]),
+      ...releases
+        .filter((r) => r.va)
+        .map((r) => [30_000 + r.id, r.id, 1, null, "", 0, null, 1, uuid(9, 30_000 + r.id)]),
+    ],
     release_country: recordings
       .filter((r) => r.year && r.id % 2 === 0)
       .map((r) => [10_000 + r.id, 3, r.year ?? null, 1, 1]),
@@ -363,7 +429,7 @@ export async function writeSyntheticDumps(): Promise<{
       -1,
       null,
     ]),
-    release_group: releases.map((r) => [r.rg, uuid(3, r.rg), r.name, 1, 1, "", 0, null]),
+    release_group: releases.map((r) => [r.rg, uuid(3, r.rg), r.name, r.va ? 3 : 1, 1, "", 0, null]),
     release_group_secondary_type: [
       [1, "Compilation", null, 0, null, uuid(8, 1)],
       [2, "Spokenword", null, 0, null, uuid(8, 2)],
@@ -371,10 +437,12 @@ export async function writeSyntheticDumps(): Promise<{
     release_group_secondary_type_join: [
       [7, 1, null],
       [8, 2, null],
+      [20, 1, null],
+      [21, 1, null],
     ],
     artist: artists.map((a) => [
       a.id,
-      uuid(4, a.id),
+      a.id === 3 ? VARIOUS_ARTISTS : uuid(4, a.id),
       a.name,
       a.name,
       null,

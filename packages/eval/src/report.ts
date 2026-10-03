@@ -34,6 +34,10 @@ export interface ReportInput {
   readonly printed: readonly PrintedPlaylist[];
   /** §16 #5: the recorded minimum for fit(deepest) − fit(shallowest). */
   readonly marginThreshold: number;
+  /** Owner decision D1: recorded minimums for canon hits per 100 tracks and the signature share. */
+  readonly recognitionThresholds?: { readonly canon: number; readonly sig: number };
+  /** Canon list size and how many of its songs this catalog has. */
+  readonly canon?: { readonly songs: number; readonly found: number };
   readonly tuning?: {
     readonly start: EvalSummary;
     readonly changes: readonly string[];
@@ -54,11 +58,11 @@ export function reportOrder(personas: readonly Persona[]): Persona[] {
 
 function modeTable(summary: EvalSummary): string[] {
   return [
-    "| mode | persona fit | cluster | decade | language | scalar | diversity | artist spread | median popularity | mean year | violations |",
-    "|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+    "| mode | persona fit | fit2 | cluster | decade | language | scalar | diversity | artist spread | hits view | signature | canon /100 | mean year | violations |",
+    "|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ...summary.byMode.map(
       (m) =>
-        `| ${m.mode} | **${f3(m.metrics.fit)}** | ${f3(m.metrics.cluster)} | ${f3(m.metrics.decade)} | ${f3(m.metrics.language)} | ${f3(m.metrics.scalar)} | ${f3(m.metrics.diversity)} | ${f3(m.metrics.artistSpread)} | ${pct(m.metrics.popularity)} | ${m.metrics.year.toFixed(0)} | ${m.violations} / ${m.playlists} |`,
+        `| ${m.mode} | **${f3(m.metrics.fit)}** | ${f3(m.metrics.fit2)} | ${f3(m.metrics.cluster)} | ${f3(m.metrics.decade)} | ${f3(m.metrics.language)} | ${f3(m.metrics.scalar)} | ${f3(m.metrics.diversity)} | ${f3(m.metrics.artistSpread)} | ${pct(m.metrics.hits)} | ${pct(m.metrics.sig)} | ${m.metrics.canon.toFixed(1)} | ${m.metrics.year.toFixed(0)} | ${m.violations} / ${m.playlists} |`,
     ),
   ];
 }
@@ -86,6 +90,14 @@ export function renderReport(r: ReportInput): string {
     `| #4 playlists violating §9.3 | ${r.random.violations + r.summary.byMode.reduce((a, m) => a + m.violations, 0)} of ${r.random.playlists + r.summary.byMode.reduce((a, m) => a + m.playlists, 0)} | ${r.random.violations + r.summary.byMode.reduce((a, m) => a + m.violations, 0) === 0 ? "pass" : "**FAIL**"} |`,
     `| #5 mean fit rises ${modes.join(" → ")} | ${r.summary.byMode.map((m) => f3(m.metrics.fit)).join(" → ")} | ${r.summary.monotone ? "pass" : "**FAIL**"} |`,
     `| #5 margin, ${modes.at(-1)} vs ${modes[0]} questions (recorded minimum ${f3(r.marginThreshold)}) | +${f3(r.summary.margin)} | ${passMargin ? "pass" : "**FAIL**"} |`,
+    ...(r.recognitionThresholds
+      ? [
+          `| D1 canon hits per 100 tracks (recorded minimum ${r.recognitionThresholds.canon.toFixed(1)}) | ${r.summary.canon.toFixed(2)} | ${r.summary.canon >= r.recognitionThresholds.canon ? "pass" : "**FAIL**"} |`,
+          `| D1 signature songs (recorded minimum ${pct(r.recognitionThresholds.sig)}) | ${pct(r.summary.sig)} | ${r.summary.sig >= r.recognitionThresholds.sig ? "pass" : "**FAIL**"} |`,
+        ]
+      : []),
+    "",
+    `Recognition (owner decision D1): **${pct(r.summary.hits)}** of persona tracks are in the hits view, **${pct(r.summary.sig)}** are one of a famous artist's top 3 songs, and there are **${r.summary.canon.toFixed(2)}** canon hits per 100 tracks${r.canon ? ` (canon: ${r.canon.found} of ${r.canon.songs} hand-picked hits are in this catalog)` : ""}. The Hebrew personas' playlists are **${pct(r.summary.hebrewShare)}** Hebrew.`,
     "",
     `Catalog load: ${(r.catalog.loadMs / 1000).toFixed(1)} s (once per process, not part of generation time). Random-listener playlists: ${r.random.playlists} (a/b/both/skip answers, random mode and length), ${r.random.short} short with \`catalog_exhausted\`.`,
     "",
@@ -133,6 +145,21 @@ export function renderReport(r: ReportInput): string {
     const m = x.metrics;
     lines.push(
       `| ${p.name} | ${f3(m.cluster)} | ${f3(m.decade)} | ${f3(m.language)} | ${f3(m.scalar)} | ${f3(m.diversity)} | ${f3(m.artistSpread)} | ${pct(m.popularity)} |`,
+    );
+  }
+  lines.push(
+    "",
+    "### Recognition by persona (all modes)",
+    "",
+    "| persona | hits view | signature | canon /100 | Hebrew | fit2 |",
+    "|---|---:|---:|---:|---:|---:|",
+  );
+  for (const p of personas) {
+    const rows = r.results.filter((x) => x.persona.id === p.id);
+    const avg = (k: "hits" | "sig" | "canon" | "hebrew" | "fit2") =>
+      rows.length ? rows.reduce((a, x) => a + x.metrics[k], 0) / rows.length : 0;
+    lines.push(
+      `| ${p.name} | ${pct(avg("hits"))} | ${pct(avg("sig"))} | ${avg("canon").toFixed(1)} | ${pct(avg("hebrew"))} | ${f3(avg("fit2"))} |`,
     );
   }
   lines.push(

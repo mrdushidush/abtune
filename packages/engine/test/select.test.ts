@@ -112,3 +112,86 @@ describe("scoring and choice", () => {
     );
   });
 });
+
+describe("variety: quiz seeds and question families (owner decision D7)", () => {
+  // Five near-equal main cards and two vibe moods; one family with two variants of the opener.
+  const opener = q("opener", "core", 90, { rock: 1, energy: 0.5 }, { pop: 1, energy: -0.5 });
+  const v2 = q(
+    "opener_v2",
+    "core",
+    90,
+    { rock: 1, energy: 0.4 },
+    { pop: 1, energy: -0.6 },
+    {
+      family: "opener",
+    },
+  );
+  const v3 = q(
+    "opener_v3",
+    "core",
+    90,
+    { rock: 1, energy: 0.6 },
+    { pop: 1, energy: -0.4 },
+    {
+      family: "opener",
+    },
+  );
+  const follow = q(
+    "follow",
+    "deep",
+    60,
+    { metal: 1 },
+    { jazz: 1 },
+    { unlock_if: { any: ["opener=a"] } },
+  );
+  const mains = ["m1", "m2", "m3", "m4", "m5"].map((id, k) =>
+    q(id, "core", 70 - k, { valence: 1 }, { valence: -1 }),
+  );
+  const bank = makeBank([opener, v2, v3, follow, ...mains]);
+  const packs = new Set(["core", "deep"]);
+  const first = (seed: string | null, avoid: string[] = []) =>
+    nextQuestion(bank, foldProfile(bank, []), [], packs, 1, {}, { seed, avoid })?.id;
+
+  it("without a seed asks only canonical questions, deterministically", () => {
+    expect(first(null)).toBe("opener");
+    const ids = eligibleQuestions(bank, foldProfile(bank, []), [], packs).map((x) => x.id);
+    expect(ids).toContain("opener_v2"); // eligible, but never chosen without a seed
+  });
+
+  it("with a seed picks a variant, reproducibly, and avoids the previous session's", () => {
+    const seen = new Set<string>();
+    for (let s = 0; s < 40; s++) {
+      const seed = s.toString(16).padStart(16, "0");
+      const id = first(seed);
+      expect(first(seed)).toBe(id);
+      seen.add(id as string);
+    }
+    expect([...seen].sort()).toEqual(["opener", "opener_v2", "opener_v3"]);
+    for (let s = 0; s < 20; s++) {
+      const seed = s.toString(16).padStart(16, "1");
+      expect(first(seed, ["opener", "opener_v2"])).toBe("opener_v3");
+    }
+  });
+
+  it("uses up the whole family once one variant is asked; unlocks follow the family", () => {
+    const log: AnswerEvent[] = [{ id: "opener_v3", choice: "a" }];
+    const ids = eligibleQuestions(bank, foldProfile(bank, log), log, packs).map((x) => x.id);
+    expect(ids).not.toContain("opener");
+    expect(ids).not.toContain("opener_v2");
+    expect(ids).toContain("follow"); // unlock_if opener=a, answered through a variant
+  });
+
+  it("draws main cards within the band of the best, and replays the same draw after Back", () => {
+    const log: AnswerEvent[] = [{ id: "opener", choice: "b" }];
+    const profile = foldProfile(bank, log);
+    const picks = new Set<string>();
+    for (let s = 0; s < 60; s++) {
+      const seed = s.toString(16).padStart(16, "2");
+      const a = nextQuestion(bank, profile, log, packs, 5, {}, { seed });
+      const b = nextQuestion(bank, profile, log, packs, 5, {}, { seed });
+      expect(b?.id).toBe(a?.id);
+      picks.add(a?.id as string);
+    }
+    expect(picks.size).toBeGreaterThan(1); // m1–m5 score within 10% of each other
+  });
+});

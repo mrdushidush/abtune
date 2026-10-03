@@ -1,0 +1,31 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`the live bank (no quiz seed) > always answering a 1`] = `
+[
+  "bonjovi_britney",
+  "bohemian_billiejean",
+  "dancefloor_carcry",
+  "horror_comedy",
+  "hits_gems",
+  "fast_slow",
+  "hebrew_mix",
+  "ai_handmade",
+  "simple_complex",
+  "dec70_dec00",
+]
+`;
+
+exports[`the live bank (no quiz seed) > always answering b 1`] = `
+[
+  "bonjovi_britney",
+  "heavy_smooth",
+  "bohemian_billiejean",
+  "horror_comedy",
+  "hits_gems",
+  "hebrew_mix",
+  "simple_complex",
+  "rain_sun",
+  "fast_slow",
+  "dancefloor_carcry",
+]
+`;

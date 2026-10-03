@@ -63,6 +63,7 @@ export async function buildSongs(
   db: Db,
   dedupe: DedupeConfig,
   pools: readonly Pool[] = [],
+  minLengthMs = 0,
 ): Promise<void> {
   const { countries, scripts } = poolSeeds(pools);
   const seedTitle = scripts.length
@@ -105,21 +106,25 @@ export async function buildSongs(
       WHERE ac.country IN (${countries.length ? countries.map(lit).join(", ") : "NULL"});
 
     CREATE OR REPLACE TABLE canon_info AS
-      SELECT id, gid, first_artist, norm_title(name) AS norm_title, version_type(name, comment) AS version_type, seeded
+      SELECT id, gid, first_artist, norm_title(name) AS norm_title, version_type(name, comment) AS version_type, seeded,
+             length_ms
       FROM (
-        SELECT r.id, r.gid, r.name, r.comment, fa.first_artist,
+        SELECT r.id, r.gid, r.name, r.comment, r.length_ms, fa.first_artist,
                fa.first_artist IN (SELECT first_artist FROM seed_artist) OR ${seedTitle} AS seeded
         FROM (SELECT DISTINCT canon FROM rec_canon) c
         JOIN mb_recording r ON r.id = c.canon
         JOIN rec_first_artist fa ON fa.recording = r.id
       ) WHERE seeded OR first_artist IN (SELECT first_artist FROM listened_artist);
 
-    -- A unit is one (artist, title, version type); its representative is the most-listened member.
+    -- A unit is one (artist, title, version type); its representative is the most-listened member
+    -- of full length. A snippet that soaked up the listens (Rihanna's 14 s "Umbrella") would
+    -- otherwise represent the song and get it dropped as too short.
     CREATE OR REPLACE TABLE canon_unit AS
       SELECT ci.id AS canon, ci.seeded,
              first_value(ci.id) OVER (
                PARTITION BY ci.first_artist, ci.norm_title, ci.version_type
-               ORDER BY coalesce(cp.users, 0) DESC, coalesce(cp.listens, 0) DESC, ci.gid) AS unit
+               ORDER BY coalesce(ci.length_ms, ${minLengthMs}) < ${minLengthMs},
+                        coalesce(cp.users, 0) DESC, coalesce(cp.listens, 0) DESC, ci.gid) AS unit
       FROM canon_info ci LEFT JOIN canon_pop cp ON cp.canon = ci.id;
 
     -- Listened units, plus seeded units nobody has in a top list (0 listeners until the API stage).

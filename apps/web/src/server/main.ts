@@ -2,9 +2,12 @@ import path from "node:path";
 import { formatDiagnostic } from "@abtune/bank";
 import { loadBankFromDisk } from "@abtune/bank/node";
 import { findCatalog } from "@abtune/catalog";
+import { loadCatalog } from "@abtune/catalog/reader";
+import { naturalShares, warmFamiliarity } from "@abtune/engine";
 import { serve } from "@hono/node-server";
 import pkg from "../../package.json" with { type: "json" };
 import { createApp } from "./app.ts";
+import { type CatalogSlot, catalogInfo, catalogSlot } from "./catalog.ts";
 
 const repoRoot = path.resolve(import.meta.dirname, "../../../..");
 const questionsDir = process.env.QUESTIONS_DIR ?? path.join(repoRoot, "data/questions");
@@ -18,21 +21,38 @@ if (!result.bank || result.errors > 0) {
   console.error(`Question bank in ${questionsDir} has errors; refusing to start.`);
   process.exit(1);
 }
+const bank = result.bank;
 
 const installed = await findCatalog(
   path.join(repoRoot, "data/catalog"),
   process.env.CATALOG_PATH || undefined,
 );
-const catalog = installed
-  ? {
-      version: installed.manifest.catalog_version,
-      kind: installed.manifest.kind,
-      tracks: installed.manifest.tracks,
+
+// Listen first; the catalog's columns load in the background (~8 s for the full catalog).
+let catalog: CatalogSlot | null = null;
+if (installed) {
+  const info = catalogInfo(installed.manifest);
+  // Per-catalog generator caches are built before the slot reports ready, so no request pays.
+  const loading = loadCatalog(installed.dir, bank.dimensions).then((loaded) => {
+    warmFamiliarity(loaded.columns);
+    naturalShares(loaded.columns);
+    return loaded;
+  });
+  catalog = catalogSlot(info, loading);
+  catalog.settled.then(() => {
+    const state = catalog?.state;
+    if (state?.status === "ready") {
+      console.log(
+        `Catalog ${info.version} (${info.kind}, ${info.tracks} tracks) ready in ${(state.catalog.loadMs / 1000).toFixed(1)} s`,
+      );
+    } else if (state?.status === "error") {
+      console.error(`Catalog ${installed.dir} failed to load: ${state.message}`);
     }
-  : null;
+  });
+}
 
 const app = createApp({
-  bank: result.bank,
+  bank,
   catalog,
   version: pkg.version,
   staticRoot: path.relative(process.cwd(), staticDir) || ".",
@@ -40,7 +60,7 @@ const app = createApp({
 
 serve({ fetch: app.fetch, port, hostname }, (info) => {
   console.log(
-    `ABTune ${pkg.version} on http://${info.address}:${info.port} (${result.bank?.questions.length} questions, ` +
-      `catalog: ${catalog ? `${catalog.version} ${catalog.kind}, ${catalog.tracks} tracks` : "none; run `abtune catalog fetch`"})`,
+    `ABTune ${pkg.version} on http://${info.address}:${info.port} (${bank.questions.length} questions, ` +
+      `catalog: ${catalog ? `${catalog.info.version} ${catalog.info.kind}, ${catalog.info.tracks} tracks, loading` : "none; run `abtune catalog fetch`"})`,
   );
 });

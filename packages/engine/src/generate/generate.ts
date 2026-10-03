@@ -1,7 +1,14 @@
 import { createRng } from "../rng.ts";
 import { type TasteVector, validateTaste } from "../taste.ts";
 import { type Cell, eligibility, largestRemainder, planCells } from "./cells.ts";
-import { type CatalogColumns, NONE } from "./columns.ts";
+import { type CatalogColumns, NONE, TIER_TAIL } from "./columns.ts";
+import {
+  FamiliarityWindow,
+  familiarityRanks,
+  popularityTarget,
+  tierCeiling,
+  windowSize,
+} from "./familiarity.ts";
 import { artistCap, DEFAULT_GENERATOR_PARAMS, type GeneratorParams } from "./params.ts";
 import { type PickContext, Picks, pickFromCell } from "./sample.ts";
 import { createScorer, SCORE_SCALE, scoreMany } from "./score.ts";
@@ -11,6 +18,8 @@ import { sequence } from "./sequence.ts";
 export const MAX_LENGTH = 1000;
 
 export type GenerateWarning =
+  /** The listener's popularity tier couldn't fill the playlist; less-known songs were used. */
+  | "hits_relaxed"
   /** The §9.2 prefilter couldn't fill the playlist; other clusters/decades were used. */
   | "prefilter_relaxed"
   /** The language hard filter couldn't fill it; other languages were used. */
@@ -50,6 +59,21 @@ export interface GenerateOptions {
   /** 16 hex chars (sessionSeed / computeSeed). */
   readonly seed: string;
   readonly params?: GeneratorParams;
+  /**
+   * Tracks already in the playlist, in play order (an earlier page): never picked again, and §9.3
+   * holds for previous + new tracks together. The new tracks don't open with the last one's artist.
+   */
+  readonly previous?: readonly number[];
+  /** Only artists not in `previous` (swapping one track). */
+  readonly newArtistsOnly?: boolean;
+}
+
+/** The relaxation ladder: (relax level, tier ceiling) pairs, strictest first. */
+function ladder(ceiling: number): { relax: 0 | 1 | 2; maxTier: number }[] {
+  const out: { relax: 0 | 1 | 2; maxTier: number }[] = [];
+  for (let t = ceiling; t <= TIER_TAIL; t++) out.push({ relax: 0, maxTier: t });
+  out.push({ relax: 1, maxTier: TIER_TAIL }, { relax: 2, maxTier: TIER_TAIL });
+  return out;
 }
 
 /**
@@ -59,7 +83,13 @@ export interface GenerateOptions {
 export function generate(
   columns: CatalogColumns,
   taste: TasteVector,
-  { length, seed, params = DEFAULT_GENERATOR_PARAMS }: GenerateOptions,
+  {
+    length,
+    seed,
+    params = DEFAULT_GENERATOR_PARAMS,
+    previous = [],
+    newArtistsOnly = false,
+  }: GenerateOptions,
 ): GeneratedPlaylist {
   if (!Number.isInteger(length) || length < 1 || length > MAX_LENGTH) {
     throw new Error(`generate: length must be 1–${MAX_LENGTH}, got ${length}`);
@@ -67,22 +97,32 @@ export function generate(
   validateTaste(columns.dimensions, taste);
   const rng = createRng(seed);
   const scorer = createScorer(columns, taste, params);
-  const picks = new Picks(columns, artistCap(length, params));
+  const cap = newArtistsOnly ? 0 : artistCap(previous.length + length, params);
+  const picks = new Picks(columns, cap, previous);
   const warnings: GenerateWarning[] = [];
+  const t = popularityTarget(columns, taste);
+  const ceiling = tierCeiling(t, params);
+  // "Hidden gems" all the way down: the score alone picks from the whole long tail.
+  const size = params.familiarityPool > 0 && ceiling < TIER_TAIL ? windowSize(t, params) : null;
   let summary: CellSummary[] = [];
 
-  let previous = "";
-  for (const relax of [0, 1, 2] as const) {
+  let lastKey = "";
+  for (const { relax, maxTier } of ladder(ceiling)) {
     if (picks.tracks.length >= length) break;
-    const elig = eligibility(columns, taste, params, relax);
-    const key = `${elig.genres.join("")}|${elig.decades.join("")}|${elig.language}`;
-    if (key === previous) continue; // nothing to relax at this level
-    if (relax > 0) warnings.push(relax === 1 ? "prefilter_relaxed" : "language_relaxed");
-    previous = key;
+    const elig = eligibility(columns, taste, params, relax, maxTier);
+    const key = `${elig.genres.join("")}|${elig.decades.join("")}|${elig.language}|${maxTier}`;
+    if (key === lastKey) continue; // nothing to relax at this level
+    if (lastKey !== "") {
+      const w =
+        relax === 0 ? "hits_relaxed" : relax === 1 ? "prefilter_relaxed" : "language_relaxed";
+      if (!warnings.includes(w)) warnings.push(w);
+    }
+    lastKey = key;
+    const window = size ? new FamiliarityWindow(familiarityRanks(columns, maxTier), size) : null;
     const plan = planCells(columns, taste, params, elig);
     const scores = new Int32Array(plan.members.length);
     scoreMany(scorer, plan.members, scores);
-    const ctx: PickContext = { columns, plan, scores, params, rng, picks };
+    const ctx: PickContext = { columns, plan, scores, params, rng, picks, window };
     const before = picks.tracks.length;
     const firstSlots = fillCells(
       ctx,
@@ -94,7 +134,7 @@ export function generate(
       plan.cells.filter((c) => !c.kept),
       length,
     );
-    if (relax === 0) {
+    if (relax === 0 && maxTier === ceiling) {
       summary = plan.cells
         .filter((c) => c.kept)
         .map((c) => ({
@@ -108,7 +148,7 @@ export function generate(
   }
   if (picks.tracks.length < length) warnings.push("catalog_exhausted");
 
-  const order = sequence(columns, picks.tracks, params.tempoLambda);
+  const order = sequence(columns, picks.tracks, params.tempoLambda, previous.at(-1) ?? -1);
   const D = columns.dimensions.decades.length;
   const tracks = order.map((p) => {
     const cell = picks.cells[p] as number;

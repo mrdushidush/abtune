@@ -1,4 +1,4 @@
-# ABTune catalog catalog-2026.09 (fixture) — data license
+# ABTune catalog catalog-2026.09.2 (fixture) — data license
 
 This data set is licensed under **CC-BY-NC-SA-3.0-US**: https://creativecommons.org/licenses/by-nc-sa/3.0/us/
 

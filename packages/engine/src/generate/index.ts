@@ -1,6 +1,7 @@
 export * from "./cells.ts";
 export * from "./columns.ts";
 export * from "./constraints.ts";
+export * from "./familiarity.ts";
 export * from "./generate.ts";
 export * from "./params.ts";
 export * from "./sample.ts";
