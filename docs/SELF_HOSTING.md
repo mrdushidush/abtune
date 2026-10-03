@@ -1,6 +1,6 @@
 # Self-hosting ABTune
 
-> This covers the music catalog (M1), the web app (M4) and Spotify (M5). The AI layer (M7) and the full walkthrough (M9) come later.
+> This covers the music catalog (M1), the web app (M4), Spotify (M5) and the optional AI layer (M7). The full walkthrough (M9) comes later.
 
 ## Quick start: Docker and the dev catalog
 
@@ -62,6 +62,61 @@ Export (M3U, CSV, XSPF, JSON) always works without an account. To save playlists
 | "This Spotify app has used up its request quota" | Spotify's per-developer quota; wait, or export the CSV meanwhile |
 | Connect sends you to `127.0.0.1` and your quiz is gone | Your session is saved per address. Use `http://127.0.0.1:8787` from the start; the sheet offers a link that reopens the playlist there |
 | Linux: sign-in fails with a permission error in the log | `data/spotify` must be writable by the container's `node` user (uid 1000): `sudo chown 1000:1000 data/spotify` |
+
+## The AI layer (optional)
+
+ABTune works fully without AI. With a **local** model server, the quiz can offer "AI touches":
+
+- The model reads your answers together and fine-tunes the profile, with a playlist title and a line about it.
+- You can describe what the playlist is for in your own words ("rainy Sunday", "a 5k run").
+- If you turn on rerank, the model also picks the songs from a shortlist and says why for each.
+
+The engine keeps every result within bounds, and the model can only choose songs from the catalog. When the model is slow, down or makes no sense, you get the classic playlist and a one-line notice. v0.1 supports OpenAI-compatible local servers only: LM Studio, Ollama, llama.cpp server, vLLM.
+
+**What the model sees:**
+- Your answers as text ("chose Bon Jovi over Britney Spears") and your taste profile.
+- Never the answers to sensitive questions (the political ones in the Spicy pack), unless the server allows it (`ALLOW_SENSITIVE_TO_AI=true`) **and** you tick the opt-in for that quiz.
+- For rerank, the shortlist's titles and artists.
+
+Nothing is stored: model answers are cached in memory only, and the server logs only failures, by kind ("timeout"). Share links carry the results (the adjusted profile, the picked songs, the title) and rebuild the playlist without calling the model.
+
+**Setup with LM Studio** (Developer tab → load a model → Start Server):
+
+```sh
+# .env
+AI_PROVIDER=openai_compat
+AI_BASE_URL=http://host.docker.internal:1234/v1   # without Docker: http://127.0.0.1:1234/v1
+AI_MODEL=qwen3.6-35b-a3b-mtp@iq3_s                 # the id your server lists at <AI_BASE_URL>/models
+AI_REASONING_EFFORT=none                           # thinking models (Qwen 3): answer without thinking
+# RERANK_BACKEND=llm                               # optional: the model picks the songs too (slower)
+```
+
+Then `docker compose up -d`. The server log ends with `AI: <model> at <url>`, and the setup screen shows the "AI touches" switch. Check the connection with `pnpm abtune ai check`, which lists the server's models and times one call of each kind.
+
+- **Ollama:** `AI_BASE_URL=http://host.docker.internal:11434/v1`, model ids like `qwen3:30b-a3b`.
+- **llama.cpp server:** port 8080, e.g. `llama-server -m <model.gguf> --port 8080`.
+- **Docker on Linux:** `host.docker.internal` points to the Docker bridge, so the model server must listen on that interface or `0.0.0.0` (in LM Studio, "Serve on Local Network"). Docker Desktop on Windows and macOS also reaches a server on the host's 127.0.0.1.
+
+**Speed** (measured 2026-10-03: Qwen 3.6 35B-A3B, IQ3_S, in LM Studio on an RTX 5060 Ti 16 GB, ~58 tokens/s):
+
+| call | time | limit |
+|---|---:|---:|
+| reading your answers (T1) | 2–4 s | 20 s |
+| a free-text tweak (T3) | ~3 s | 20 s |
+| rerank, 25 songs | ~12 s | 20 s |
+| rerank, 50 songs | ~25 s | 40 s |
+| rerank, 100 songs | ~50 s (estimated) | 80 s |
+
+`AI_TIMEOUT_MS` sets the limit per call (default 20000). Rerank gets that limit per 25 songs. A smaller or slower model may need a longer limit, or rerank off.
+
+**Measuring a model:** `pnpm abtune ai eval` runs the persona eval with and without the model's adjustments. `pnpm abtune ai enrich --eval 300` checks how well it rates songs' sound against AcousticBrainz. Both pause while an NVIDIA GPU is at 65 °C or hotter (`--max-gpu-temp`). Results for the model above are in `docs/eval/2026-10-03-ai-*.md`.
+
+| Problem | Fix |
+|---|---|
+| No "AI touches" switch | The server log says why (`AI: AI_MODEL is required…`); `/api/health` shows `ai.enabled` |
+| "The AI server didn't answer" | Is the model server running and the model loaded? From Docker, use `host.docker.internal`, not `127.0.0.1` |
+| "The AI took too long" | Raise `AI_TIMEOUT_MS`, use a smaller model, or turn rerank off |
+| "The AI's answer didn't make sense" | The model ignored the JSON schema: use a server that supports `response_format: json_schema` (structured output), and set `AI_REASONING_EFFORT=none` for thinking models. Only LM Studio was tested |
 
 ## Building the full catalog (~2M tracks)
 

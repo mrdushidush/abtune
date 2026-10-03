@@ -39,6 +39,7 @@ import {
   type SpotifyStatus,
 } from "../api-types.ts";
 import { type CatalogSlot, readyCatalog } from "./catalog.ts";
+import { sameOrigin } from "./http.ts";
 import { type Parsed, parsePlaylistRequest } from "./playlist.ts";
 
 const COOKIE = "abtune_spotify";
@@ -176,17 +177,6 @@ export function mountSpotify(
       return null;
     }
   }
-
-  /** POSTs come from this app's own pages (SameSite=Lax cookies already stop cross-site ones). */
-  const sameOrigin = (c: Context) => {
-    const origin = c.req.header("origin");
-    if (!origin) return true;
-    try {
-      return new URL(origin).host === new URL(c.req.url).host;
-    } catch {
-      return false;
-    }
-  };
 
   app.get("/api/spotify", async (c) => {
     const found = await connection(c);

@@ -1,9 +1,11 @@
+import { AI_OFF } from "@abtune/ai";
 import { type SpotifySettings, unconfiguredSpotify } from "@abtune/connectors/spotify";
 import { type Bank, engineVersion } from "@abtune/engine";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { type Context, Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import type { ApiError, Health } from "../api-types.ts";
+import { aiHealth, mountAi, type ServerAi } from "./ai.ts";
 import { type CatalogSlot, catalogHealth, readyCatalog } from "./catalog.ts";
 import { buildPlaylist, parsePlaylistRequest, UnknownTrackError } from "./playlist.ts";
 import { mountSpotify } from "./spotify.ts";
@@ -17,6 +19,8 @@ export interface AppOptions {
   readonly catalog?: CatalogSlot | null;
   /** Spotify settings from `.env` (HANDOFF §11.1). Omitted: Spotify isn't set up. */
   readonly spotify?: SpotifySettings;
+  /** The AI layer (HANDOFF §10). Omitted: off. */
+  readonly ai?: ServerAi;
 }
 
 /** A playlist request is a taste vector and a few strings: well under this. */
@@ -38,6 +42,7 @@ export function createApp({
   staticRoot,
   catalog = null,
   spotify = unconfiguredSpotify(),
+  ai = { settings: AI_OFF, runtime: null },
 }: AppOptions): Hono {
   const app = new Hono();
   const engine = engineVersion(bank);
@@ -50,6 +55,7 @@ export function createApp({
       questions: bank.questions.length,
       packs: packCounts(bank),
       catalog: catalogHealth(catalog),
+      ai: aiHealth(ai),
     } satisfies Health),
   );
 
@@ -76,7 +82,12 @@ export function createApp({
         return c.json(ready.body, ready.status);
       }
       try {
-        return c.json(await buildPlaylist(ready.catalog, req, engine));
+        return c.json(
+          await buildPlaylist(ready.catalog, req, engine, {
+            runtime: ai.runtime,
+            rerank: ai.settings.rerank,
+          }),
+        );
       } catch (err) {
         if (err instanceof UnknownTrackError)
           return fail(c, 400, { error: "bad_request", message: "previous has unknown track ids." });
@@ -86,6 +97,7 @@ export function createApp({
   );
 
   mountSpotify(app, { settings: spotify, bank, catalog, engine });
+  mountAi(app, { ai, bank, engine });
 
   app.all("/api/*", (c) => fail(c, 404, { error: "not_found" }));
 

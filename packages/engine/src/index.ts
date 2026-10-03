@@ -1,3 +1,4 @@
+export * from "./adjust.ts";
 export * from "./archetype.ts";
 export * from "./dims.ts";
 export * from "./edits.ts";
@@ -5,6 +6,7 @@ export * from "./generate/index.ts";
 export * from "./hash.ts";
 export * from "./hints.ts";
 export * from "./labels.ts";
+export * from "./privacy.ts";
 export * from "./profile.ts";
 export * from "./quiz.ts";
 export * from "./rng.ts";

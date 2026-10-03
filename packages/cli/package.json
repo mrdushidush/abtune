@@ -12,6 +12,7 @@
     "typecheck": "tsc -p ."
   },
   "dependencies": {
+    "@abtune/ai": "workspace:*",
     "@abtune/bank": "workspace:*",
     "@abtune/catalog": "workspace:*",
     "@abtune/engine": "workspace:*",

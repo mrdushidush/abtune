@@ -185,3 +185,84 @@ One line per non-obvious choice: date · decision · why. Big decisions get an A
 - 2026-10-03 · **MCP `push_to_spotify`** uses the connection the web app stored (same `.env`, same file). With several Spotify accounts connected it asks for `account` (user id or display name). Known limit: if the web app and the MCP server refresh the same connection at the same moment and Spotify rotates the refresh token, the slower write wins and the other token may stop working; signing in again fixes it.
 - 2026-10-03 · **Tested** against `FakeSpotify` (`@abtune/connectors/spotify/fake`: accounts service + the endpoints above, scripted failures, allowlist, revocation): PKCE (RFC 7636 vector), each §11.1 error, 150 songs → 2 add calls, backfill in place, cache, store encryption; the web routes end to end on the fixture catalog; the MCP tool. A headless Chrome run on a phone viewport went through the wizard, Connect → the fake's `/authorize` over HTTP → back with the sheet reopened → 25 songs saved privately (23 found, 2 replaced) in 0.66 s and 38 requests, the share view, and Disconnect, with no page errors. **§16 #7 against a real dev-mode app is still open**: it needs the owner's Spotify app (Premium).
 - 2026-10-03 · Client bundle 121.8 KB gzipped (118 KB after M6).
+
+## AI layer (HANDOFF §10, M7)
+
+- 2026-10-03 · **Owner decisions:**
+  - The server calls the model; the browser never talks to it.
+  - **Local models only** in v0.1: `openai_compat` (LM Studio, Ollama, llama.cpp server, vLLM), `none`, and a test mock.
+  - Rerank (T2) has its own switch, off by default.
+  - OpenRouter, Jev (§3.2, §10.3) and Anthropic are not built. `AI_PROVIDER=openrouter|anthropic` turns the AI layer off with a clear message, and `OPENROUTER_API_KEY` / `JEV_*` are gone from `.env.example`.
+  - AI is off by default (`AI_PROVIDER=none`), and a listener turns it on per quiz ("AI touches" on the setup screen, offered only when the server has a model).
+- 2026-10-03 · **`@abtune/ai`:**
+  - **Provider:** chat completions with `temperature 0`, `seed 42`, `response_format: json_schema` (strict, with enums from the bank's dimensions, so a constrained decoder can't invent keys), and an optional `reasoning_effort` (`AI_REASONING_EFFORT=none` for Qwen 3 in LM Studio).
+  - **Size cap:** responses over 64 KB are read no further and count as `oversized`.
+  - **Prompts** are versioned files in `packages/ai/prompts/*.md` (front matter `version:`, a system part, a `=== user ===` template). The rendered prompts and schemas are pinned as golden files (`packages/ai/test/golden/`).
+- 2026-10-03 · **Guardrails (§10.4):**
+  - Parse the JSON (a ```json fence is tolerated), validate the shape with zod, then clamp. An unknown key is dropped, and 0.9 becomes 0.3, so a nearly right answer still counts.
+  - An invalid answer is retried **once, with a note appended**: a deterministic server would repeat the same answer word for word.
+  - A timeout, a dead server or an oversized answer falls back at once, with no retry.
+  - **Cache:** every answer is cached by `sha256(provider, base URL, model, task, prompt version, messages, schema)`, in memory only (LRU, 500 entries). Nothing derived from answers is written to disk (§13). Identical requests in flight share one call.
+  - **Logging:** failures are logged by kind only (`AI interpret: timeout`), never a prompt or an answer.
+  - **Time limit:** 20 s per call (`AI_TIMEOUT_MS`); rerank gets 20 s per 25 songs.
+- 2026-10-03 · **T1 Interpret and T3 Tweak return a bounded adjustment, not a profile** (`engine/src/adjust.ts`). `TasteAdjust` holds integer maps ×100: scalar deltas within ±0.3, genre and decade boosts within ±0.5 (§10.2). Languages are never adjusted. How `applyAdjust` works:
+  - **Scalars:** the target moves by the delta, and κ rises to at least 0.40 (`AI_MIN_WEIGHT`, about two answers at K = 5), so an AI-only dim counts.
+  - **Groups:** a boost b multiplies a share by 1 + 3b, or divides it by 1 − 3b (±0.5 = ×2.5 or ÷2.5). A boosted category starts from at least 2%. A group with no preference starts from uniform.
+  - **Plain arithmetic, no `Math.exp`:** every JS engine gives the same integers.
+  - The result is again a `TasteVector`: like preset tweaks, its outcome is what gets shared.
+- 2026-10-03 · **Which taste is which:**
+  - **Card taste:** T1's adjustment is baked into it, so the personality card shows the AI-informed profile.
+  - **Playlist base:** the card taste with the free-text tweak (T3) applied (`playlistBase`). The preset tweaks, "+25 deeper cuts" and swaps stack on it exactly as before.
+  - **Titles:** T3's title over T1's over the engine's, cleaned (no control characters, one line, ≤ 60 characters). The blurb is ≤ 160 characters.
+  - **Inputs:** T1 sees the answered pairs as text ("chose "Bon Jovi" over "Britney Spears"", with the card's question when it has one), the engine's profile in words with dimension keys, and the keys it may use. T3 sees the profile and the request (≤ 200 characters).
+- 2026-10-03 · **T2 Rerank chooses; it never invents** (`engine/src/generate/rerank.ts`):
+  - **Shortlist:** the generator makes a shortlist of min(150, 3N) songs from the same taste and seed. The model sees it numbered (`n. Title — Artist (year, genre)`, catalog text only) and returns `{picks: [{n, why}]}`.
+  - **Choosing:** `chooseFromShortlist` gives each (genre, decade) cell its share of N (largest remainder), takes the model's picks in order within each share, then fills by score, keeping §9.3. `playShortlist` sequences them (§9.4).
+  - **Bad answers:** numbers outside the list, repeats, fractions and made-up ids are dropped. Nothing valid → invalid → retry → the classic playlist with a notice.
+  - **Replay:** the chosen positions (`picks`, ascending) go back to the client and into share links. `POST /api/playlist {picks}` replays them without the model. §9.3 is checked again, because positions from a link are untrusted.
+  - **Scope:** rerank applies to the first page only; "+25 deeper cuts" and swaps stay classic. "Why" notes are shown on the rows (≤ 80 characters) and aren't shared.
+- 2026-10-03 · **Privacy (§13, §16 #9):**
+  - **Filtered twice:** `answersForAi` (engine) drops skips and `sensitive` questions in the browser, and the server filters again by its own bank. A sensitive answer reaches the model only with the session's opt-in **and** `ALLOW_SENSITIVE_TO_AI=true`. The opt-in is offered on the setup screen only then, with the spicy pack on, is never remembered, and says where the data goes.
+  - **Share links:** a title or blurb made from sensitive answers never goes in one.
+  - **Playlist requests:** they still carry a profile only. Rerank sees the profile and catalog text, never answers.
+  - **Tests:** a mock model that records every payload, a spy on `console.*`, and share codes, each with the opt-in off, on the client only, and on both (the positive control).
+- 2026-10-03 · **Share format 2:** format byte 2, then format 1's fields, a flags byte, and optional fields:
+  - the T3 adjustment, as sparse (index, zigzag value) pairs
+  - rerank picks, delta-encoded
+  - the AI title and blurb in UTF-8 (a hand-written codec that rejects overlong and malformed sequences; the engine still uses no text APIs)
+  
+  A share without AI fields is still format 1, byte for byte. A 25-song AI playlist with a tweak, picks and a title was a 337-character link. The MCP server reads format 2 (adjustment, picks, AI title) and drops the picks, with a note, when a length, reshuffle or tweak override reshapes the shortlist.
+- 2026-10-03 · **API:**
+  - `POST /api/ai/interpret {engine_version, answers, taste, include_sensitive?}` and `POST /api/ai/tweak {engine_version, text, taste}` return `{adjust, title, blurb, sent?}`, or `503 ai_off` / `502 ai_failed {reason}`.
+  - Both routes check same-origin, a 32 KB body limit and the engine version.
+  - `/api/playlist` gains `rerank`, `context` (the AI title and blurb, for rerank) and `picks`. Its response gains `picks`, `notes` and `rerank: done | off | timeout | …`.
+  - `/api/health` reports `ai: {enabled, rerank, sensitive_opt_in, model}`.
+- 2026-10-03 · **UI:**
+  - While T1 runs, the result shows "The AI is reading your answers…" with **Skip AI**.
+  - A failure shows the classic playlist with a one-line reason and **Ask again**.
+  - The AI title and blurb show with a "Fine-tuned by AI" badge.
+  - "Describe it" is the free-text tweak: one in effect, removable.
+  - "The AI is picking your songs…" shows while rerank runs, and 💡 why lines show on the rows.
+  - The interpretation is kept per answer log in local storage: a reload or reshuffle never asks again, and new answers ("10 more") do.
+- 2026-10-03 · **Measured** with `qwen3.6-35b-a3b-mtp@iq3_s` in LM Studio on an RTX 5060 Ti 16 GB. The GPU stayed at 42–56 °C; `abtune ai` pauses calls at 65 °C (nvidia-smi).
+  - **`abtune ai check`:** interpret 2.7 s, tweak 3.0 s.
+  - **T1 on the persona eval** (`docs/eval/2026-10-03-ai-interpret.md`, 36 calls, median 3.3 s, all valid):
+    - fit 0.195 → 0.198 (10 answers), 0.375 → 0.390 (20), 0.516 → 0.536 (50)
+    - canon 9.96 → 9.81, signature 75.2% → 74.3% (both gates still pass)
+    - Hebrew personas 52.2% → 54.3% Hebrew
+    - A small gain with no harm, so the gains above stay as designed.
+  - **Rerank, first try:** 864 output tokens for 25 picks was too few. The model writes pretty-printed JSON (~33 tokens per pick), so one answer in three was cut off (`finish_reason: length`) → invalid.
+  - **Rerank, now** (budget 96 + 40 per pick; "why" at most 8 words; prompt v2): 25 picks take 12.5 s (~830 tokens), and 50 picks take 25 s (~1,650 tokens; prompt ~4.5k tokens for the 150-song shortlist), all valid.
+  - **UI, headless phone browser on the full catalog:** T1 + rerank in 18.5 s, then the 5k-run tweak + rerank in 17.5 s. The share link opened in a fresh browser rebuilt the identical 25 rows in 1.6 s with no AI call. No page errors.
+- 2026-10-03 · **T4 Enrich** (`abtune ai enrich --eval 300`, `docs/eval/2026-10-03-ai-enrich.md`):
+  - **Method:** the model rated 300 songs that have AcousticBrainz data, in the popularity band of the 20,000 most popular songs that use model features, 10 per call at 8 s. It knew 95% of them.
+  - **Scoring:** ratings were mapped to the raw scale by a line fit on half and scored on the other half, as MAE/baseline. The tier-3 ridge model's ratios come from the catalog build.
+  - **Result:** the LLM's ratios are 0.80–0.94 on energy, dance, acoustic, intensity and vocal, better than tier 3 on unseen artists (0.90–0.96) but worse than tier 3 on known artists (0.59–0.67). On valence and tempo it is no better than the mean (Spearman 0.07–0.08).
+  - **Who would gain:** of the 20,000 most popular model-feature songs, 67% have artist means (feature confidence 0.60), where tier 3 is better. The other 33% (~6,600 songs) would gain a little (about 0.95 → 0.85 of baseline).
+  - **Decision:** **no catalog is rebuilt with AI features** for v0.1, and the build merge (`feature_source = 'ai'`, which the schema allows) is not written. Doing it for those artist-less songs is a later option for the owner. The script and its file cache (`data/ai/cache/`, catalog text only, gitignored) stay.
+- 2026-10-03 · **Tests:**
+  - §16 #8 on the fixture catalog with a mock model: malformed JSON, a JSON array, wrong types, a 64 KB+ answer, a hang (timeout), a dead server, an empty answer, out-of-range values, invented dims, numbers off the shortlist, and made-up track ids. Each gives a §9.3-valid playlist of catalog songs, with the fallback reported.
+  - The provider against a fake `fetch`.
+  - Property tests: any adjustment gives a valid taste; any picks give a valid playlist that replays to the same set.
+  - Share format 2 round-trips. A web share replays identically, and the MCP server rebuilds a format 2 code exactly.
+- 2026-10-03 · Client bundle 125.3 KB gzipped (121.8 KB after M5). The browser never imports `@abtune/ai` (Node only): its types and limits live in `api-types.ts`.

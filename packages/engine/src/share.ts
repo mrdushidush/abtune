@@ -1,4 +1,12 @@
+import {
+  ADJUST_KINDS,
+  type AdjustKind,
+  isEmptyAdjust,
+  type TasteAdjust,
+  validateAdjust,
+} from "./adjust.ts";
 import { GROUPS } from "./dims.ts";
+import { MAX_SHORTLIST } from "./generate/rerank.ts";
 import { type TasteVector, validateTaste } from "./taste.ts";
 import { TWEAK_AXES, type TweakAxis, type TweakSteps, validateTweaks } from "./tweak.ts";
 import type { Dimensions } from "./types.ts";
@@ -22,12 +30,30 @@ export interface ShareData {
   readonly catalogVersion: string;
   /** "+25 deeper cuts" pages and swaps applied on top of the first playlist, in order. */
   readonly ops: readonly ShareOp[];
+  /**
+   * The free-text tweak's adjustment (AI T3), applied to `taste` before the tweaks: the playlist's
+   * base (`playlistBase`). The card shows `taste` without it.
+   */
+  readonly adjust?: TasteAdjust;
+  /** AI rerank (T2): the first page's shortlist positions, ascending (see `playShortlist`). */
+  readonly picks?: readonly number[];
+  /** The AI's playlist title and blurb (T1/T3). Never set when sensitive answers went to the AI. */
+  readonly title?: string;
+  readonly blurb?: string;
 }
 
 export type ShareOp = { readonly op: "more" } | { readonly op: "swap"; readonly index: number };
 
-/** Binary layout version (first byte). */
+/** Binary layout version (first byte): 1, or 2 when an AI field is set. */
 export const SHARE_FORMAT = 1;
+export const SHARE_FORMAT_AI = 2;
+export const MAX_TITLE_CHARS = 60;
+export const MAX_BLURB_CHARS = 160;
+/** Format 2 flags. */
+const HAS_ADJUST = 1;
+const HAS_PICKS = 2;
+const HAS_TITLE = 4;
+const HAS_BLURB = 8;
 export const MAX_SHARE_OPS = 100;
 export const MAX_SHARE_LENGTH = 1000;
 const MAX_STRING_BYTES = 64;
@@ -65,6 +91,25 @@ class Writer {
     this.uint(s.length);
     for (let i = 0; i < s.length; i++) this.byte(s.charCodeAt(i));
   }
+  /** UTF-8 with a byte-length prefix (written by hand: the engine uses no text codecs). */
+  text(s: string): void {
+    const bytes: number[] = [];
+    for (const ch of s) {
+      const c = ch.codePointAt(0) as number;
+      if (c < 0x80) bytes.push(c);
+      else if (c < 0x800) bytes.push(0xc0 | (c >> 6), 0x80 | (c & 63));
+      else if (c < 0x10000) bytes.push(0xe0 | (c >> 12), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63));
+      else
+        bytes.push(
+          0xf0 | (c >> 18),
+          0x80 | ((c >> 12) & 63),
+          0x80 | ((c >> 6) & 63),
+          0x80 | (c & 63),
+        );
+    }
+    this.uint(bytes.length);
+    for (const b of bytes) this.byte(b);
+  }
   done(): Uint8Array {
     return Uint8Array.from(this.bytes);
   }
@@ -101,6 +146,38 @@ class Reader {
     let s = "";
     for (let i = 0; i < n; i++) s += String.fromCharCode(this.byte());
     if (!ASCII.test(s)) throw new ShareError("share: bad string");
+    return s;
+  }
+  /** UTF-8 written by `Writer.text`. Rejects malformed and overlong sequences. */
+  text(maxBytes: number): string {
+    const n = this.uint();
+    if (n > maxBytes) throw new ShareError("share: text too long");
+    const end = this.at + n;
+    let s = "";
+    while (this.at < end) {
+      const b = this.byte();
+      const extra =
+        b < 0x80
+          ? 0
+          : b >= 0xf0 && b < 0xf5
+            ? 3
+            : b >= 0xe0 && b < 0xf0
+              ? 2
+              : b >= 0xc2 && b < 0xe0
+                ? 1
+                : -1;
+      if (extra < 0 || this.at + extra > end) throw new ShareError("share: bad text");
+      let c = extra === 0 ? b : b & (0x3f >> extra);
+      for (let k = 0; k < extra; k++) {
+        const x = this.byte();
+        if ((x & 0xc0) !== 0x80) throw new ShareError("share: bad text");
+        c = (c << 6) | (x & 63);
+      }
+      const min = [0, 0x80, 0x800, 0x10000][extra] as number;
+      if (c < min || c > 0x10ffff || (c >= 0xd800 && c < 0xe000))
+        throw new ShareError("share: bad text");
+      s += String.fromCodePoint(c);
+    }
     return s;
   }
   end(): void {
@@ -159,7 +236,54 @@ export function validateShare(dims: Dimensions, data: ShareData): void {
       throw new ShareError("share: bad swap");
     if (op.op !== "more" && op.op !== "swap") throw new ShareError("share: bad edit");
   }
+  if (data.adjust !== undefined) {
+    try {
+      validateAdjust(dims, data.adjust);
+    } catch (err) {
+      throw new ShareError((err as Error).message);
+    }
+  }
+  if (data.picks !== undefined) {
+    const p = data.picks;
+    if (p.length === 0 || p.length > Math.min(data.length, MAX_SHORTLIST))
+      throw new ShareError("share: bad picks");
+    p.forEach((x, i) => {
+      if (
+        !Number.isInteger(x) ||
+        x < 0 ||
+        x >= MAX_SHORTLIST ||
+        (i > 0 && x <= (p[i - 1] as number))
+      )
+        throw new ShareError("share: bad picks");
+    });
+  }
+  checkText(data.title, MAX_TITLE_CHARS);
+  checkText(data.blurb, MAX_BLURB_CHARS);
 }
+
+/** Control characters (C0, DEL, C1): never in a title or blurb. */
+// biome-ignore lint/suspicious/noControlCharactersInRegex: that is the point
+const CONTROL = /[\u0000-\u001f\u007f-\u009f]/;
+
+/** Titles and blurbs: 1 to `max` characters, no control characters. */
+function checkText(s: string | undefined, max: number): void {
+  if (s === undefined) return;
+  if (typeof s !== "string" || s.length === 0 || [...s].length > max || CONTROL.test(s))
+    throw new ShareError("share: bad text");
+}
+
+/** Which format 2 fields `data` carries (0 = none: the code is format 1). */
+function aiFlags(data: ShareData): number {
+  return (
+    (data.adjust && !isEmptyAdjust(data.adjust) ? HAS_ADJUST : 0) |
+    (data.picks ? HAS_PICKS : 0) |
+    (data.title ? HAS_TITLE : 0) |
+    (data.blurb ? HAS_BLURB : 0)
+  );
+}
+
+const adjustKeys = (dims: Dimensions, kind: AdjustKind) =>
+  kind === "scalar" ? dims.scalar : dims[kind];
 
 /**
  * The share code: a compact binary layout, base64url (about 200 characters). Layout v1: format
@@ -169,8 +293,9 @@ export function validateShare(dims: Dimensions, data: ShareData): void {
  */
 export function encodeShare(dims: Dimensions, data: ShareData): string {
   validateShare(dims, data);
+  const flags = aiFlags(data);
   const w = new Writer();
-  w.byte(SHARE_FORMAT);
+  w.byte(flags ? SHARE_FORMAT_AI : SHARE_FORMAT);
   w.string(data.engineVersion);
   w.string(data.catalogVersion);
   for (let i = 0; i < 16; i += 2) w.byte(Number.parseInt(data.seed.slice(i, i + 2), 16));
@@ -187,6 +312,30 @@ export function encodeShare(dims: Dimensions, data: ShareData): string {
   for (const axis of TWEAK_AXES) w.int(data.tweaks[axis] ?? 0);
   w.uint(data.ops.length);
   for (const op of data.ops) w.uint(op.op === "more" ? 0 : 1 + op.index);
+  if (flags) {
+    w.byte(flags);
+    if (flags & HAS_ADJUST) {
+      for (const kind of ADJUST_KINDS) {
+        const entries = adjustKeys(dims, kind)
+          .map((k, i) => [i, data.adjust?.[kind][k] ?? 0] as const)
+          .filter(([, v]) => v !== 0);
+        w.uint(entries.length);
+        for (const [i, v] of entries) {
+          w.uint(i);
+          w.int(v);
+        }
+      }
+    }
+    if (flags & HAS_PICKS) {
+      const picks = data.picks ?? [];
+      w.uint(picks.length);
+      picks.forEach((p, i) => {
+        w.uint(i === 0 ? p : p - (picks[i - 1] as number) - 1);
+      });
+    }
+    if (flags & HAS_TITLE) w.text(data.title ?? "");
+    if (flags & HAS_BLURB) w.text(data.blurb ?? "");
+  }
   return toBase64Url(w.done());
 }
 
@@ -194,7 +343,8 @@ export function encodeShare(dims: Dimensions, data: ShareData): string {
 export function decodeShare(dims: Dimensions, code: string): ShareData {
   const r = new Reader(fromBase64Url(code));
   const format = r.byte();
-  if (format !== SHARE_FORMAT) throw new ShareError(`share: unknown format ${format}`);
+  if (format !== SHARE_FORMAT && format !== SHARE_FORMAT_AI)
+    throw new ShareError(`share: unknown format ${format}`);
   const engineVersion = r.string();
   const catalogVersion = r.string();
   let seed = "";
@@ -224,6 +374,7 @@ export function decodeShare(dims: Dimensions, code: string): ShareData {
     const x = r.uint();
     ops.push(x === 0 ? { op: "more" } : { op: "swap", index: x - 1 });
   }
+  const ai = format === SHARE_FORMAT_AI ? readAiFields(r, dims) : {};
   r.end();
   const data: ShareData = {
     taste: { target, weight, ...groups },
@@ -234,7 +385,52 @@ export function decodeShare(dims: Dimensions, code: string): ShareData {
     engineVersion,
     catalogVersion,
     ops,
+    ...ai,
   };
   validateShare(dims, data);
   return data;
+}
+
+/** Format 2's tail: a flags byte, then each flagged field in flag order. */
+function readAiFields(
+  r: Reader,
+  dims: Dimensions,
+): Pick<ShareData, "adjust" | "picks" | "title" | "blurb"> {
+  const flags = r.byte();
+  if (flags === 0 || flags > 15) throw new ShareError("share: bad flags");
+  const out: { adjust?: TasteAdjust; picks?: number[]; title?: string; blurb?: string } = {};
+  if (flags & HAS_ADJUST) {
+    const adjust: Record<AdjustKind, Record<string, number>> = {
+      scalar: {},
+      genres: {},
+      decades: {},
+    };
+    for (const kind of ADJUST_KINDS) {
+      const keys = adjustKeys(dims, kind);
+      const count = r.uint();
+      if (count > keys.length) throw new ShareError("share: bad adjust");
+      for (let i = 0; i < count; i++) {
+        const key = keys[r.uint()];
+        if (key === undefined || key in adjust[kind]) throw new ShareError("share: bad adjust");
+        const v = r.int();
+        if (v === 0) throw new ShareError("share: bad adjust"); // one spelling per code
+        adjust[kind][key] = v;
+      }
+    }
+    out.adjust = adjust;
+  }
+  if (flags & HAS_PICKS) {
+    const count = r.uint();
+    if (count > MAX_SHORTLIST) throw new ShareError("share: too many picks");
+    const picks: number[] = [];
+    for (let i = 0; i < count; i++) {
+      const d = r.uint();
+      picks.push(i === 0 ? d : (picks[i - 1] as number) + d + 1);
+    }
+    out.picks = picks;
+  }
+  // UTF-8 takes at most four bytes per character.
+  if (flags & HAS_TITLE) out.title = r.text(4 * MAX_TITLE_CHARS);
+  if (flags & HAS_BLURB) out.blurb = r.text(4 * MAX_BLURB_CHARS);
+  return out;
 }

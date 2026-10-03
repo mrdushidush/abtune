@@ -1,0 +1,50 @@
+Profile:
+Genres: Classic Rock [classic_rock] 50%, Pop [pop] 30%, Jazz [jazz] 15%, Metal [metal] 5%
+Decades: 80s [dec80] 60%, 90s [dec90] 30%, 2000s [dec00] 10%
+Languages: English [lang_en] 90%, Hebrew [lang_he] 10%
+energy (Calm ↔ Energetic): Energetic (+0.60, sure)
+valence (Dark ↔ Bright): Dark (-0.20, a hint)
+mainstream (Deep cuts ↔ Hits): Hits (+0.60, a hint)
+Playlist: "Arena Rock Revival"
+
+Shortlist (3 songs):
+1. Livin' on a Prayer — Bon Jovi (1986, Classic Rock)
+2. Toxic — Britney Spears (2003, Pop)
+3. So What — Miles Davis
+
+Pick 2 songs.
+
+---
+
+{
+  "type": "object",
+  "properties": {
+    "picks": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
+          },
+          "why": {
+            "type": "string",
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "n",
+          "why"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "picks"
+  ],
+  "additionalProperties": false
+}

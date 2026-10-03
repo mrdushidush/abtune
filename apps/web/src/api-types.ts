@@ -1,5 +1,5 @@
 // The HTTP contract between the client and the server (types only, shared by both sides).
-import type { GenerateWarning, TasteVector } from "@abtune/engine";
+import type { Choice, GenerateWarning, TasteAdjust, TasteVector } from "@abtune/engine";
 
 export interface CatalogLicense {
   readonly id: string;
@@ -17,6 +17,18 @@ export interface CatalogHealth {
   readonly license: CatalogLicense | null;
 }
 
+/** The AI layer (HANDOFF §10) as configured on this server. */
+export interface AiHealth {
+  /** A model is configured (AI_PROVIDER=openai_compat): the setup screen offers AI. */
+  readonly enabled: boolean;
+  /** T2 rerank runs on first playlists (RERANK_BACKEND=llm). */
+  readonly rerank: boolean;
+  /** The setup screen may offer sending sensitive answers too (ALLOW_SENSITIVE_TO_AI). */
+  readonly sensitive_opt_in: boolean;
+  /** The configured model id, or null when off. */
+  readonly model: string | null;
+}
+
 /** GET /api/health */
 export interface Health {
   readonly name: "ABTune";
@@ -27,6 +39,7 @@ export interface Health {
   readonly packs: Readonly<Record<string, number>>;
   /** The installed catalog, or null when none is installed. */
   readonly catalog: CatalogHealth | null;
+  readonly ai: AiHealth;
 }
 
 /**
@@ -47,6 +60,15 @@ export interface PlaylistRequest {
   readonly previous?: readonly string[];
   /** Swap: the new track's artist must not be in `previous`. */
   readonly swap?: boolean;
+  /**
+   * AI rerank (T2) of a first page: the model chooses from a shortlist of the same taste and seed.
+   * Not with `previous` or `picks`.
+   */
+  readonly rerank?: boolean;
+  /** For `rerank`: the AI title and blurb (T1/T3), what this playlist is for. */
+  readonly context?: { readonly title?: string; readonly blurb?: string };
+  /** A rerank's chosen shortlist positions (a response's `picks`): the same playlist, no AI. */
+  readonly picks?: readonly number[];
 }
 
 /** Most track ids a request may carry in `previous`. */
@@ -74,6 +96,12 @@ export interface PlaylistResponse {
   readonly length: number;
   readonly warnings: readonly GenerateWarning[];
   readonly tracks: readonly PlaylistTrackOut[];
+  /** The shortlist positions this list was chosen from (rerank or `picks`): share them. */
+  readonly picks?: readonly number[];
+  /** Rerank's "why" per track id, for the rows that have one. */
+  readonly notes?: Readonly<Record<string, string>>;
+  /** Whether a requested rerank happened; on fallback the list is the classic one. */
+  readonly rerank?: "done" | AiFailureCode;
 }
 
 export type ApiErrorCode =
@@ -85,7 +113,51 @@ export type ApiErrorCode =
   | "no_catalog"
   | "catalog_loading"
   | "catalog_error"
-  | "version_mismatch";
+  | "version_mismatch"
+  /** The AI layer is off on this server. */
+  | "ai_off"
+  /** The model gave nothing usable; `reason` says why. */
+  | "ai_failed";
+
+/** Why an AI call gave nothing (HANDOFF §10.4): the classic result is used, with a notice. */
+export type AiFailureCode = "off" | "timeout" | "unreachable" | "invalid" | "oversized";
+
+/** One answer for T1, as the quiz logged it. Sensitive ones only with the opt-in (HANDOFF §13). */
+export interface AiAnswer {
+  readonly id: string;
+  readonly choice: Choice;
+}
+
+/** POST /api/ai/interpret (T1): the answers (filtered) and the engine's profile. */
+export interface InterpretRequest {
+  readonly engine_version: string;
+  readonly answers: readonly AiAnswer[];
+  readonly taste: TasteVector;
+  /** The per-session opt-in; honored only when the server allows it. */
+  readonly include_sensitive?: boolean;
+}
+
+/** POST /api/ai/tweak (T3): a free-text request for the card taste. */
+export interface TextTweakRequest {
+  readonly engine_version: string;
+  readonly text: string;
+  readonly taste: TasteVector;
+}
+
+/** Both AI routes answer with a bounded adjustment, a title and a blurb. */
+export interface AiAdjustResponse {
+  readonly adjust: TasteAdjust;
+  readonly title: string | null;
+  readonly blurb: string | null;
+  /** Interpret: what went to the model. */
+  readonly sent?: { readonly answers: number; readonly sensitive: number };
+}
+
+/** Longest free-text tweak (`MAX_TWEAK_TEXT` in @abtune/ai; a test keeps them equal). */
+export const MAX_AI_TEXT = 200;
+
+/** Most answers an interpret request may carry. */
+export const MAX_AI_REQUEST_ANSWERS = 300;
 
 export interface ApiError {
   readonly error: ApiErrorCode;
@@ -93,6 +165,8 @@ export interface ApiError {
   /** On version_mismatch: what the server runs. */
   readonly engine_version?: string;
   readonly catalog_version?: string;
+  /** On ai_failed. */
+  readonly reason?: AiFailureCode;
 }
 
 /** Longest playlist the API generates (the UI offers 25 / 50 / 100). */

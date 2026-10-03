@@ -11,8 +11,12 @@ import {
   generate,
   naturalShares,
   type PlaylistStep,
+  type PlaylistTrack,
+  playlistBase,
+  playShortlist,
   type ShareData,
   type ShareOp,
+  shortlistLength,
   warmFamiliarity,
 } from "@abtune/engine";
 
@@ -79,15 +83,43 @@ function run(catalog: LoadedCatalog, step: PlaylistStep, previous: readonly numb
   });
 }
 
+/**
+ * The first page: the generator's, or a web AI rerank's picks replayed from its shortlist (no AI
+ * here: the MCP host is the model).
+ */
+function firstPage(
+  catalog: LoadedCatalog,
+  first: PlaylistStep,
+  picks: readonly number[] | undefined,
+): { indices: number[]; warnings: readonly GenerateWarning[] } {
+  if (!picks) {
+    const out = run(catalog, first, []);
+    return { indices: out.tracks.map((t) => t.index), warnings: out.warnings };
+  }
+  const short = generate(catalog.columns, first.taste, {
+    length: shortlistLength(first.length),
+    seed: first.seed,
+  });
+  const play = playShortlist(catalog.columns, short.tracks, picks, first.length);
+  return {
+    indices: play.map((p) => (short.tracks[p] as PlaylistTrack).index),
+    warnings:
+      play.length < first.length && !short.warnings.includes("catalog_exhausted")
+        ? [...short.warnings, "catalog_exhausted"]
+        : short.warnings,
+  };
+}
+
 /** The first playlist, then each edit on the list as it stood: exactly the web app's requests. */
 export async function buildPlaylist(
   catalog: LoadedCatalog,
   dims: Dimensions,
-  data: Pick<ShareData, "taste" | "tweaks" | "seed" | "length" | "ops">,
+  data: Pick<ShareData, "taste" | "tweaks" | "seed" | "length" | "ops" | "adjust" | "picks">,
 ): Promise<BuiltPlaylist> {
-  const first = firstStep(dims, data.taste, data.tweaks, data.seed, data.length);
-  const out = run(catalog, first, []);
-  let indices = out.tracks.map((t) => t.index);
+  const base = playlistBase(dims, data.taste, data.adjust);
+  const first = firstStep(dims, base, data.tweaks, data.seed, data.length);
+  const out = firstPage(catalog, first, data.picks);
+  let indices = out.indices;
   const done: ShareOp[] = [];
   let skipped = 0;
   for (const op of data.ops) {
@@ -95,7 +127,7 @@ export async function buildPlaylist(
       skipped++;
       continue;
     }
-    const step = editStep(dims, data.taste, data.tweaks, first, done, op);
+    const step = editStep(dims, base, data.tweaks, first, done, op);
     const got = run(catalog, step, indices).tracks.map((t) => t.index);
     if (got.length === 0) {
       skipped++;

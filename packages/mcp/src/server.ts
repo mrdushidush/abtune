@@ -37,6 +37,7 @@ import {
   languageLabel,
   MORE_LENGTH,
   P_SCALE,
+  playlistBase,
   playlistTitle,
   type Question,
   reduceSession,
@@ -493,6 +494,12 @@ export function createServer(opts: ServerOptions): McpServer {
           );
           data = { ...data, ops: [] };
         }
+        if (overrides && data.picks) {
+          // The AI's picks are positions in the shortlist this taste, seed and length made.
+          notes.push("The AI's song picks were dropped because the playlist changed.");
+          const { picks: _, ...rest } = data;
+          data = rest;
+        }
         if (args.length !== undefined) data = { ...data, length: args.length };
         if (args.reshuffle)
           data = {
@@ -526,11 +533,16 @@ export function createServer(opts: ServerOptions): McpServer {
       if (built.skipped) notes.push("Some of the shared edits could not be repeated.");
       if (built.warnings.includes("catalog_exhausted"))
         notes.push("The catalog ran out of songs that fit, so the playlist is shorter.");
-      const title = playlistTitle(dims, data.taste, data.answered, data.seed);
+      const engineTitle = playlistTitle(dims, data.taste, data.answered, data.seed);
+      const title = { ...engineTitle, title: data.title ?? engineTitle.title };
       const tweakNote = Object.entries(tweaks)
         .map(([axis, n]) => `${axis} ${(n as number) > 0 ? "+" : ""}${n}`)
         .join(", ");
-      const description = [title.description, tweakNote ? `tweaked: ${tweakNote}` : ""]
+      const description = [
+        data.blurb ?? "",
+        title.description,
+        tweakNote ? `tweaked: ${tweakNote}` : "",
+      ]
         .filter(Boolean)
         .join(" · ");
       const id = newId("p");
@@ -702,7 +714,13 @@ export function createServer(opts: ServerOptions): McpServer {
             })),
             backfill: catalogBackfill(
               catalog,
-              firstStep(dims, p.data.taste, p.data.tweaks, p.data.seed, p.data.length),
+              firstStep(
+                dims,
+                playlistBase(dims, p.data.taste, p.data.adjust),
+                p.data.tweaks,
+                p.data.seed,
+                p.data.length,
+              ),
             ),
             cache: matchCache,
             account: conn.user_id,

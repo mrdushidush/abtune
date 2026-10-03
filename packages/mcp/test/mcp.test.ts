@@ -16,7 +16,19 @@ import {
   TokenStore,
 } from "@abtune/connectors/spotify";
 import { FakeSpotify } from "@abtune/connectors/spotify/fake";
-import type { Bank } from "@abtune/engine";
+import {
+  type Bank,
+  chooseFromShortlist,
+  encodeShare,
+  engineVersion,
+  firstStep,
+  generate,
+  type PlaylistTrack,
+  playlistBase,
+  playShortlist,
+  type ShareData,
+  shortlistLength,
+} from "@abtune/engine";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -154,6 +166,57 @@ describe("MCP server", () => {
     const shuffled = ok(await call("generate_playlist", { share_code: url, reshuffle: 1 }));
     expect(shuffled.content[0]?.text).toMatch(/dropped/);
     expect((shuffled.structuredContent.tracks as unknown[]).length).toBe(25);
+  });
+
+  it("rebuilds a web AI share: free-text adjustment, rerank picks and the AI title", async () => {
+    const loaded = await catalog.get();
+    const dims = bank.dimensions;
+    const base: Omit<ShareData, "picks"> = {
+      taste: {
+        target: dims.scalar.map(() => 20),
+        weight: dims.scalar.map(() => 60),
+        decades: null,
+        genres: null,
+        languages: null,
+      },
+      tweaks: { mood: -1 },
+      seed: "00000000deadbeef",
+      length: 25,
+      answered: 20,
+      engineVersion: engineVersion(bank),
+      catalogVersion: loaded.columns.version,
+      ops: [],
+      adjust: { scalar: { energy: -30 }, genres: { jazz: 40 }, decades: {} },
+      title: "Rainy Sunday Jazz",
+      blurb: "Slow and warm.",
+    };
+    // What the web server chose for a model that liked these shortlist songs.
+    const first = firstStep(
+      dims,
+      playlistBase(dims, base.taste, base.adjust),
+      base.tweaks,
+      base.seed,
+      25,
+    );
+    const short = generate(loaded.columns, first.taste, {
+      length: shortlistLength(25),
+      seed: base.seed,
+    });
+    const picks = chooseFromShortlist(loaded.columns, short.tracks, [70, 3, 41, 12], 25);
+    const play = playShortlist(loaded.columns, short.tracks, picks, 25);
+    const expected = (
+      await loaded.meta(play.map((p) => (short.tracks[p] as PlaylistTrack).index))
+    ).map((m) => m.track_id);
+    const code = encodeShare(dims, { ...base, picks });
+    const r = ok(await call("generate_playlist", { share_code: code }));
+    expect((r.structuredContent.tracks as { track_id: string }[]).map((t) => t.track_id)).toEqual(
+      expected,
+    );
+    expect(r.content[0]?.text).toContain("Rainy Sunday Jazz");
+    // Another length reshapes the shortlist: the picks no longer apply.
+    const longer = ok(await call("generate_playlist", { share_code: code, length: 50 }));
+    expect(longer.content[0]?.text).toMatch(/AI's song picks were dropped/);
+    expect((longer.structuredContent.tracks as unknown[]).length).toBe(50);
   });
 
   it("generates from a bare taste profile and exports inline", async () => {

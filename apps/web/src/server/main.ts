@@ -1,5 +1,6 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
+import { aiSettings, createAiRuntime } from "@abtune/ai";
 import { formatDiagnostic } from "@abtune/bank";
 import { loadBankFromDisk } from "@abtune/bank/node";
 import { findCatalog } from "@abtune/catalog";
@@ -58,10 +59,14 @@ if (installed) {
 }
 
 const spotify = spotifySettings(process.env, repoRoot);
+const { settings: aiConfig, problems: aiProblems } = aiSettings(process.env);
+for (const p of aiProblems) console.error(`AI: ${p.setting} ${p.message}; the AI layer is off.`);
+const ai = { settings: aiConfig, runtime: createAiRuntime(aiConfig) };
 const app = createApp({
   bank,
   catalog,
   spotify,
+  ai,
   version: pkg.version,
   staticRoot: path.relative(process.cwd(), staticDir) || ".",
 });
@@ -71,6 +76,7 @@ serve({ fetch: app.fetch, port, hostname }, (info) => {
   console.log(
     `ABTune ${pkg.version} on http://${info.address}:${info.port} (${bank.questions.length} questions, ` +
       `catalog: ${catalog ? `${catalog.info.version} ${catalog.info.kind}, ${catalog.info.tracks} tracks, loading` : "none; run `abtune catalog fetch`"}; ` +
-      `Spotify: ${spotifyMissing.length ? `not set up (${spotifyMissing.join(", ")})` : `redirect ${spotify.redirectUri}`})`,
+      `Spotify: ${spotifyMissing.length ? `not set up (${spotifyMissing.join(", ")})` : `redirect ${spotify.redirectUri}`}; ` +
+      `AI: ${ai.runtime ? `${aiConfig.model} at ${aiConfig.baseUrl}${aiConfig.rerank ? ", rerank on" : ""}` : "off"})`,
   );
 });

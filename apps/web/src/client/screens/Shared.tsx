@@ -130,11 +130,13 @@ export function Shared({
     );
 
   const ready = state.kind === "ready" ? state : null;
-  const title = playlistTitle(bank.dimensions, data.taste, data.answered, data.seed);
+  const engineTitle = playlistTitle(bank.dimensions, data.taste, data.answered, data.seed);
+  const title = { ...engineTitle, title: data.title ?? engineTitle.title };
   const names = tweakNames(data.tweaks);
-  const description = [title.description, names.length ? t.result.tweaked(names) : ""]
+  const meta = [title.description, names.length ? t.result.tweaked(names) : ""]
     .filter(Boolean)
     .join(" · ");
+  const description = [data.blurb ?? "", meta].filter(Boolean).join(" · ");
   const name = archetypeName(traits(bank.dimensions, data.taste));
   const other =
     catalog?.status === "ready" &&
@@ -178,7 +180,8 @@ export function Shared({
           <h2 id="playlist" className="mt-1 text-2xl font-black leading-tight text-balance">
             {title.title}
           </h2>
-          <p className="mt-1 text-sm text-text-3">{description || " "}</p>
+          {data.blurb && <p className="mt-1 text-text-2">{data.blurb}</p>}
+          <p className="mt-1 text-sm text-text-3">{meta || " "}</p>
         </header>
 
         <div className="flex flex-wrap gap-2">

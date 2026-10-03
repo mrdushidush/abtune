@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { ai, aiHelp } from "./commands/ai.ts";
 import { catalog, catalogHelp } from "./commands/catalog.ts";
 import { evalCmd, evalHelp } from "./commands/eval.ts";
 import { generate, generateHelp } from "./commands/generate.ts";
@@ -10,6 +11,7 @@ import { CliError } from "./context.ts";
 type Command = { run: (args: readonly string[]) => Promise<number>; help: string };
 
 const commands: Record<string, Command> = {
+  ai: { run: ai, help: aiHelp },
   catalog: { run: catalog, help: catalogHelp },
   eval: { run: evalCmd, help: evalHelp },
   generate: { run: generate, help: generateHelp },

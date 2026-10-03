@@ -3,12 +3,12 @@ import {
   archetypeName,
   type Bank,
   encodeShare,
+  engineVersion,
   playlistTitle,
   type SessionState,
   type ShareOp,
   TWEAK_AXES,
   type TweakSteps,
-  tasteVector,
   traits,
   viewSession,
 } from "@abtune/engine";
@@ -21,15 +21,21 @@ import type {
 } from "../../api-types.ts";
 import { PersonalityCard } from "../components/PersonalityCard.tsx";
 import { PlaylistRows, SkeletonRows } from "../components/PlaylistRows.tsx";
-import { ExportMenu, Feedback, TweakBar } from "../components/ResultActions.tsx";
+import { ExportMenu, Feedback, TextTweak, TweakBar } from "../components/ResultActions.tsx";
 import { ShareButton } from "../components/ShareSheet.tsx";
 import { SpotifyButton } from "../components/SpotifySheet.tsx";
 import type { CardInput } from "../lib/card-image.ts";
 import { download } from "../lib/download.ts";
+import { aiView, failureOf, postTextTweak } from "../state/ai.ts";
 import { MORE_LENGTH, postPlaylist } from "../state/api.ts";
-import type { AppAction } from "../state/app.ts";
+import type { AiState, AppAction } from "../state/app.ts";
 import { recordVote, type Vote, voteFor } from "../state/feedback.ts";
-import { type HealthState, type PlaylistState, usePlaylist } from "../state/hooks.ts";
+import {
+  type HealthState,
+  type PlaylistState,
+  useAiInterpret,
+  usePlaylist,
+} from "../state/hooks.ts";
 import { applyEdit, editRequest } from "../state/share.ts";
 import { t, tweakSummary } from "../strings.ts";
 
@@ -98,6 +104,7 @@ export function PlaylistBody({
   tracks,
   onSwap,
   swapping,
+  notes,
 }: {
   state: PlaylistState;
   length: number;
@@ -106,6 +113,8 @@ export function PlaylistBody({
   tracks: readonly PlaylistTrackOut[];
   onSwap?: (i: number) => void;
   swapping?: number | null;
+  /** AI rerank's "why" per track id. */
+  notes?: Readonly<Record<string, string>>;
 }) {
   switch (state.kind) {
     case "ready":
@@ -114,7 +123,7 @@ export function PlaylistBody({
           {state.data.warnings.includes("catalog_exhausted") && (
             <p className="text-sm text-text-3">{t.result.shortPlaylist}</p>
           )}
-          <PlaylistRows tracks={tracks} onSwap={onSwap} swapping={swapping} />
+          <PlaylistRows tracks={tracks} onSwap={onSwap} swapping={swapping} notes={notes} />
         </>
       );
     case "loading":
@@ -160,11 +169,16 @@ export function PlaylistBody({
   }
 }
 
-/** Result (HANDOFF §4.3): personality card, playlist preview, export, tweak, reshuffle, 10 more. */
+/**
+ * Result (HANDOFF §4.3): personality card, playlist preview, export, tweak, reshuffle, 10 more. With
+ * AI on (§10), T1 reads the answers first (the playlist waits, or the listener skips it), T3 adds a
+ * free-text tweak, and T2 may pick the songs, each falling back to the classic engine with a notice.
+ */
 export function Result({
   bank,
   session,
   tweaks,
+  ai,
   health,
   refreshHealth,
   dispatch,
@@ -174,6 +188,8 @@ export function Result({
   bank: Bank;
   session: SessionState;
   tweaks: TweakSteps;
+  /** The session's AI state (null: AI off). */
+  ai: AiState | null;
   health: HealthState;
   refreshHealth: () => void;
   dispatch: (a: AppAction) => void;
@@ -182,8 +198,42 @@ export function Result({
   onSpotifySeen: () => void;
 }) {
   const view = useMemo(() => viewSession(bank, session), [bank, session]);
-  const taste = useMemo(() => tasteVector(bank, view.profile), [bank, view.profile]);
-  const { state, retry } = usePlaylist(bank, session, tweaks, health, refreshHealth);
+  const serverAi = health.kind === "ok" ? health.health.ai : null;
+  const aiv = useMemo(
+    () => aiView(bank, session, ai, serverAi?.enabled ?? false),
+    [bank, session, ai, serverAi?.enabled],
+  );
+  useAiInterpret(bank, session, ai, aiv, dispatch);
+  // The card taste: the engine's profile, with T1's adjustment when the AI made one.
+  const taste = aiv.card;
+  const rerank = aiv.on && serverAi?.rerank === true;
+  const context = useMemo(
+    () => ({
+      ...(aiv.title ? { title: aiv.title } : {}),
+      ...(aiv.blurb ? { blurb: aiv.blurb } : {}),
+    }),
+    [aiv.title, aiv.blurb],
+  );
+  const { state, retry } = usePlaylist(bank, session, tweaks, health, refreshHealth, {
+    hold: aiv.pending,
+    base: aiv.base,
+    rerank,
+    context,
+  });
+  const [textBusy, setTextBusy] = useState(false);
+  const [textError, setTextError] = useState<string | null>(null);
+  const onText = async (text: string) => {
+    setTextBusy(true);
+    setTextError(null);
+    const r = await postTextTweak({ engine_version: engineVersion(bank), text, taste });
+    setTextBusy(false);
+    if (r.ok)
+      dispatch({
+        type: "ai_text",
+        text: { text, adjust: r.data.adjust, title: r.data.title, blurb: r.data.blurb },
+      });
+    else setTextError(t.ai.textFailed[failureOf(r.error)] ?? null);
+  };
   const ready = state.kind === "ready" ? state : null;
   const seed = ready?.data.seed ?? null;
   const [votes, setVotes] = useState<Record<string, Vote>>({});
@@ -204,7 +254,7 @@ export function Result({
     if (!ready || pending !== null) return;
     setPending(op.op === "more" ? "more" : op.index);
     setFailed(false);
-    const req = editRequest(bank.dimensions, taste, tweaks, ready.request, shown, ops, op);
+    const req = editRequest(bank.dimensions, aiv.base, tweaks, ready.request, shown, ops, op);
     const r = await postPlaylist(req);
     if (!r.ok || r.data.tracks.length === 0) setFailed(true);
     else
@@ -218,12 +268,15 @@ export function Result({
   const onMore = () => edit({ op: "more" });
   const onSwap = (i: number) => edit({ op: "swap", index: i });
 
-  // The title names the listener's own (untweaked) personality; tweaks go in the description.
-  const title = playlistTitle(bank.dimensions, taste, view.answered, seed ?? "0000");
+  // The title names the listener's own (untweaked) personality; tweaks go in the description. The
+  // AI's title, when it made one, replaces it.
+  const engineTitle = playlistTitle(bank.dimensions, taste, view.answered, seed ?? "0000");
+  const title = { ...engineTitle, title: aiv.title ?? engineTitle.title };
   const names = tweakNames(tweaks);
-  const description = [title.description, names.length ? t.result.tweaked(names) : ""]
+  const meta = [title.description, names.length ? t.result.tweaked(names) : ""]
     .filter(Boolean)
     .join(" · ");
+  const description = [aiv.blurb ?? "", meta].filter(Boolean).join(" · ");
   const license = health.kind === "ok" ? health.health.catalog?.license : null;
   const name = archetypeName(traits(bank.dimensions, taste));
   const shareCode = useMemo(
@@ -238,9 +291,13 @@ export function Result({
             engineVersion: ready.data.engine_version,
             catalogVersion: ready.data.catalog_version,
             ops,
+            ...(aiv.textAdjust ? { adjust: aiv.textAdjust } : {}),
+            ...(ready.data.picks ? { picks: ready.data.picks } : {}),
+            ...(aiv.shareTitle ? { title: aiv.shareTitle } : {}),
+            ...(aiv.shareBlurb ? { blurb: aiv.shareBlurb } : {}),
           })
         : null,
-    [bank, taste, tweaks, ready, view.answered, ops],
+    [bank, taste, tweaks, ready, view.answered, ops, aiv],
   );
   const card = useMemo<CardInput | null>(
     () =>
@@ -276,6 +333,9 @@ export function Result({
     setVotes((cur) => ({ ...cur, [ready.data.seed]: v }));
   };
   const busy = state.kind === "loading";
+  const interpretFailure = aiv.interpret?.status === "failed" ? aiv.interpret.reason : null;
+  const rerankFailed =
+    ready?.data.rerank !== undefined && ready.data.rerank !== "done" && ready.data.rerank !== "off";
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-2xl flex-col gap-6 px-4 pb-12 pt-4">
@@ -309,8 +369,45 @@ export function Result({
           <h2 id="playlist" className="mt-1 text-2xl font-black leading-tight text-balance">
             {title.title}
           </h2>
-          <p className="mt-1 text-sm text-text-3">{seed ? description : " "}</p>
+          {aiv.blurb && <p className="mt-1 text-text-2">{aiv.blurb}</p>}
+          <p className="mt-1 text-sm text-text-3">
+            {seed ? meta : " "}
+            {aiv.interpret?.status === "done" && (
+              <span className="ms-2 rounded-full bg-profile/15 px-2 py-0.5 text-xs font-bold text-profile">
+                {t.ai.madeBy}
+              </span>
+            )}
+          </p>
         </header>
+
+        {aiv.pending && (
+          <Notice
+            action={{
+              label: t.ai.skip,
+              onClick: () =>
+                dispatch({ type: "ai_interpret", key: aiv.key, result: { status: "skipped" } }),
+            }}
+          >
+            <span className="animate-pulse">{t.ai.reading}</span>
+          </Notice>
+        )}
+        {interpretFailure && (
+          <p
+            className="flex flex-wrap items-center gap-2 rounded-2xl bg-surface px-4 py-3 text-sm text-text-2"
+            role="status"
+          >
+            <span className="flex-1">{t.ai.failed[interpretFailure]}</span>
+            {interpretFailure !== "off" && (
+              <button
+                type="button"
+                className="rounded-lg bg-raised px-3 py-1 font-semibold text-text hover:bg-line"
+                onClick={() => dispatch({ type: "ai_retry" })}
+              >
+                {t.ai.retry}
+              </button>
+            )}
+          </p>
+        )}
 
         <div className="flex flex-wrap gap-2">
           <SpotifyButton
@@ -349,6 +446,28 @@ export function Result({
           onTweak={(id) => dispatch({ type: "tweak", id })}
           onReset={() => dispatch({ type: "reset_tweaks" })}
         />
+        {aiv.on && (
+          <TextTweak
+            active={ai?.text?.text ?? null}
+            busy={textBusy}
+            error={textError}
+            onSubmit={onText}
+            onClear={() => {
+              setTextError(null);
+              dispatch({ type: "ai_text", text: null });
+            }}
+          />
+        )}
+        {busy && rerank && !aiv.pending && (
+          <p className="animate-pulse text-sm text-text-3" role="status">
+            {t.ai.picking}
+          </p>
+        )}
+        {rerankFailed && (
+          <p className="text-sm text-text-3" role="status">
+            {t.ai.rerankFailed}
+          </p>
+        )}
 
         <PlaylistBody
           state={state}
@@ -357,6 +476,7 @@ export function Result({
           tracks={shown}
           onSwap={onSwap}
           swapping={typeof pending === "number" ? pending : null}
+          notes={ready?.data.notes}
         />
         {ready && (
           <div className="flex flex-col items-center gap-2">

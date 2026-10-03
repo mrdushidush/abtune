@@ -19,6 +19,7 @@ import {
   sessionSeed,
   sha256Hex,
   type TasteParams,
+  type TasteVector,
   tasteVector,
 } from "@abtune/engine";
 import { personaAnswerer } from "./answerer.ts";
@@ -135,22 +136,28 @@ function meanMetrics(ms: readonly PlaylistMetrics[]): PlaylistMetrics {
   return out;
 }
 
-/** Generate and score every (persona, mode) × salt playlist. */
+/**
+ * Generate and score every (persona, mode) × salt playlist. `tasteOf` replaces a quiz's taste
+ * vector (the AI eval applies T1's adjustment there).
+ */
 export function evaluateQuizzes(
   bank: Bank,
   columns: CatalogColumns,
   quizzes: readonly PersonaQuiz[],
   settings: EvalSettings,
   recog?: Recognition,
+  tasteOf?: (quiz: PersonaQuiz, taste: TasteVector) => TasteVector,
 ): PersonaModeResult[] {
   const tables = new Map<string, ReturnType<typeof fitTables>>();
-  return quizzes.map(({ persona, mode, state, view }) => {
+  return quizzes.map((quiz) => {
+    const { persona, mode, state, view } = quiz;
     let t = tables.get(persona.id);
     if (!t) {
       t = fitTables(columns, persona);
       tables.set(persona.id, t);
     }
-    const taste = tasteVector(bank, view.profile, settings.taste);
+    const engineTaste = tasteVector(bank, view.profile, settings.taste);
+    const taste = tasteOf ? tasteOf(quiz, engineTaste) : engineTaste;
     const playlists: PlaylistRun[] = [];
     for (let salt = 0; salt < settings.salts; salt++) {
       const seed = sessionSeed(bank, { ...state, seed_salt: salt }, columns.version);

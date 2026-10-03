@@ -80,6 +80,7 @@ export function App() {
       bank={bank}
       session={state.session}
       tweaks={state.tweaks}
+      ai={state.ai}
       health={health}
       refreshHealth={refreshHealth}
       dispatch={dispatch}

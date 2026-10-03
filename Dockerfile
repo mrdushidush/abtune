@@ -9,6 +9,7 @@ WORKDIR /app
 FROM base AS manifests
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/engine/package.json packages/engine/
+COPY packages/ai/package.json packages/ai/
 COPY packages/bank/package.json packages/bank/
 COPY packages/cli/package.json packages/cli/
 COPY packages/catalog/package.json packages/catalog/
@@ -27,6 +28,9 @@ ENV NODE_ENV=production HOST=0.0.0.0 PORT=8787
 RUN pnpm install --frozen-lockfile --prod --filter "@abtune/web..." --filter "@abtune/cli..."
 # Node 24 runs the TypeScript sources directly (type stripping); no server bundle step.
 COPY packages/engine/src packages/engine/src
+# The AI layer's prompts are versioned files read at runtime (HANDOFF §10.5).
+COPY packages/ai/src packages/ai/src
+COPY packages/ai/prompts packages/ai/prompts
 COPY packages/bank/src packages/bank/src
 COPY packages/catalog/src packages/catalog/src
 COPY packages/connectors/src packages/connectors/src

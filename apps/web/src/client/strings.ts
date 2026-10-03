@@ -81,6 +81,45 @@ export const t = {
     swapLabel: (title: string) => `Swap ${title} for another song`,
     data: "Music data",
   },
+  ai: {
+    // Setup (HANDOFF §4.1 "AI on/off").
+    legend: "AI",
+    setupTitle: "AI touches",
+    setupAbout: (model: string) =>
+      `An AI model on this server (${model}) reads your answers and fine-tunes the playlist. Nothing is stored.`,
+    sensitiveTitle: "Include sensitive answers",
+    sensitiveAbout:
+      "Spicy questions marked sensitive (like politics) are never sent unless you tick this. They would go to this server's AI only, are not stored, and are never in share links.",
+    // Result.
+    reading: "The AI is reading your answers…",
+    skip: "Skip AI",
+    failed: {
+      off: "AI is off on this server, so this is the classic playlist.",
+      timeout: "The AI took too long, so this is the classic playlist.",
+      unreachable: "The AI server didn't answer, so this is the classic playlist.",
+      invalid: "The AI's answer didn't make sense, so this is the classic playlist.",
+      oversized: "The AI's answer didn't make sense, so this is the classic playlist.",
+    } as Record<string, string>,
+    retry: "Ask again",
+    madeBy: "Fine-tuned by AI",
+    rerankFailed: "The AI couldn't pick from the shortlist this time; these are the classic picks.",
+    picking: "The AI is picking your songs…",
+    // T3: the free-text tweak.
+    textLabel: "Describe it",
+    textPlaceholder: "rainy Sunday, a 5k run, 90s road trip…",
+    textGo: "Tweak",
+    textBusy: "Thinking…",
+    textActive: (text: string) => `“${text}”`,
+    textClear: "Remove this tweak",
+    textFailed: {
+      off: "AI is off on this server.",
+      timeout: "The AI took too long. Try again?",
+      unreachable: "The AI server didn't answer. Try again?",
+      invalid: "The AI couldn't make sense of that. Try other words?",
+      oversized: "The AI couldn't make sense of that. Try other words?",
+    } as Record<string, string>,
+    why: "Why it's here",
+  },
   share: {
     button: "Share",
     title: "Share your playlist",

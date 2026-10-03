@@ -14,6 +14,15 @@ import {
 } from "@abtune/engine";
 import type { ApiError, Health, PlaylistRequest, PlaylistResponse } from "../../api-types.ts";
 
+/** The AI layer's part of a first request (HANDOFF §10): see `aiView`. */
+export interface AiRequestParts {
+  /** The playlist base: the profile with the AI adjustments (default: the engine profile). */
+  readonly base?: TasteVector;
+  /** Ask for T2 rerank, with the AI title and blurb as context. */
+  readonly rerank?: boolean;
+  readonly context?: { readonly title?: string; readonly blurb?: string };
+}
+
 /**
  * The POST /api/playlist body for a finished session. Only the quantized (and tweaked) profile, the
  * seed and versions go to the server: never the answer log, so sensitive answers stay on the
@@ -24,10 +33,11 @@ export function buildPlaylistRequest(
   session: SessionState,
   tweaks: TweakSteps,
   catalogVersion: string,
+  ai: AiRequestParts = {},
 ): PlaylistRequest {
-  return firstRequest(
+  const req = firstRequest(
     bank.dimensions,
-    tasteVector(bank, viewSession(bank, session).profile),
+    ai.base ?? tasteVector(bank, viewSession(bank, session).profile),
     tweaks,
     {
       seed: sessionSeed(bank, session, catalogVersion),
@@ -36,6 +46,9 @@ export function buildPlaylistRequest(
       catalog_version: catalogVersion,
     },
   );
+  if (!ai.rerank) return req;
+  const context = ai.context && (ai.context.title || ai.context.blurb) ? ai.context : null;
+  return { ...req, rerank: true, ...(context ? { context } : {}) };
 }
 
 /** The first playlist for a (base) taste and its tweaks: a session's, or a share link's. */

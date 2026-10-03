@@ -18,16 +18,20 @@ const action =
  * Playlist preview rows: genre tile, title / artist, year. Track text uses `unicode-bidi: plaintext`:
  * a Hebrew title reads right-to-left. Alignment is set from the UI's direction, because `start`
  * would follow each title's own direction under plaintext. The ⋯ button opens a row's actions:
- * play it on YouTube or Spotify (search links), swap it, or open it on MusicBrainz.
+ * play it on YouTube or Spotify (search links), swap it, or open it on MusicBrainz. With AI rerank
+ * on, a row can carry the model's "why" (HANDOFF §4.3).
  */
 export function PlaylistRows({
   tracks,
   dim,
   onSwap,
   swapping,
+  notes,
 }: {
   tracks: readonly PlaylistTrackOut[];
   dim?: boolean;
+  /** "Why" per track id (AI rerank). */
+  notes?: Readonly<Record<string, string>>;
   /** Swap row `i` for another song; omit to hide the button. */
   onSwap?: (i: number) => void;
   /** Row being swapped right now. */
@@ -61,6 +65,13 @@ export function PlaylistRows({
                 <span className="block truncate text-sm text-text-2 text-left [unicode-bidi:plaintext] rtl:text-right">
                   {tr.artist}
                 </span>
+                {notes?.[tr.track_id] && (
+                  <span className="mt-0.5 block text-xs leading-snug text-profile">
+                    <span className="sr-only">{t.ai.why}: </span>
+                    <span aria-hidden="true">💡 </span>
+                    {notes[tr.track_id]}
+                  </span>
+                )}
               </span>
               <span className="shrink-0 text-end text-xs text-text-3">
                 {tr.year ?? (tr.decade ? decadeLabel(tr.decade) : "")}

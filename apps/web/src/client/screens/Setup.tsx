@@ -41,7 +41,45 @@ function Chip({
 
 const legend = "mb-3 text-sm font-bold uppercase tracking-widest text-text-3";
 
-/** Landing + setup (HANDOFF §4.1): mode, playlist length, packs. */
+/** An on/off row: a title, a line about it, and a switch (a real checkbox underneath). */
+function SwitchRow({
+  title,
+  about,
+  on,
+  onToggle,
+}: {
+  title: string;
+  about?: string;
+  on: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <label className="flex cursor-pointer items-center gap-3 rounded-2xl bg-surface px-4 py-3">
+      <span className="flex-1">
+        <span className="block font-bold">{title}</span>
+        {about && <span className="block text-sm text-text-3">{about}</span>}
+      </span>
+      <input
+        type="checkbox"
+        role="switch"
+        aria-checked={on}
+        checked={on}
+        onChange={onToggle}
+        className="peer sr-only"
+      />
+      <span
+        aria-hidden="true"
+        className="relative h-7 w-12 shrink-0 rounded-full bg-line transition-colors peer-checked:bg-profile peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-text"
+      >
+        <span
+          className={`absolute top-1 size-5 rounded-full bg-text transition-[inset-inline-start] ${on ? "start-6" : "start-1"}`}
+        />
+      </span>
+    </label>
+  );
+}
+
+/** Landing + setup (HANDOFF §4.1): mode, playlist length, packs, and AI when the server has it. */
 export function Setup({
   bank,
   last,
@@ -60,6 +98,12 @@ export function Setup({
   const toggle = (p: string) =>
     setPacks((cur) => (cur.includes(p) ? cur.filter((x) => x !== p) : [...cur, p].sort()));
   const catalog = health.kind === "ok" ? health.health.catalog : null;
+  const ai = health.kind === "ok" && health.health.ai.enabled ? health.health.ai : null;
+  // AI is off by default (§10.1); the sensitive opt-in is per session, never remembered (§10.4).
+  const [aiOn, setAiOn] = useState(last?.ai ?? false);
+  const [aiSensitive, setAiSensitive] = useState(false);
+  const sensitivePossible = bank.questions.some((q) => q.sensitive && packs.includes(q.pack));
+  const offerSensitive = ai?.sensitive_opt_in === true && aiOn && sensitivePossible;
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-8 px-4 pb-10 pt-12">
@@ -96,44 +140,52 @@ export function Setup({
       <fieldset>
         <legend className={legend}>{t.setup.packs}</legend>
         <ul className="flex flex-col gap-2">
-          {optional.map((p) => {
-            const on = packs.includes(p);
-            return (
-              <li key={p}>
-                <label className="flex cursor-pointer items-center gap-3 rounded-2xl bg-surface px-4 py-3">
-                  <span className="flex-1">
-                    <span className="block font-bold">{packName(p)}</span>
-                    {PACKS[p] && (
-                      <span className="block text-sm text-text-3">{PACKS[p].about}</span>
-                    )}
-                  </span>
-                  <input
-                    type="checkbox"
-                    role="switch"
-                    aria-checked={on}
-                    checked={on}
-                    onChange={() => toggle(p)}
-                    className="peer sr-only"
-                  />
-                  <span
-                    aria-hidden="true"
-                    className="relative h-7 w-12 shrink-0 rounded-full bg-line transition-colors peer-checked:bg-profile peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-text"
-                  >
-                    <span
-                      className={`absolute top-1 size-5 rounded-full bg-text transition-[inset-inline-start] ${on ? "start-6" : "start-1"}`}
-                    />
-                  </span>
-                </label>
-              </li>
-            );
-          })}
+          {optional.map((p) => (
+            <li key={p}>
+              <SwitchRow
+                title={packName(p)}
+                about={PACKS[p]?.about}
+                on={packs.includes(p)}
+                onToggle={() => toggle(p)}
+              />
+            </li>
+          ))}
         </ul>
       </fieldset>
+
+      {ai && (
+        <fieldset className="flex flex-col gap-2">
+          <legend className={legend}>{t.ai.legend}</legend>
+          <SwitchRow
+            title={t.ai.setupTitle}
+            about={t.ai.setupAbout(ai.model ?? "")}
+            on={aiOn}
+            onToggle={() => setAiOn((x) => !x)}
+          />
+          {offerSensitive && (
+            <SwitchRow
+              title={t.ai.sensitiveTitle}
+              about={t.ai.sensitiveAbout}
+              on={aiSensitive}
+              onToggle={() => setAiSensitive((x) => !x)}
+            />
+          )}
+        </fieldset>
+      )}
 
       <button
         type="button"
         className="min-h-14 rounded-2xl bg-gradient-to-r from-side-a to-side-b text-lg font-black text-ink shadow-[0_0_40px_-8px] shadow-profile/60 transition-transform active:scale-[0.98]"
-        onClick={() => onStart({ mode, length, packs: [...new Set(["core", ...packs])].sort() })}
+        onClick={() =>
+          onStart({
+            mode,
+            length,
+            packs: [...new Set(["core", ...packs])].sort(),
+            ...(ai && aiOn
+              ? { ai: true, ...(offerSensitive && aiSensitive ? { aiSensitive: true } : {}) }
+              : {}),
+          })
+        }
       >
         {t.setup.start} →
       </button>

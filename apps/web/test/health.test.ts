@@ -22,6 +22,7 @@ describe("API", async () => {
       questions: 336,
       packs: { core: 105, context: 17, deep: 112, vibe: 73, spicy: 9, il: 20 },
       catalog: null,
+      ai: { enabled: false, rerank: false, sensitive_opt_in: false, model: null },
     });
   });
 

@@ -7,6 +7,7 @@ import {
   type TweakSteps,
 } from "@abtune/engine";
 import { useEffect, useRef, useState } from "react";
+import { MAX_AI_TEXT } from "../../api-types.ts";
 import type { Vote } from "../state/feedback.ts";
 import { EXPORT_LABELS, TWEAK_LABELS, TWEAK_PAIRS, t } from "../strings.ts";
 
@@ -80,6 +81,80 @@ export function TweakBar({
         })}
       </div>
     </section>
+  );
+}
+
+/**
+ * The free-text tweak (HANDOFF §4.3, T3), when AI is on: "rainy Sunday", "for a 5k run". One is in
+ * effect at a time; it stacks with the preset tweaks above.
+ */
+export function TextTweak({
+  active,
+  busy,
+  error,
+  onSubmit,
+  onClear,
+}: {
+  /** The request in effect. */
+  active: string | null;
+  busy: boolean;
+  error: string | null;
+  onSubmit: (text: string) => void;
+  onClear: () => void;
+}) {
+  const [text, setText] = useState("");
+  const value = text.trim();
+  return (
+    <form
+      className="flex flex-col gap-2"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (value && !busy) onSubmit(value);
+      }}
+    >
+      <label htmlFor="ai-text" className="text-sm font-bold text-text-2">
+        {t.ai.textLabel}
+      </label>
+      <div className="flex gap-2">
+        <input
+          id="ai-text"
+          value={text}
+          maxLength={MAX_AI_TEXT}
+          placeholder={t.ai.textPlaceholder}
+          autoComplete="off"
+          className="min-h-11 min-w-0 flex-1 rounded-xl border-2 border-line bg-surface px-3 text-text placeholder:text-text-3 focus:border-profile focus:outline-none"
+          onChange={(e) => setText(e.target.value)}
+        />
+        <button
+          type="submit"
+          disabled={busy || !value}
+          className="min-h-11 shrink-0 rounded-xl bg-raised px-4 font-bold text-text hover:bg-line disabled:opacity-40"
+        >
+          {busy ? t.ai.textBusy : t.ai.textGo}
+        </button>
+      </div>
+      {active && (
+        <div className="flex items-center gap-2">
+          <span className="min-w-0 truncate rounded-full bg-profile/15 px-3 py-1 text-sm font-semibold text-text [unicode-bidi:plaintext]">
+            {t.ai.textActive(active)}
+          </span>
+          <button
+            type="button"
+            aria-label={t.ai.textClear}
+            title={t.ai.textClear}
+            className="flex size-8 shrink-0 items-center justify-center rounded-lg text-text-3 hover:bg-raised hover:text-text"
+            onClick={onClear}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+      {error && (
+        <p role="status" className="text-sm text-text-3">
+          {error}
+        </p>
+      )}
+    </form>
   );
 }
 

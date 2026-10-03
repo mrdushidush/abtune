@@ -1,4 +1,10 @@
-import { P_SCALE, TARGET_SCALE, type TasteVector, validateTaste, WEIGHT_SCALE } from "./taste.ts";
+import {
+  quantizeDistribution,
+  TARGET_SCALE,
+  type TasteVector,
+  validateTaste,
+  WEIGHT_SCALE,
+} from "./taste.ts";
 import type { Dimensions } from "./types.ts";
 
 /**
@@ -78,23 +84,6 @@ function shiftMass(p: readonly number[], dir: 1 | -1, s: number): number[] {
     if (j >= 0 && j < p.length) out[j] = (out[j] as number) + x * s;
     else out[i] = (out[i] as number) + x * s; // the end decade has nowhere to go
   });
-  return out;
-}
-
-/** Distribution → integers summing to P_SCALE (largest remainder, ties by index). */
-function quantizeDistribution(p: readonly number[]): number[] {
-  const total = p.reduce((a, b) => a + b, 0);
-  const exact = p.map((x) => (x / total) * P_SCALE);
-  const out = exact.map(Math.floor);
-  let left = P_SCALE - out.reduce((a, b) => a + b, 0);
-  const order = exact
-    .map((x, i) => ({ i, r: x - Math.floor(x) }))
-    .sort((a, b) => b.r - a.r || a.i - b.i);
-  for (const { i } of order) {
-    if (left <= 0) break;
-    out[i] = (out[i] as number) + 1;
-    left--;
-  }
   return out;
 }
 

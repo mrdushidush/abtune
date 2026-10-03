@@ -1,0 +1,19 @@
+{
+  "name": "@abtune/ai",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ABTune's optional AI layer (HANDOFF §10): local OpenAI-compatible models behind guardrails.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./mock": "./src/mock.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p . && tsc -p tsconfig.test.json"
+  },
+  "dependencies": {
+    "@abtune/engine": "workspace:*",
+    "zod": "^4.6.5"
+  }
+}

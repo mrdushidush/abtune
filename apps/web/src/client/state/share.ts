@@ -6,6 +6,7 @@ import {
   decodeShare,
   editStep,
   encodeShare,
+  playlistBase,
   type ShareData,
   type ShareOp,
   type TasteVector,
@@ -49,7 +50,9 @@ export type Replay =
 /**
  * Rebuild a shared playlist: the first request, then each edit in order, exactly as the result
  * screen made them. `versions` are what this server runs; when they differ from the link's, the
- * same taste and seed go to the current engine and catalog (the songs may differ).
+ * same taste and seed go to the current engine and catalog (the songs may differ). The AI's part
+ * travels as results (HANDOFF §9.5): the free-text adjustment is applied here and a rerank's picks
+ * are replayed by the server, so no AI is needed.
  */
 export async function replayShare(
   dims: Dimensions,
@@ -57,11 +60,13 @@ export async function replayShare(
   versions: { readonly engine_version: string; readonly catalog_version: string },
   post: Post,
 ): Promise<Replay> {
-  const first = firstRequest(dims, data.taste, data.tweaks, {
+  const base = playlistBase(dims, data.taste, data.adjust);
+  const plain = firstRequest(dims, base, data.tweaks, {
     seed: data.seed,
     length: data.length,
     ...versions,
   });
+  const first: PlaylistRequest = data.picks ? { ...plain, picks: data.picks } : plain;
   const r = await post(first);
   if (!r.ok) return { ok: false, result: r };
   let tracks: PlaylistTrackOut[] = [...r.data.tracks];
@@ -72,7 +77,7 @@ export async function replayShare(
       skipped++;
       continue;
     }
-    const e = await post(editRequest(dims, data.taste, data.tweaks, first, tracks, done, op));
+    const e = await post(editRequest(dims, base, data.tweaks, first, tracks, done, op));
     if (!e.ok || e.data.tracks.length === 0) {
       skipped++;
       continue;

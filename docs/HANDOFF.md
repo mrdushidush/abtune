@@ -486,6 +486,8 @@ The archetype comes from four binary traits:
 
 **Local target:** must work well with a ~30B-class MoE quant on a 16 GB GPU through llama.cpp server. Keep prompts < 4k tokens, use schema-constrained JSON, temperature 0 and a fixed seed.
 
+**Updated in M7 (2026-10-03, owner decision, see DECISIONS.md):** v0.1 builds `openai_compat` and `none` only (plus a test mock). `openrouter`, Jev (§10.3) and `anthropic` are not built; the layer stays pluggable for them. Rerank (T2) has its own switch (`RERANK_BACKEND=llm`), off by default. A rerank prompt with a 150-song shortlist is ~4.5k tokens.
+
 ### 10.2 Tasks
 
 | Task | When | Output (validated, clamped) |
@@ -496,6 +498,8 @@ The archetype comes from four binary traits:
 | **T4 Enrich** | offline catalog build, tier 4 | per-track scalar estimates |
 
 ### 10.3 Jev mapping (when `JEV_ENABLED=true`)
+
+*Not built in v0.1 (owner decision 2026-10-03: local models only). Kept as the design for a later adapter.*
 
 - **T1:** one call. `state` = JSON of answered pairs (`"chose 'Bon Jovi' over 'Britney Spears'"`) + profile summary. Questions:
   - One **Score** (5 described levels) per scalar dim
@@ -618,6 +622,8 @@ ALLOW_SENSITIVE_TO_AI=false
 SPICY_PACK_DEFAULT=off
 ```
 
+**Updated in M7 (2026-10-03):** `AI_PROVIDER` is `none | openai_compat`; `OPENROUTER_API_KEY` and `JEV_*` are dropped; `AI_TIMEOUT_MS` and `AI_REASONING_EFFORT` are added; `RERANK_BACKEND` is `none | llm`. `ALLOW_SENSITIVE_TO_AI` lets the setup screen offer the per-session opt-in (§10.4). `.env.example` is the reference.
+
 ---
 
 ## 15. Milestones (each ends green in CI with its acceptance checks)
@@ -631,7 +637,7 @@ SPICY_PACK_DEFAULT=off
 | **M4** | Web UI: setup, quiz (keyboard/swipe), result, export | Usable end-to-end on a phone and desktop |
 | **M5** | Spotify connector + setup wizard + docs | §16 #7 passes against a real dev-mode app |
 | **M6** | Share card PNG + share links | Link reproduces an identical playlist in a fresh browser |
-| **M7** | AI layer: providers, T1–T3, Jev, cache, privacy gates · T4 script | §16 #8, #9 pass with a mock provider; manual check with local llama.cpp + Jev |
+| **M7** | AI layer: providers, T1–T3, Jev, cache, privacy gates · T4 script | §16 #8, #9 pass with a mock provider; manual check with local llama.cpp + Jev *(2026-10-03: local models only, checked with LM Studio; no Jev, see §10.1)* |
 | **M8** | MCP server | §16 #11 |
 | **M9** | v0.1 release: README with GIF, SELF_HOSTING, QUESTION_AUTHORING, demo video script | Fresh-machine install by following the docs only |
 
