@@ -19,8 +19,8 @@ describe("API", async () => {
       name: "ABTune",
       version: "9.9.9",
       engine_version: engineVersion(bank),
-      questions: 345,
-      packs: { core: 109, context: 18, deep: 112, vibe: 77, spicy: 9, il: 20 },
+      questions: 336,
+      packs: { core: 105, context: 17, deep: 112, vibe: 73, spicy: 9, il: 20 },
       catalog: null,
     });
   });

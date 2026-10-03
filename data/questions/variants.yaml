@@ -5,6 +5,7 @@
 # A variant keeps its family's fx, pack and pri exactly (only the words, artists or songs change), so
 # it can't change what an answer means. The session's quiz seed picks one variant per family and
 # steers away from the previous session's cards. See more.yaml for the rules.
+# Owner review (2026-10-03): 80 of the 89 kept; 9 dropped.
 
 version: 1
 
@@ -36,14 +37,6 @@ questions:
   a: { label: "1985", emoji: "🕹️", fx: { dec80: 1, synth_newwave: 0.3 } }
   b: { label: "1995", emoji: "📟", fx: { dec90: 1 } }
 
-- id: neon80s_flannel90s
-  pack: core
-  pri: 92
-  family: dec80_dec90
-  q: "Which music-video era?"
-  a: { label: "Neon 80s", emoji: "🌈", fx: { dec80: 1, synth_newwave: 0.3 } }
-  b: { label: "Flannel 90s", emoji: "🧣", fx: { dec90: 1 } }
-
 - id: hebrew_english_playlist
   pack: il
   pri: 88
@@ -60,14 +53,6 @@ questions:
   a: { label: "Israeli hits", emoji: "💃", fx: { lang_he: 1 } }
   b: { label: "International hits", emoji: "🌍", fx: { lang_en: 0.6, lang_he: -0.3 } }
 
-- id: beltitout_passheadphones
-  pack: context
-  pri: 60
-  family: karaoke_listeningparty
-  q: "Best way to share a song?"
-  a: { label: "Belt it out together", emoji: "🎤", fx: { mainstream: 0.6, vocal: 0.7, valence: 0.4 } }
-  b: { label: "Pass the headphones", emoji: "🎧", fx: { complexity: 0.4, mainstream: -0.4, vocal: -0.2 } }
-
 - id: barsingalong_albumnight
   pack: context
   pri: 60
@@ -82,20 +67,6 @@ questions:
   family: folk_funk
   a: { label: "Banjo & harmonica", emoji: "🪕", fx: { folk: 1, acoustic: 0.8 } }
   b: { label: "Slap bass & horns", emoji: "🎺", fx: { funk_disco: 1, dance: 0.8 } }
-
-- id: storytellers_grooves
-  pack: core
-  pri: 64
-  family: folk_funk
-  a: { label: "Acoustic storytellers", emoji: "📖", fx: { folk: 1, acoustic: 0.8 } }
-  b: { label: "Funk grooves", emoji: "🕺", fx: { funk_disco: 1, dance: 0.8 } }
-
-- id: twang_riffs
-  pack: core
-  pri: 74
-  family: country_metal
-  a: { label: "Twang & steel guitar", emoji: "🤠", fx: { country: 1, acoustic: 0.5 } }
-  b: { label: "Riffs & double kick", emoji: "🤘", fx: { metal: 1, intensity: 0.9 } }
 
 - id: honkytonk_metalfest
   pack: core
@@ -143,14 +114,6 @@ questions:
   q: "Music in the car is for…"
   a: { label: "Singing at full volume", emoji: "🚗", fx: { vocal: 0.8, mainstream: 0.4 } }
   b: { label: "Quiet company", emoji: "🌫️", fx: { vocal: -0.6, chill_ambient: 0.5, energy: -0.4 } }
-
-- id: sing_backdrop
-  pack: core
-  pri: 70
-  family: singalong_background
-  q: "Your music is mostly…"
-  a: { label: "Something to sing", emoji: "🎶", fx: { vocal: 0.8, mainstream: 0.4 } }
-  b: { label: "A backdrop", emoji: "🖼️", fx: { vocal: -0.6, chill_ambient: 0.5, energy: -0.4 } }
 
 - id: salsa_beachreggae
   pack: core
@@ -451,13 +414,6 @@ questions:
   a: { label: "Beach day", emoji: "🏖️", fx: { valence: 0.6, dance: 0.4 } }
   b: { label: "Snow day", emoji: "☃️", fx: { valence: -0.3, acoustic: 0.4, energy: -0.3 } }
 
-- id: rooftopbar_cobblestones
-  pack: vibe
-  pri: 46
-  family: nightlife_oldtown
-  a: { label: "Rooftop bar", emoji: "🍸", fx: { dance: 0.6, energy: 0.5 } }
-  b: { label: "Cobblestone streets", emoji: "🏘️", fx: { acoustic: 0.5, energy: -0.4 } }
-
 - id: sixstrings_synthkeys
   pack: core
   pri: 90
@@ -480,13 +436,6 @@ questions:
   a: { label: "Couch & a movie", emoji: "🛋️", fx: { energy: -0.5, acoustic: 0.3 } }
   b: { label: "Out till late", emoji: "🌃", fx: { energy: 0.6, dance: 0.6 } }
 
-- id: sparklers_lanterns
-  pack: vibe
-  pri: 50
-  family: fireworks_candles
-  a: { label: "Sparklers", emoji: "🎇", fx: { energy: 0.6, dance: 0.3 } }
-  b: { label: "Paper lanterns", emoji: "🏮", fx: { energy: -0.5, acoustic: 0.3 } }
-
 - id: neonnight_sunlitroom
   pack: vibe
   pri: 50
@@ -500,13 +449,6 @@ questions:
   family: metallica_acdc
   a: { label: "Iron Maiden", emoji: "🤘", fx: { metal: 1, intensity: 0.8, dec80: 0.5, dec90: 0.4 } }
   b: { label: "Aerosmith", emoji: "🎤", fx: { classic_rock: 1, energy: 0.7, dec70: 0.4, dec80: 0.5 } }
-
-- id: pixar_timburton
-  pack: vibe
-  pri: 56
-  family: marvel_dc
-  a: { label: "Pixar", emoji: "🎈", fx: { valence: 0.4, mainstream: 0.3 } }
-  b: { label: "Tim Burton", emoji: "🦇", fx: { valence: -0.4, intensity: 0.3 } }
 
 - id: vinivici_ofrahaza
   pack: il
@@ -648,13 +590,6 @@ questions:
   family: cats_dogs
   a: { label: "Cat nap", emoji: "😺", fx: { energy: -0.4, complexity: 0.3 } }
   b: { label: "Dog park", emoji: "🐕", fx: { energy: 0.4, valence: 0.5 } }
-
-- id: whodunit_blockbuster
-  pack: vibe
-  pri: 52
-  family: noir_superhero
-  a: { label: "Whodunit", emoji: "🔎", fx: { jazz: 0.3, valence: -0.4, energy: -0.3 } }
-  b: { label: "Blockbuster action", emoji: "💥", fx: { energy: 0.6, valence: 0.4, soundtrack: 0.2 } }
 
 - id: marvingaye_ettajames
   pack: deep
