@@ -2,10 +2,15 @@ import type { ExportFile } from "@abtune/connectors";
 
 /** Save an export through the browser (no server round trip; works offline). */
 export function download(file: ExportFile): void {
-  const url = URL.createObjectURL(new Blob([file.content], { type: file.mime }));
+  saveBlob(new Blob([file.content], { type: file.mime }), file.filename);
+}
+
+/** Save any blob as a file through a temporary link. */
+export function saveBlob(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = file.filename;
+  a.download = filename;
   a.rel = "noopener";
   document.body.append(a);
   a.click();

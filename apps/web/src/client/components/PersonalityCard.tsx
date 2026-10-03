@@ -11,10 +11,13 @@ export function PersonalityCard({
   dims,
   taste,
   answered,
+  kicker = t.result.yourPersonality,
 }: {
   dims: Dimensions;
   taste: TasteVector;
   answered: number;
+  /** The line above the archetype ("Your music personality", or a shared one). */
+  kicker?: string;
 }) {
   const [table, setTable] = useState(false);
   const tr = traits(dims, taste);
@@ -32,9 +35,7 @@ export function PersonalityCard({
     >
       <div className="flex flex-col gap-6 rounded-[26px] bg-surface px-5 py-6">
         <header className="text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-text-3">
-            {t.result.yourPersonality}
-          </p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-text-3">{kicker}</p>
           <h1 id="archetype" className="mt-1 text-4xl font-black tracking-tight text-balance">
             {archetypeName(tr)}
           </h1>

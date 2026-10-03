@@ -1,8 +1,9 @@
 import bank from "virtual:abtune-bank";
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { Quiz } from "./screens/Quiz.tsx";
 import { Result } from "./screens/Result.tsx";
 import { Setup } from "./screens/Setup.tsx";
+import { Shared } from "./screens/Shared.tsx";
 import {
   type AppAction,
   type AppState,
@@ -13,14 +14,25 @@ import {
   screenOf,
 } from "./state/app.ts";
 import { useHealth } from "./state/hooks.ts";
+import { shareCodeOf } from "./state/share.ts";
 
 const reducer = (s: AppState, a: AppAction) => appReducer(bank, s, a);
 
-/** Setup → quiz → result (HANDOFF §4.1). The screen is derived from the session, never stored. */
+/**
+ * Setup → quiz → result (HANDOFF §4.1). The screen is derived from the session, never stored. A
+ * share link (`#s=…`) shows that card and playlist instead, leaving the visitor's own session alone.
+ */
 export function App() {
   const [state, dispatch] = useReducer(reducer, bank, loadState);
   const [health, refreshHealth] = useHealth();
-  const screen = screenOf(bank, state);
+  const [shared, setShared] = useState(() => shareCodeOf(location.hash));
+  const screen = shared ? "shared" : screenOf(bank, state);
+
+  useEffect(() => {
+    const onHash = () => setShared(shareCodeOf(location.hash));
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
 
   useEffect(() => {
     saveState(bank, state);
@@ -32,6 +44,20 @@ export function App() {
     window.scrollTo(0, 0);
   }, [screen]);
 
+  if (shared)
+    return (
+      <Shared
+        bank={bank}
+        code={shared}
+        health={health}
+        refreshHealth={refreshHealth}
+        hasOwn={state.session !== null}
+        onLeave={() => {
+          history.replaceState(null, "", location.pathname + location.search);
+          setShared(null);
+        }}
+      />
+    );
   if (screen === "setup" || !state.session)
     return (
       <Setup

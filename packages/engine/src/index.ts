@@ -10,6 +10,7 @@ export * from "./rng.ts";
 export * from "./seed.ts";
 export * from "./select.ts";
 export * from "./session.ts";
+export * from "./share.ts";
 export * from "./taste.ts";
 export * from "./tweak.ts";
 export * from "./types.ts";

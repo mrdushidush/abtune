@@ -1,11 +1,15 @@
 import { type ExportFormat, type ExportPlaylist, exportPlaylist } from "@abtune/connectors";
 import {
+  archetypeName,
   type Bank,
+  encodeShare,
   playlistTitle,
   type SessionState,
+  type ShareOp,
   TWEAK_AXES,
   type TweakSteps,
   tasteVector,
+  traits,
   viewSession,
 } from "@abtune/engine";
 import { useMemo, useState } from "react";
@@ -13,18 +17,23 @@ import type { PlaylistRequest, PlaylistResponse, PlaylistTrackOut } from "../../
 import { PersonalityCard } from "../components/PersonalityCard.tsx";
 import { PlaylistRows, SkeletonRows } from "../components/PlaylistRows.tsx";
 import { ExportMenu, Feedback, TweakBar } from "../components/ResultActions.tsx";
+import { ShareButton } from "../components/ShareSheet.tsx";
+import type { CardInput } from "../lib/card-image.ts";
 import { download } from "../lib/download.ts";
-import { MORE_LENGTH, moreRequest, postPlaylist, swapRequest } from "../state/api.ts";
+import { MORE_LENGTH, postPlaylist } from "../state/api.ts";
 import type { AppAction } from "../state/app.ts";
 import { recordVote, type Vote, voteFor } from "../state/feedback.ts";
 import { type HealthState, type PlaylistState, usePlaylist } from "../state/hooks.ts";
+import { applyEdit, editRequest } from "../state/share.ts";
 import { t, tweakSummary } from "../strings.ts";
 
-function tweakNames(steps: TweakSteps): string[] {
+const NO_OPS: readonly ShareOp[] = [];
+
+export function tweakNames(steps: TweakSteps): string[] {
   return TWEAK_AXES.filter((a) => (steps[a] ?? 0) !== 0).map((a) => tweakSummary(a, steps[a] ?? 0));
 }
 
-function toExport(
+export function toExport(
   title: string,
   description: string,
   data: PlaylistResponse,
@@ -53,7 +62,7 @@ function toExport(
   };
 }
 
-function Notice({
+export function Notice({
   children,
   action,
 }: {
@@ -76,7 +85,7 @@ function Notice({
   );
 }
 
-function PlaylistBody({
+export function PlaylistBody({
   state,
   length,
   retry,
@@ -89,8 +98,8 @@ function PlaylistBody({
   retry: () => void;
   /** What's on screen when ready: the playlist plus appended pages and swaps. */
   tracks: readonly PlaylistTrackOut[];
-  onSwap: (i: number) => void;
-  swapping: number | null;
+  onSwap?: (i: number) => void;
+  swapping?: number | null;
 }) {
   switch (state.kind) {
     case "ready":
@@ -168,67 +177,35 @@ export function Result({
   const seed = ready?.data.seed ?? null;
   const [votes, setVotes] = useState<Record<string, Vote>>({});
   const vote = seed ? (votes[seed] ?? voteFor(seed)) : null;
-  // "+25 deeper cuts" pages and swaps, for the playlist they were made from (keyed by its seed).
+  // "+25 deeper cuts" pages and swaps, for the playlist they were made from (that response: a
+  // tweak keeps the seed, so the seed alone can't tell the playlists apart). A share link replays them.
   const [edits, setEdits] = useState<{
-    seed: string;
+    base: PlaylistResponse;
     tracks: readonly PlaylistTrackOut[];
-    pages: number;
-    swaps: number;
+    ops: readonly ShareOp[];
   } | null>(null);
   const [pending, setPending] = useState<"more" | number | null>(null);
   const [failed, setFailed] = useState(false);
-  const shown = ready ? (edits?.seed === ready.data.seed ? edits.tracks : ready.data.tracks) : [];
-  const progress = edits?.seed === seed ? edits : null;
-  const follow = async (
-    req: PlaylistRequest,
-    apply: (got: PlaylistTrackOut[]) => PlaylistTrackOut[],
-  ) => {
-    if (!ready) return false;
+  const current = ready && edits?.base === ready.data ? edits : null;
+  const shown = ready ? (current?.tracks ?? ready.data.tracks) : [];
+  const ops = current?.ops ?? NO_OPS;
+  const edit = async (op: ShareOp) => {
+    if (!ready || pending !== null) return;
+    setPending(op.op === "more" ? "more" : op.index);
     setFailed(false);
+    const req = editRequest(bank.dimensions, taste, tweaks, ready.request, shown, ops, op);
     const r = await postPlaylist(req);
-    if (!r.ok || r.data.tracks.length === 0) {
-      setFailed(true);
-      return false;
-    }
-    setEdits({
-      seed: ready.data.seed,
-      tracks: apply([...r.data.tracks]),
-      pages: progress?.pages ?? 0,
-      swaps: progress?.swaps ?? 0,
-    });
-    return true;
-  };
-  const onMore = async () => {
-    if (!ready || pending !== null) return;
-    setPending("more");
-    const page = (progress?.pages ?? 0) + 1;
-    const req = moreRequest(
-      bank,
-      session,
-      tweaks,
-      ready.request,
-      shown.map((x) => x.track_id),
-      page,
-    );
-    if (await follow(req, (got) => [...shown, ...got]))
-      setEdits((e) => (e ? { ...e, pages: page } : e));
+    if (!r.ok || r.data.tracks.length === 0) setFailed(true);
+    else
+      setEdits({
+        base: ready.data,
+        tracks: applyEdit(shown, op, r.data.tracks),
+        ops: [...ops, op],
+      });
     setPending(null);
   };
-  const onSwap = async (i: number) => {
-    if (!ready || pending !== null) return;
-    setPending(i);
-    const n = (progress?.swaps ?? 0) + 1;
-    const req = swapRequest(
-      ready.request,
-      shown.map((x) => x.track_id),
-      n,
-    );
-    if (
-      await follow(req, (got) => shown.map((x, k) => (k === i ? (got[0] as PlaylistTrackOut) : x)))
-    )
-      setEdits((e) => (e ? { ...e, swaps: n } : e));
-    setPending(null);
-  };
+  const onMore = () => edit({ op: "more" });
+  const onSwap = (i: number) => edit({ op: "swap", index: i });
 
   // The title names the listener's own (untweaked) personality; tweaks go in the description.
   const title = playlistTitle(bank.dimensions, taste, view.answered, seed ?? "0000");
@@ -237,6 +214,36 @@ export function Result({
     .filter(Boolean)
     .join(" · ");
   const license = health.kind === "ok" ? health.health.catalog?.license : null;
+  const name = archetypeName(traits(bank.dimensions, taste));
+  const shareCode = useMemo(
+    () =>
+      ready
+        ? encodeShare(bank.dimensions, {
+            taste,
+            tweaks,
+            seed: ready.data.seed,
+            length: ready.data.length,
+            answered: view.answered,
+            engineVersion: ready.data.engine_version,
+            catalogVersion: ready.data.catalog_version,
+            ops,
+          })
+        : null,
+    [bank, taste, tweaks, ready, view.answered, ops],
+  );
+  const card = useMemo<CardInput | null>(
+    () =>
+      ready
+        ? {
+            dims: bank.dimensions,
+            taste,
+            answered: view.answered,
+            title: title.title,
+            tracks: shown.slice(0, 3),
+          }
+        : null,
+    [bank, taste, view.answered, title.title, ready, shown],
+  );
 
   const onExport = (f: ExportFormat) => {
     if (ready)
@@ -296,6 +303,7 @@ export function Result({
 
         <div className="flex flex-wrap gap-2">
           <ExportMenu onExport={onExport} disabled={!ready} />
+          <ShareButton code={shareCode} card={card} name={name} />
           <button
             type="button"
             disabled={busy || state.kind !== "ready"}

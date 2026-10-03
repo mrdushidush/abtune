@@ -81,6 +81,36 @@ export const t = {
     swapLabel: (title: string) => `Swap ${title} for another song`,
     data: "Music data",
   },
+  share: {
+    button: "Share",
+    title: "Share your playlist",
+    close: "Close",
+    link: "Link to this card and playlist",
+    copy: "Copy link",
+    copied: "Copied",
+    copyFailed: "Select the link and copy it",
+    shareLink: "Share link…",
+    image: "Card image",
+    makingImage: "Drawing your card…",
+    saveImage: "Save image",
+    shareImage: "Share image…",
+    privacy:
+      "The link holds your taste profile and playlist settings. Your answers stay on this device.",
+    shareText: (name: string) => `My music personality: ${name}. Take the quiz and get yours.`,
+    onThePlaylist: "On the playlist",
+    tagline: "ABTune · A/B test your taste",
+    imageAlt: (name: string) => `Music personality card: ${name}`,
+    // The shared view (someone opened a link).
+    sharedKicker: "A shared music personality",
+    playlist: "The playlist",
+    takeQuiz: "Take the quiz yourself",
+    yourOwn: "Back to your own result",
+    broken:
+      "This share link is broken or was cut off. Ask for the link again, or take the quiz yourself.",
+    otherVersion:
+      "This link was made with another version of ABTune or its music catalog, so some songs may differ.",
+    shortened: "Some of the changes made to this playlist could not be repeated here.",
+  },
   footerNoCatalog: "No catalog installed yet",
   catalogLine: (version: string, tracks: number) =>
     `${version} · ${tracks.toLocaleString("en-US")} songs`,
