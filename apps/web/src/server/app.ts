@@ -1,5 +1,9 @@
 import { AI_OFF } from "@abtune/ai";
-import { type SpotifySettings, unconfiguredSpotify } from "@abtune/connectors/spotify";
+import {
+  missingSettings,
+  type SpotifySettings,
+  unconfiguredSpotify,
+} from "@abtune/connectors/spotify";
 import { type Bank, engineVersion } from "@abtune/engine";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { type Context, Hono } from "hono";
@@ -113,6 +117,7 @@ export function createApp({
       packs: packCounts(bank),
       catalog: catalogHealth(catalog),
       ai: aiHealth(ai),
+      spotify: { configured: missingSettings(spotify).length === 0 },
     } satisfies Health),
   );
 

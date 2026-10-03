@@ -12,10 +12,10 @@ docker compose up --build         # http://127.0.0.1:8787
 `/api/health` should report the catalog:
 
 ```json
-{ "catalog": { "version": "catalog-2026.09", "kind": "dev-sample", "tracks": 50000, "status": "ready" } }
+{ "catalog": { "version": "catalog-2026.09.2", "kind": "dev-sample", "tracks": 50000, "status": "ready" } }
 ```
 
-The `catalog` service runs `abtune catalog fetch`. It downloads one ~7 MB archive, checks its sha256 and every file's sha256 in the manifest, and unpacks it into `./data/catalog/`. The download URL defaults to the GitHub release; set `CATALOG_SAMPLE_URL` in `.env` to use a mirror. To install an archive you already have, put it in `data/catalog/` and run `docker compose run --rm catalog --file data/catalog/catalog-2026.09-dev50k.tar`.
+The `catalog` service runs `abtune catalog fetch`. It downloads one ~8 MB archive, checks its sha256 and every file's sha256 in the manifest, and unpacks it into `./data/catalog/`. The download URL defaults to the GitHub release; set `CATALOG_SAMPLE_URL` in `.env` to use a mirror. To install an archive you already have, put it in `data/catalog/` and run `docker compose run --rm catalog --file data/catalog/catalog-2026.09.2-dev50k.tar`.
 
 Without Docker, use `pnpm abtune catalog fetch` (or `--file <tar>`).
 

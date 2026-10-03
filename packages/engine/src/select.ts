@@ -9,16 +9,21 @@ export const HOOK_PACK = "core";
 export const VIBE_PACK = "vibe";
 export const SPICY_PACK = "spicy";
 
-export type SlotKind = "hook" | "vibe" | "spicy" | "main";
+export type SlotKind = "hook" | "vibe" | "spicy" | "explore" | "main";
+
+/** Explore slots (2026-10-04) run through this position: 5, 9, 13 and 17. */
+export const EXPLORE_UNTIL = 20;
 
 /**
  * HANDOFF §8.3 pacing for 1-based `position`:
- * 1–3 core only (the hook) · every 4th vibe · 7, 17, 27… spicy (if enabled) · otherwise main.
+ * 1–3 core only (the hook) · every 4th vibe · 7, 17, 27… spicy (if enabled) · with `explore`,
+ * 5, 9, 13, 17 explore (a genre or decade no card has touched yet) · otherwise main.
  */
-export function slotFor(position: number, spicyEnabled: boolean): SlotKind {
+export function slotFor(position: number, spicyEnabled: boolean, explore = false): SlotKind {
   if (position <= 3) return "hook";
   if (position % 4 === 0) return "vibe";
   if (spicyEnabled && position % 10 === 7) return "spicy";
+  if (explore && position % 4 === 1 && position <= EXPLORE_UNTIL) return "explore";
   return "main";
 }
 
@@ -30,9 +35,38 @@ export function inSlot(pack: string, slot: SlotKind): boolean {
       return pack === VIBE_PACK;
     case "spicy":
       return pack === SPICY_PACK;
+    case "explore":
     case "main":
       return pack !== VIBE_PACK && pack !== SPICY_PACK;
   }
+}
+
+/**
+ * The smallest |fx_a − fx_b| on a key for a card to explore it: the two sides must disagree about
+ * it ("Hip-hop or Rock?"), not both lean in (Eminem or Drake: either answer adds hip-hop).
+ */
+export const EXPLORE_MIN_DIFF = 0.5;
+
+/** Genre and decade keys that some asked card names on either side. */
+function touchedKeys(bank: Bank, log: readonly AnswerEvent[]): Set<string> {
+  const { byId } = bankIndex(bank);
+  const touched = new Set<string>();
+  for (const e of log) {
+    const q = byId.get(e.id);
+    if (!q) continue;
+    for (const k of Object.keys(q.a.fx)) touched.add(k);
+    for (const k of Object.keys(q.b.fx)) touched.add(k);
+  }
+  return touched;
+}
+
+/** Whether `q` sets a genre or decade nobody has asked about against something else. */
+function opensKey(bank: Bank, q: Question, touched: ReadonlySet<string>): boolean {
+  for (const k of [...bank.dimensions.genres, ...bank.dimensions.decades]) {
+    if (touched.has(k)) continue;
+    if (Math.abs((q.a.fx[k] ?? 0) - (q.b.fx[k] ?? 0)) >= EXPLORE_MIN_DIFF) return true;
+  }
+  return false;
 }
 
 interface UnlockRef {
@@ -144,6 +178,8 @@ export interface SelectOptions {
   readonly duel?: number;
   /** First 1-based position the duel bonus applies at. Default: DEFAULT_DUEL_FROM. */
   readonly duelFrom?: number;
+  /** Explore slots (positions 5, 9, 13, 17). Default: DEFAULT_EXPLORE. */
+  readonly explore?: boolean;
 }
 
 /**
@@ -188,6 +224,14 @@ export const DEFAULT_RAW_HOOK = true;
  */
 export const DEFAULT_DUEL = 3;
 export const DEFAULT_DUEL_FROM = 21;
+/**
+ * Explore slots (2026-10-04, after the launch review). IG gives every genre one shared
+ * uncertainty, so a card about a genre nobody has asked about is worth no more than another
+ * rock-vs-pop card: in 20 random cards hip-hop, alt/indie, blues, reggae and K-pop were asked
+ * 0–1% of the time, and their deep cards never unlocked. An explore slot asks the
+ * highest-priority card that sets an untouched genre or decade against something else.
+ */
+export const DEFAULT_EXPLORE = true;
 
 /**
  * HANDOFF §8.3 information gain:
@@ -247,6 +291,8 @@ export const VARIETY_BAND: Readonly<Record<SlotKind, number>> = {
   vibe: 0.6,
   main: 0.1,
   spicy: 0,
+  // Explore slots score by priority: a band of 15% keeps the draw among the important cards.
+  explore: 0.15,
 };
 
 /** Integer resolution of the draw's weights (the best candidate weighs this much). */
@@ -278,9 +324,15 @@ export function nextQuestion(
     (q) => familyOf.get(q.id) === q.id,
   );
   if (eligible.length === 0) return null;
-  const slot = slotFor(position, enabledPacks.has(SPICY_PACK));
+  let slot = slotFor(position, enabledPacks.has(SPICY_PACK), options.explore ?? DEFAULT_EXPLORE);
   const inPool = eligible.filter((q) => inSlot(q.pack, slot));
-  const pool = inPool.length > 0 ? inPool : eligible;
+  let pool = inPool.length > 0 ? inPool : eligible;
+  if (slot === "explore") {
+    const touched = touchedKeys(bank, log);
+    const open = pool.filter((q) => opensKey(bank, q, touched));
+    if (open.length > 0) pool = open;
+    else slot = "main";
+  }
   const scoring: SelectOptions =
     slot === "hook" && (options.rawHook ?? DEFAULT_RAW_HOOK)
       ? { igNorm: "none", duel: 0 }
@@ -288,7 +340,10 @@ export function nextQuestion(
         ? { ...options, duel: 0 }
         : options;
   const scored = pool
-    .map((q) => ({ q, score: scoreQuestion(bank, profile, q, scoring) }))
+    .map((q) => ({
+      q,
+      score: slot === "explore" ? q.pri : scoreQuestion(bank, profile, q, scoring),
+    }))
     .sort((x, y) => y.score - x.score || compareIds(x.q.id, y.q.id));
   const best = scored[0] as { q: Question; score: number };
   if (!variety.seed) return best.q;

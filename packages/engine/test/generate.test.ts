@@ -10,10 +10,12 @@ import {
   createRng,
   DEFAULT_GENERATOR_PARAMS,
   DEFAULT_TASTE_PARAMS,
+  eligibility,
   energyCurve,
   familiarityRanks,
   foldProfile,
   generate,
+  isSeasonalTitle,
   largestRemainder,
   playlistTitle,
   type TasteParams,
@@ -415,10 +417,95 @@ describe("archetypes and titles", () => {
     expect(title.description).toBe("50 answers · seed 9f3a…");
   });
 
-  it("defaults: no decade evidence is modern, zero targets are hi/bright/organic", () => {
+  it("defaults: no decade evidence is modern, zero targets are lo/bright/organic", () => {
     const title = playlistTitle(DIMS, neutral(), 10, "0000000000000000");
-    expect(title.archetype).toBe("Festival Wanderer");
-    expect(title.title).toBe("Festival Wanderer");
+    expect(title.archetype).toBe("Coffeehouse Romantic");
+    expect(title.title).toBe("Coffeehouse Romantic");
+  });
+
+  it("energy is Hi from +0.15; era is Modern from 35% of the decade mass on the 2000s+", () => {
+    const at = (energy: number, decades: number[]) =>
+      traits(DIMS, neutral({ target: [energy, 0, 0, 0, 0], decades }));
+    expect(at(14, [250, 250, 250, 250]).energy).toBe("lo");
+    expect(at(15, [250, 250, 250, 250]).energy).toBe("hi");
+    // dec00 is the only modern decade here: 25% of the mass is Retro, 35% Modern.
+    expect(at(0, [250, 250, 250, 250]).era).toBe("retro");
+    expect(at(0, [200, 200, 250, 350]).era).toBe("modern");
+    // A 2010s fan whose every other decade keeps a baseline share is still Modern.
+    expect(at(0, [150, 150, 200, 500]).era).toBe("modern");
+  });
+});
+
+describe("holiday songs and opt-in languages (2026-10-04)", () => {
+  it("knows holiday titles, including the standards that don't say so", () => {
+    for (const t of [
+      "Last Christmas",
+      "All I Want for Christmas Is You",
+      "Jingle Bells",
+      "Let It Snow! Let It Snow! Let It Snow!",
+      "It’s the Most Wonderful Time of the Year",
+      "Baby, It’s Cold Outside",
+      "Feliz Navidad",
+      "Petit Papa Noël",
+      "לכבוד החנוכה",
+    ])
+      expect(isSeasonalTitle(t), t).toBe(true);
+    for (const t of ["Joy to the World", "Hallelujah", "December", "Snow (Hey Oh)", "Holiday"])
+      expect(isSeasonalTitle(t), t).toBe(false);
+  });
+
+  it("never picks a holiday song", () => {
+    const base = synthetic(800, { seed: "00000000000000c1" });
+    const rows: ColumnRow[] = [];
+    for (let i = 0; i < base.n; i++)
+      rows.push({
+        scalars: Object.fromEntries(DIMS.scalar.map((d, k) => [d, base.scalars[k]?.[i] ?? 0])),
+        confidence: base.confidence[i] as number,
+        clusters: { [DIMS.genres[(base.primary[i] as number) % DIMS.genres.length] as string]: 1 },
+        primary: DIMS.genres[(base.primary[i] as number) % DIMS.genres.length] as string,
+        decade: DIMS.decades[(base.decade[i] as number) % DIMS.decades.length] as string,
+        language: "lang_en",
+        artist: base.artist[i] as number,
+        titleKey: base.titleKey[i] as number,
+        year: 1990,
+        seasonal: i % 3 === 0,
+      });
+    const cat = buildColumns(DIMS, "seasonal", rows);
+    for (let s = 0; s < 20; s++) {
+      const out = generate(cat, neutral(), { length: 25, seed: `${s}`.padStart(16, "0") });
+      expect(out.tracks.length).toBeGreaterThan(0);
+      for (const t of out.tracks) expect(cat.seasonal[t.index]).toBe(0);
+    }
+    expect(familiarityRanks(cat, 2).rank[0]).toBe(-1);
+  });
+
+  it("Hebrew needs a reason: no language evidence or a clear lean away leaves it out", () => {
+    const cat = synthetic(3000, { seed: "00000000000000c2", hebrew: 0.3 });
+    const he = DIMS.languages.indexOf("lang_he");
+    const hebrew = (languages: number[] | null) => {
+      let n = 0;
+      for (let s = 0; s < 10; s++) {
+        const out = generate(cat, neutral({ languages }), {
+          length: 25,
+          seed: `c2${s}`.padStart(16, "0"),
+        });
+        n += out.tracks.filter((t) => cat.lang[t.index] === he).length;
+      }
+      return n;
+    };
+    expect(hebrew(null)).toBe(0);
+    // "English, mostly": English at 3× Hebrew (avoidRatio 2.4).
+    expect(hebrew([600, 200, 200])).toBe(0);
+    expect(hebrew([200, 600, 200])).toBeGreaterThan(0);
+    // An Israeli pick on top keeps Hebrew eligible (English at 1.7×); the score then decides.
+    const avoided = (languages: number[] | null, relax: 0 | 1 | 2 = 0) =>
+      eligibility(cat, neutral({ languages }), DEFAULT_GENERATOR_PARAMS, relax).avoid[he];
+    expect(avoided(null)).toBe(1);
+    expect(avoided([600, 200, 200])).toBe(1);
+    expect(avoided([500, 300, 200])).toBe(0);
+    expect(avoided([200, 600, 200])).toBe(0);
+    // Relaxing to fill a playlist drops it, like the language hard filter.
+    expect(avoided(null, 2)).toBe(0);
   });
 });
 

@@ -2,6 +2,7 @@
 import { DEFAULT_IG_NORM, DEFAULT_RAW_HOOK } from "@abtune/engine";
 import type { Persona } from "./persona.ts";
 import {
+  DEEP_DIP,
   type EvalSettings,
   type EvalSummary,
   type PersonaModeResult,
@@ -88,7 +89,7 @@ export function renderReport(r: ReportInput): string {
     "|---|---|---|",
     `| #3 p95 generation time, 50 tracks, AI off | ${p95.toFixed(0)} ms (p50 ${p50.toFixed(0)}, max ${max.toFixed(0)}, ${r.random.ms50.length} runs) | ${p95 < 2000 ? "pass" : "**FAIL**"} |`,
     `| #4 playlists violating §9.3 | ${r.random.violations + r.summary.byMode.reduce((a, m) => a + m.violations, 0)} of ${r.random.playlists + r.summary.byMode.reduce((a, m) => a + m.playlists, 0)} | ${r.random.violations + r.summary.byMode.reduce((a, m) => a + m.violations, 0) === 0 ? "pass" : "**FAIL**"} |`,
-    `| #5 mean fit rises ${modes.join(" → ")} | ${r.summary.byMode.map((m) => f3(m.metrics.fit)).join(" → ")} | ${r.summary.monotone ? "pass" : "**FAIL**"} |`,
+    `| #5 mean fit rises ${modes.join(" → ")} (the last step may dip ≤ ${DEEP_DIP}) | ${r.summary.byMode.map((m) => f3(m.metrics.fit)).join(" → ")} | ${r.summary.monotone ? "pass" : "**FAIL**"} |`,
     `| #5 margin, ${modes.at(-1)} vs ${modes[0]} questions (recorded minimum ${f3(r.marginThreshold)}) | +${f3(r.summary.margin)} | ${passMargin ? "pass" : "**FAIL**"} |`,
     ...(r.recognitionThresholds
       ? [

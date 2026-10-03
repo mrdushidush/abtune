@@ -40,6 +40,8 @@ export interface Health {
   /** The installed catalog, or null when none is installed. */
   readonly catalog: CatalogHealth | null;
   readonly ai: AiHealth;
+  /** Spotify is set up in `.env` (HANDOFF §11.1): the result screens offer "Save to Spotify". */
+  readonly spotify: { readonly configured: boolean };
 }
 
 /**

@@ -51,6 +51,14 @@ export const FIT_MARGIN = 0.3;
 export const CANON_MIN = 7;
 export const SIG_MIN = 0.65;
 
+/**
+ * HANDOFF §16 #5 as amended by the owner on 2026-10-04: fit rises with every step up in mode, but
+ * the deepest step may dip by up to this much. The explore slots lifted 50 questions (0.527 →
+ * 0.607) past 100 (0.568); the 50 → 100 drift was already there for several personas (one-genre
+ * follow-up cards inflating their genre) and is an open item.
+ */
+export const DEEP_DIP = 0.05;
+
 export const DEFAULT_EVAL: EvalSettings = {
   modes: MODES,
   salts: 5,
@@ -196,7 +204,7 @@ export interface ModeSummary {
 
 export interface EvalSummary {
   readonly byMode: readonly ModeSummary[];
-  /** Mean fit strictly rises with every step up in mode (HANDOFF §16 #5). */
+  /** Mean fit strictly rises with every step up in mode; the deepest may dip by DEEP_DIP (§16 #5). */
   readonly monotone: boolean;
   /** Mean fit at the deepest mode minus the shallowest. */
   readonly margin: number;
@@ -232,7 +240,10 @@ export function summarize(results: readonly PersonaModeResult[]): EvalSummary {
     canon: all.canon,
     hebrewShare: he.hebrew,
     byMode,
-    monotone: fits.every((f, i) => i === 0 || f > (fits[i - 1] as number)),
+    monotone: fits.every((f, i) => {
+      const prev = fits[i - 1] as number;
+      return i === 0 || f > prev || (i === fits.length - 1 && f >= prev - DEEP_DIP);
+    }),
     margin: fits.length > 1 ? (fits.at(-1) as number) - (fits[0] as number) : 0,
     meanFit: fits.length ? fits.reduce((a, b) => a + b, 0) / fits.length : 0,
   };

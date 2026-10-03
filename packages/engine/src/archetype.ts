@@ -30,40 +30,52 @@ const ARCHETYPES: Readonly<Record<string, string>> = {
   "lo.dark.modern.electric": "Night-Drive Ghost",
 };
 
-/** Retro means a decade-weighted mean year before this. */
+/** Decades starting at or after this year are the era's "modern" side. */
 export const RETRO_BEFORE = 2000;
+
+/**
+ * Era is Modern when the 2000s–2020s hold at least this share of the decade mass. Every decade keeps
+ * a baseline share, which pulled a mean year toward ~1990: a 2010s fan came out Retro. Calibrated
+ * (2026-10-04) so a coin-flip answerer lands on either side about equally; see DECISIONS.md.
+ */
+export const MODERN_SHARE = 0.35;
+
+/**
+ * Energy is Hi from this target (TARGET_SCALE units, i.e. +0.15). The bank's cards lean
+ * energetic, so a coin-flip answerer's median energy target is +0.12…+0.20; a cut at 0 made Hi
+ * three times as common as Lo.
+ */
+export const ENERGY_HI = 15;
 
 function scalarTarget(dims: Dimensions, taste: TasteVector, dim: string): number {
   const i = dims.scalar.indexOf(dim);
   return i < 0 ? 0 : (taste.target[i] ?? 0);
 }
 
-/**
- * Decade-weighted mean year (decade midpoints), or null without decade evidence.
- * Midpoint of dec50 is 1955 even though it stands for "≤1959".
- */
-export function meanYear(dims: Dimensions, taste: TasteVector): number | null {
+/** Share of the decade mass on decades starting at RETRO_BEFORE or later, or null without evidence. */
+export function modernShare(dims: Dimensions, taste: TasteVector): number | null {
   const p = taste.decades;
   if (!p) return null;
-  let sum = 0;
+  let modern = 0;
   let total = 0;
   dims.decades.forEach((key, i) => {
-    const start = decadeStart(key);
     const w = p[i] ?? 0;
-    if (start === null || w === 0) return;
-    sum += w * (start + 5);
     total += w;
+    if ((decadeStart(key) ?? 0) >= RETRO_BEFORE) modern += w;
   });
-  return total > 0 ? sum / total : null;
+  return total > 0 ? modern / total : null;
 }
 
-/** HANDOFF §9.6. Without decade evidence the era is "modern" (the catalog's mean year is ~2006). */
+/**
+ * HANDOFF §9.6 (cut-offs amended 2026-10-04 so the 16 types spread out). Without decade evidence
+ * the era is "modern" (the catalog's mean year is ~2006).
+ */
 export function traits(dims: Dimensions, taste: TasteVector): Traits {
-  const year = meanYear(dims, taste);
+  const modern = modernShare(dims, taste);
   return {
-    energy: scalarTarget(dims, taste, "energy") >= 0 ? "hi" : "lo",
+    energy: scalarTarget(dims, taste, "energy") >= ENERGY_HI ? "hi" : "lo",
     mood: scalarTarget(dims, taste, "valence") >= 0 ? "bright" : "dark",
-    era: year !== null && year < RETRO_BEFORE ? "retro" : "modern",
+    era: modern !== null && modern < MODERN_SHARE ? "retro" : "modern",
     texture: scalarTarget(dims, taste, "acoustic") >= 0 ? "organic" : "electric",
   };
 }

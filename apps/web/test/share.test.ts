@@ -63,12 +63,12 @@ describe("share links", async () => {
   };
 
   /** A seeded 20-answer session with spicy questions on (sensitive answers in the log). */
-  function session(choices: readonly Choice[]): SessionState {
+  function session(choices: readonly Choice[], quiz_seed = "a1b2c3d4e5f60718"): SessionState {
     let s = createSession(bank, {
       mode: 20,
       length: 25,
       packs: ["context", "core", "deep", "spicy", "vibe"],
-      quiz_seed: "a1b2c3d4e5f60718",
+      quiz_seed,
     });
     let i = 0;
     while (viewSession(bank, s).status === "asking")
@@ -138,10 +138,13 @@ describe("share links", async () => {
   );
 
   it("carries no answers: sensitive ones stay on the device (HANDOFF §13, §16 #9)", async () => {
-    const s = session(["a", "b", "both", "a"]);
-    const sensitive = s.answer_log.filter(
-      (e) => bank.questions.find((q) => q.id === e.id)?.sensitive,
-    );
+    // The first seed (in a fixed order) whose 20 cards include a sensitive one.
+    const sensitiveOf = (st: SessionState) =>
+      st.answer_log.filter((e) => bank.questions.find((q) => q.id === e.id)?.sensitive);
+    let s = session(["a", "b", "both", "a"]);
+    for (let k = 0; sensitiveOf(s).length === 0 && k < 64; k++)
+      s = session(["a", "b", "both", "a"], `a1b2c3d4e5f6${k.toString(16).padStart(4, "0")}`);
+    const sensitive = sensitiveOf(s);
     expect(sensitive.length).toBeGreaterThan(0);
     const { data } = await live(s, {}, []);
     const decoded = decodeShare(bank.dimensions, encodeShare(bank.dimensions, data));

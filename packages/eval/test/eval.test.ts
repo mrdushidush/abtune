@@ -139,9 +139,12 @@ describe("metrics", () => {
         typeof summarize
       >[0][number];
     expect(summarize([at(10, 0.1), at(20, 0.2), at(50, 0.3)])).toMatchObject({ monotone: true });
-    const flat = summarize([at(10, 0.1), at(20, 0.1)]);
+    const flat = summarize([at(10, 0.1), at(20, 0.1), at(50, 0.3)]);
     expect(flat.monotone).toBe(false);
-    expect(flat.margin).toBe(0);
+    expect(summarize([at(10, 0.1), at(20, 0.1)]).margin).toBe(0);
+    // Amended 2026-10-04: the deepest step may dip by up to DEEP_DIP (0.05), no more.
+    expect(summarize([at(10, 0.1), at(20, 0.2), at(50, 0.17)]).monotone).toBe(true);
+    expect(summarize([at(10, 0.1), at(20, 0.2), at(50, 0.14)]).monotone).toBe(false);
   });
 
   it("recognition: canon hits per 100, signature songs of famous artists, hits view, Hebrew", () => {
@@ -149,6 +152,7 @@ describe("metrics", () => {
       ...columns,
       tier: Uint8Array.from([0, 1, 2, 0]),
       artistRank: Uint8Array.from([1, 4, 1, 2]),
+      seasonal: new Uint8Array(4),
     };
     // Artists 0–3 each have one track; artist 2's best song has no top-list listeners at all.
     const recog = recognition(tiered, [1], Float64Array.from([500, 300, 0, 100]));

@@ -37,6 +37,7 @@ import {
   usePlaylist,
 } from "../state/hooks.ts";
 import { applyEdit, editRequest } from "../state/share.ts";
+import { offerSpotify } from "../state/spotify.ts";
 import { t, tweakSummary } from "../strings.ts";
 
 const NO_OPS: readonly ShareOp[] = [];
@@ -410,16 +411,18 @@ export function Result({
         )}
 
         <div className="flex flex-wrap gap-2">
-          <SpotifyButton
-            tracks={pending === null ? shown : []}
-            request={ready?.request ?? null}
-            title={title.title}
-            description={description}
-            shareCode={shareCode}
-            onExportCsv={() => onExport("csv")}
-            outcome={spotifyOutcome}
-            onOutcomeSeen={onSpotifySeen}
-          />
+          {offerSpotify(health, location.hostname) && (
+            <SpotifyButton
+              tracks={pending === null ? shown : []}
+              request={ready?.request ?? null}
+              title={title.title}
+              description={description}
+              shareCode={shareCode}
+              onExportCsv={() => onExport("csv")}
+              outcome={spotifyOutcome}
+              onOutcomeSeen={onSpotifySeen}
+            />
+          )}
           <ExportMenu onExport={onExport} disabled={!ready} />
           <ShareButton code={shareCode} card={card} name={name} />
           <button

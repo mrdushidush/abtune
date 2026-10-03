@@ -10,11 +10,12 @@ import {
   LANG_INSTRUMENTAL,
   MARKETS,
   NONE,
+  SEASONAL_TITLE,
 } from "@abtune/engine";
 import { type DuckDBBlobValue, DuckDBInstance } from "@duckdb/node-api";
 import { NORMALIZE_MACROS } from "./build/songs.ts";
 import { lit, pathLit } from "./db.ts";
-import type { CatalogManifest } from "./manifest.ts";
+import { CATALOG_SCHEMA_VERSION, type CatalogManifest } from "./manifest.ts";
 import { SCALAR_COLUMNS } from "./schema.ts";
 
 /** What a playlist row shows (and exports): display data, never used for scoring. */
@@ -123,6 +124,10 @@ export async function loadCatalog(
   const manifest = JSON.parse(
     await readFile(path.join(dir, "manifest.json"), "utf8"),
   ) as CatalogManifest;
+  if (manifest.schema_version !== CATALOG_SCHEMA_VERSION)
+    throw new Error(
+      `${dir} is catalog schema ${manifest.schema_version ?? "?"}, and this ABTune reads schema ${CATALOG_SCHEMA_VERSION}. Run \`abtune catalog fetch\` for a current catalog.`,
+    );
   for (const d of dims.scalar) {
     if (!(SCALAR_COLUMNS as readonly string[]).includes(d)) {
       throw new Error(`The bank's scalar "${d}" is not a catalog column.`);
@@ -180,7 +185,8 @@ export async function loadCatalog(
               ELSE coalesce(list_position(${L}, r.language) - 1, ${NONE}) END)::UTINYINT,
         art.aid, ttl.tid, coalesce(r.year, 0)::SMALLINT, r.tier::UTINYINT,
         (list_position(${sqlList(MARKETS)}, r.market) - 1)::UTINYINT, r.hit_pct::FLOAT,
-        least(r.artist_rank, 255)::UTINYINT
+        least(r.artist_rank, 255)::UTINYINT,
+        regexp_matches(r.title, ${lit(SEASONAL_TITLE)}, 'i')::UTINYINT
       FROM r
       JOIN art ON art.a1 = r.artist_mbids[1]
       JOIN ttl ON ttl.nt = norm_title(r.title)
@@ -203,6 +209,7 @@ export async function loadCatalog(
     const market = new Uint8Array(n);
     const hit = new Float32Array(n);
     const artistRank = new Uint8Array(n);
+    const seasonal = new Uint8Array(n);
 
     let row = 0;
     for (;;) {
@@ -235,6 +242,7 @@ export async function loadCatalog(
       market.set(col(c++) as number[], row);
       hit.set(col(c++) as number[], row);
       artistRank.set(col(c++) as number[], row);
+      seasonal.set(col(c++) as number[], row);
       row += rc;
     }
     if (row !== n) throw new Error(`${dir}: ${row} rows, but the manifest says ${n}`);
@@ -257,6 +265,7 @@ export async function loadCatalog(
       market,
       hit,
       artistRank,
+      seasonal,
     };
     const trackId = (index: number): string => {
       if (!Number.isInteger(index) || index < 0 || index >= n)

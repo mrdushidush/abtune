@@ -12,7 +12,7 @@ import { readTar } from "./tar.ts";
 
 /** Where `fetch` looks by default; overridable with CATALOG_SAMPLE_URL. Public once the repo is (v0.1). */
 export const DEFAULT_SAMPLE_URL =
-  "https://github.com/mrdushidush/abtune/releases/download/catalog-2026.09/catalog-2026.09-dev50k.tar";
+  "https://github.com/mrdushidush/abtune/releases/download/catalog-2026.09.2/catalog-2026.09.2-dev50k.tar";
 
 export interface FetchOptions {
   readonly url?: string;

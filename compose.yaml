@@ -22,7 +22,7 @@ services:
 
   # One-off: download, verify and install the prebuilt dev catalog into ./data/catalog.
   #   docker compose run --rm catalog                      (default URL / CATALOG_SAMPLE_URL)
-  #   docker compose run --rm catalog --file data/catalog/catalog-2026.09-dev50k.tar
+  #   docker compose run --rm catalog --file data/catalog/catalog-2026.09.2-dev50k.tar
   catalog:
     build: .
     image: abtune:local

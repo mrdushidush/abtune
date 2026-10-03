@@ -395,6 +395,8 @@ Session state is only `{config, answer_log, seed_salt}`. Everything else is deri
 
    **Amended 2026-10-03 (owner decision D7, see DECISIONS.md):** a session may carry a random quiz seed. With one, the card is a seeded draw (weighted by score) among the slot's questions scoring within a band of the best (vibe 60%, main 10%, hook and spicy 0), and a question family (`family:`, interchangeable variants) is asked once, as a seeded variant that avoids the previous session's cards. Without a seed, the rule above holds exactly, and only canonical questions are asked.
 
+   **Amended 2026-10-04 (see DECISIONS.md, "Launch-review fixes"):** positions 5, 9, 13 and 17 are **explore** slots (unless spicy takes 17): among the main packs' questions that set a genre or decade no asked card has touched against something else (|fx_a[k] − fx_b[k]| ≥ 0.5), the highest `pri` wins (with a seed: a draw among those within 15% of the best). If none qualifies, the slot is main. IG gives every genre one shared uncertainty, so without this, hip-hop, alt/indie, blues, reggae and K-pop were asked in 0–1% of 20-card quizzes.
+
    **Amended 2026-10-03 (see DECISIONS.md):** from position 21 on, a card that splits two leading genres scores × (1 + 3 · duel value), where the duel value is c₁ · c₂ · min(|Δ₁|, |Δ₂|) for the best pair of genres the card moves in opposite directions, and c = max(0, s) / s_top. The hook never gets this bonus, and neither do positions 4–20.
 5. Stop when answered (non-skip) count == mode, or the eligible pool is empty. In that case finish early with a friendly "you've exhausted the bank" message.
 
@@ -456,10 +458,12 @@ Use a target energy curve: start mid, rise to a peak at ~65%, cool down over the
 
 The archetype comes from four binary traits:
 
-- Energy: Hi / Lo (μ_energy ≥ 0)
+- Energy: Hi / Lo (μ_energy ≥ +0.15)
 - Mood: Bright / Dark (μ_valence ≥ 0)
-- Era: Retro / Modern (decade-weighted mean year < 2000)
+- Era: Retro / Modern (Modern when the 2000s–2020s hold ≥ 35% of the decade mass)
 - Texture: Organic / Electric (μ_acoustic ≥ 0)
+
+> **Amended 2026-10-04:** the energy and era cut-offs were moved (they were μ_energy ≥ 0 and a mean year < 2000) because about 80% of listeners got one of four retro types and a 2010s fan came out Retro. See DECISIONS.md, "Launch-roast fixes".
 
 | Energy·Mood | Retro·Organic | Retro·Electric | Modern·Organic | Modern·Electric |
 |---|---|---|---|---|
@@ -650,6 +654,8 @@ SPICY_PACK_DEFAULT=off
 3. **Performance:** with AI off, p95 < 2 s to generate 50 tracks from the full ~2M catalog on an 8-core laptop.
 4. **Constraints:** 100% of generated playlists satisfy §9.3.
 5. **Personalization grows with depth:** on the persona eval (§17), mean persona-fit rises from 10 → 20 → 50 → 100 questions, and 100-question playlists beat 10-question ones by a margin set and recorded in M3.
+
+   **Amended 2026-10-04 (owner):** the last step (50 → 100) may dip by up to 0.05. The explore slots lifted 50 questions past 100 (0.607 vs 0.568); the 50 → 100 drift already existed for several personas and is an open item (DECISIONS.md, "Launch-review fixes").
 6. **Coverage:** in ≥ 95% of random 10-question runs, at least 7 of 9 scalar dims and both decades and genres receive evidence.
 7. **Spotify:**
    - Private playlist created with exactly N tracks
@@ -672,6 +678,12 @@ SPICY_PACK_DEFAULT=off
     **2026-10-03:** the bank grew past the seed (`more.yaml`, `il.yaml`), so both tables are pinned on a frozen copy of the seed as of M3 (`packages/cli/test/fixtures/m3-bank/`), with no quiz seed. The live bank's first cards are a snapshot test instead.
 
     **2026-10-03, later:** the genre-duel bonus (§8.3) leaves the M3 table unchanged. The brief's original table is reproduced with `igNorm: "none"` and `duel: 0`.
+
+    **2026-10-04:** the explore slots (§8.3) change cards 5 and 9 of the engine's table:
+    - Always answering **A**: `bonjovi_britney, dancefloor_carcry, classical_edm, horror_comedy, guitar_synth, hits_gems, fast_slow, rain_sun, fresh_timeless, english_world`
+    - Always answering **B**: `bonjovi_britney, heavy_smooth, classical_edm, horror_comedy, guitar_synth, hits_gems, simple_complex, rain_sun, fresh_timeless, dancefloor_carcry`
+
+    The brief's original table is reproduced with `igNorm: "none"`, `duel: 0` and `explore: false`.
 
 ---
 

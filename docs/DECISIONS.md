@@ -278,3 +278,56 @@ A read-only review of the server, Spotify, AI, MCP, catalog fetch, client, Docke
 - 2026-10-03 · **Host allowlist (added) against DNS rebinding:** a page that points its own name at 127.0.0.1 passed the Origin check (Origin and Host were both its name). It couldn't reach Spotify (the cookie belongs to 127.0.0.1), but it could drive the AI routes and the local GPU. The server now answers only to `localhost`/`*.localhost`, IP literals (rebinding needs a name) and the host names in `APP_BASE_URL` and `SPOTIFY_REDIRECT_URI`; anything else is 403 `unknown_host`.
 - 2026-10-03 · **AI limits (added):** `AiGate` in the runtime lets 1 model call run and 4 wait; more fail as `busy` (a new `AiFailureCode`, with its notice), and a caller that leaves while waiting gives up its place. The time limit starts when the call runs. Rerank now gets the request's abort signal, so a client that leaves stops its GPU work (it ran to the time limit before).
 - 2026-10-03 · **Checked, no change:** PKCE S256 + state bound to an HttpOnly cookie; tokens AES-256-GCM with the entry key as AAD; cookies HttpOnly, SameSite=Lax, Secure on https; minimal scopes; Origin checks on the cookie-bearing POSTs; strict input validation and body limits on every route; AI output schema-checked and clamped to known keys; sensitive answers filtered again on the server; no `innerHTML` in the client; static serving resists encoded `..` and `\`; no shell in subprocesses; Docker runs as `node` on 127.0.0.1; no secrets in git; CI `contents: read`. **Before the repo goes public (M9):** pin the CI actions to commit SHAs.
+
+## Launch-review fixes (owner, 2026-10-04)
+
+Three reviewer agents looked at ABTune before launch from three sides: a developer deciding whether to star it, a music fan using it, and a growth strategist. The owner asked for their cheap fixes. The owner decided four questions; the rest followed the reviews. Engine 0.5.0.
+
+- 2026-10-04 · **Quick start (fixed):**
+  - The only GitHub release was the schema-1 `catalog-2026.09` sample, which the reader can't load (it selects `tier`), so a fresh `catalog fetch` installed a catalog the app couldn't use.
+  - The owner OK'd releasing **`catalog-2026.09.2`** (the dev sample built on 2026-10-03, unchanged). `fetch`'s default URL, the README, SELF_HOSTING, compose and `.env.example` now point at it.
+  - The reader refuses another schema with "run `abtune catalog fetch`", and automatic discovery skips catalogs of another schema, so a stale download left in `data/catalog/` isn't picked.
+- 2026-10-04 · **Holiday songs (fixed):**
+  - "Let It Snow!" at #3 of a pop playlist in October, and 1–3 holiday songs in every reshuffle of one test run.
+  - `SEASONAL_TITLE` (engine) matches Christmas and Hanukkah titles, carols, and the standards that don't say so ("Most Wonderful Time of the Year", "Baby, It's Cold Outside").
+  - The reader computes a `seasonal` column at load, with the same pattern in DuckDB and JavaScript, so there's no catalog rebuild. Generation and the familiarity windows skip those tracks.
+  - **Titles only:** album titles would also drop hits whose representative release is a Christmas compilation or edition (Death's "Symbolic", "Country Roads", Noel Gallagher).
+  - On catalog-2026.09.2 it marks 141 of the 55,711 hits and 6,119 tracks in all. 40 seeds × 4 listener types gave 0 holiday songs in 4,000 tracks.
+- 2026-10-04 · **Hebrew is opt-in (owner: "English, mostly" is a hard filter):**
+  - `avoidLanguages: ["lang_he"]`, `avoidRatio: 2.4`. Hebrew songs are left out when the answers carry no language evidence at all, or when the top language has ≥ 2.4× Hebrew's share.
+  - That covers "English, mostly" (2.7×) and "Mostly international" (2.5×). Picking an Israeli artist on top keeps Hebrew (≤ 2.0×), and every Israeli-pack card carries Hebrew evidence.
+  - Like the language hard filter, it's dropped when relaxing to fill a playlist.
+  - Measured on the full catalog, 25-track lists:
+    - a listener with no language answer went from 131 Hebrew songs per 1,000 to 0;
+    - "English, mostly" went to 0;
+    - "English, mostly" + Shlomo Artzi has 80.
+  - **Scope:** only Hebrew, so "English, mostly" listeners keep global hits in other languages (Despacito).
+- 2026-10-04 · **Israeli pack by locale (owner; amends D8):**
+  - The setup screen starts with the `il` pack only when the browser language is Hebrew (`he`, or the old `iw`) or the time zone is Asia/Jerusalem; the toggle stays.
+  - The bank's default is unchanged, so the server, the MCP server and the eval keep it.
+  - A remembered setup choice still wins.
+- 2026-10-04 · **Archetypes spread out (HANDOFF §9.6 amended):**
+  - **Before:** with coin-flip answers, four retro types took ~80% and Neon Nostalgist alone 23%. A 2010s fan came out "Retro", because every decade keeps a baseline share that pulls a mean year toward 1990.
+  - **Energy:** Hi now starts at a target of +0.15 (`ENERGY_HI`), the median of coin-flip sessions (+0.12…+0.20), because the bank's cards lean energetic.
+  - **Era:** Modern when the 2000s–2020s hold ≥ 35% of the decade mass (`MODERN_SHARE`; a fair share is 3 of 8 decades).
+  - **After:** all 16 types at 3.0–10.6% (coin-flip, all modes).
+  - The personas now read right: mizrahi party → Dancefloor Futurist (was Neon Nostalgist), 2000s metalhead → Bass-Drop Outlaw, lo-fi → Coffeehouse Romantic, while 80s pop stays Neon Nostalgist.
+- 2026-10-04 · **Explore slots (HANDOFF §8.3 amended, §16 #12 re-pinned):**
+  - **Problem:** IG gives every genre one shared uncertainty, so a card about a genre nobody has asked about is worth no more than another rock-vs-pop card. In 300 coin-flip 20-card quizzes without the `il` pack, hip-hop, blues, reggae and K-pop were asked 0% of the time and alt/indie 1%. The hip-hop persona was never asked about hip-hop, and the deep hip-hop cards never unlocked.
+  - **Rule:** positions 5, 9, 13 and 17 ask the highest-`pri` main-pack card that sets an untouched genre or decade against something else (|Δfx| ≥ 0.5, so "Eminem or Drake?" doesn't count: either answer is hip-hop).
+  - **Coverage in the first 10 cards:** hip-hop 0 → 51% (80% by card 20), alt/indie 0 → 94%, folk 4 → 59%, synth/new wave 8 → 62%, 2010s 2 → 80%, 2020s 11 → 55%. Latin and world move later (80 → 22% in the first 10, still 100% by card 20).
+  - **Persona eval, full catalog** ([docs/eval/2026-10-04-launch-fixes.md](eval/2026-10-04-launch-fixes.md)):
+    - fit 0.197 → 0.214, 0.372 → 0.398, 0.527 → 0.607, 0.568 → 0.568 (modes 10 / 20 / 50 / 100; before = the 2026-10-03 duels eval);
+    - canon 9.45, signature 76%, Hebrew personas 79% Hebrew (was 64%), p95 219 ms.
+    - At 50 cards, explore off vs on (3 salts): the 2000s metalhead 0.23 → 0.58, modern hip-hop 0.54 → 0.75, 80s pop 0.47 → 0.60.
+    - The Hebrew opt-in and the holiday mask move fit by < 0.01.
+  - **§16 #5 amended (owner):** 50 cards now beat 100 (0.607 vs 0.568). The last step may dip by up to `DEEP_DIP` 0.05; margin and recognition gates unchanged.
+  - **Open item (M9):** the 50 → 100 drift was already there for EDM, lo-fi and workout without explore slots, probably one-genre follow-up cards inflating their genre (see "Genre stability and question variety").
+  - The brief's §8.3 table is still reproduced with `explore: false`.
+- 2026-10-04 · **"Save to Spotify" for visitors:**
+  - `/api/health` reports `spotify.configured`.
+  - Before Spotify is set up, the button (and its `.env` setup guide) shows only on loopback, where the person who can set it up is.
+- 2026-10-04 · **Deferred:**
+  - **Picked-artist anchors** (owner): a picked artist's best-known song in the top 10. It would send non-sensitive picks to the server and into share links.
+  - **Bank content:** blues, reggae, K-pop and country are still rarely asked, because few cards set them against something else.
+  - **Mood cards:** several mood cards ask the same thing in other words. Merging them into families needs the owner's review.

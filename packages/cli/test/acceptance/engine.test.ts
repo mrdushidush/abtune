@@ -31,11 +31,13 @@ describe("§16 #12 golden selection sequences (default packs, spicy off)", () =>
   // If you change the selection rules on purpose, update these, HANDOFF §16 #12 and DECISIONS.md.
   // M3: IG normalized by key count after the 3-question hook (HANDOFF §18, chosen by the persona eval).
   // 2026-10-03: the genre-duel bonus (DEFAULT_DUEL) doesn't change these first 10.
+  // 2026-10-04: explore slots (DEFAULT_EXPLORE) ask about an untouched genre or decade at 5 and 9.
   const GOLDEN = {
-    a: "bonjovi_britney, dancefloor_carcry, classical_edm, horror_comedy, hits_gems, fast_slow, dec70_dec00, ai_handmade, english_world, simple_complex",
-    b: "bonjovi_britney, heavy_smooth, classical_edm, horror_comedy, hits_gems, simple_complex, dancefloor_carcry, ai_handmade, fast_slow, english_world",
+    a: "bonjovi_britney, dancefloor_carcry, classical_edm, horror_comedy, guitar_synth, hits_gems, fast_slow, rain_sun, fresh_timeless, english_world",
+    b: "bonjovi_britney, heavy_smooth, classical_edm, horror_comedy, guitar_synth, hits_gems, simple_complex, rain_sun, fresh_timeless, dancefloor_carcry",
   };
-  // §8.3 as written: the brief's original table, still reproduced with igNorm "none" and no duel bonus.
+  // §8.3 as written: the brief's original table, still reproduced with igNorm "none", no duel
+  // bonus and no explore slots.
   const BRIEF = {
     a: "bonjovi_britney, dancefloor_carcry, classical_edm, gym_yoga, english_world, heavy_smooth, hits_gems, scifi_romance, fresh_timeless, adele_dualipa",
     b: "bonjovi_britney, heavy_smooth, classical_edm, scifi_romance, bubblegum_artpop, english_world, dancefloor_carcry, matrix_titanic, fresh_timeless, adele_dualipa",
@@ -48,7 +50,7 @@ describe("§16 #12 golden selection sequences (default packs, spicy off)", () =>
   });
 
   it.each(["a", "b"] as const)("always answering %s, §8.3 as written", (side) => {
-    const literal = { igNorm: "none", duel: 0 } as const;
+    const literal = { igNorm: "none", duel: 0, explore: false } as const;
     const run = runQuiz(m3, { mode: 10, packs: defaultPacks(m3) }, () => side, literal);
     expect(run.sequence.join(", ")).toBe(BRIEF[side]);
   });
@@ -109,7 +111,7 @@ describe("§16 #2 determinism across processes", () => {
   it("is identical on every machine (pinned digest over a frozen bank; CI runs Linux, Windows, macOS)", async () => {
     // Changes only if the engine's behavior changes. If that's intended, update and log it in DECISIONS.md.
     expect(await determinismDigest(300, "a11ce5ba5eba11ed", FROZEN_BANK_DIR)).toBe(
-      "f0e963cc757e810143b61c93ecdc858ada5cb99794ba4bc2d46437e35dc22655",
+      "8ebfbb78e6da964f2b5b473932f37ef468d403eadab123671555bb6d403ed18f",
     );
   }, 120_000);
 });

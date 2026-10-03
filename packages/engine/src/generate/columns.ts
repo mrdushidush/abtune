@@ -13,6 +13,20 @@ export const TIER_HITS = 0;
 export const TIER_DEEP = 1;
 export const TIER_TAIL = 2;
 
+/**
+ * Holiday songs, by title (case-insensitive; RE2 and JavaScript read it the same way): Christmas and
+ * Hanukkah songs, carols and the standards whose titles don't say so ("Most Wonderful Time of the
+ * Year", "Baby, It's Cold Outside"). They are never picked: in October they read as a broken app.
+ * Titles only: album titles would also drop hits whose representative release is a Christmas
+ * compilation or edition. On catalog-2026.09.2 this marks 141 of the 55,711 hits (6,119 tracks).
+ */
+export const SEASONAL_TITLE = String.raw`(\b(christmas|xmas|x-mas|navidad|santa claus|santa baby|jingle bells?|sleigh ride|sleigh bells|silver bells|carol of the bells|rudolph|reindeer|frosty the snowman|winter wonderland|let it snow|silent night|o holy night|little drummer boy|deck the halls?|mistletoe|holly jolly|first noel|hanukkah|chanukah|tannenbaum|most wonderful time of the year|baby,? it.s cold outside|mary,? did you know|o come,? all ye|hark the herald|away in a manger|we wish you a merry|good king wenceslas|auld lang syne)\b|noël|חנוכה|סביבון)`;
+
+const seasonalRe = new RegExp(SEASONAL_TITLE, "i");
+
+/** Whether a title is a holiday song's (SEASONAL_TITLE). */
+export const isSeasonalTitle = (title: string): boolean => seasonalRe.test(title);
+
 /** Markets (catalog `market`): songs are ranked against others of their market. */
 export const MARKETS = ["intl", "il"] as const;
 export type Market = (typeof MARKETS)[number];
@@ -52,6 +66,8 @@ export interface CatalogColumns {
   readonly hit: Float32Array;
   /** Rank within the first artist (1 = their best-known song), capped at 255. */
   readonly artistRank: Uint8Array;
+  /** 1 = a holiday song (SEASONAL_TITLE): never picked. */
+  readonly seasonal: Uint8Array;
 }
 
 /** One track as plain data, for building columns in tests and small tools. */
@@ -75,6 +91,8 @@ export interface ColumnRow {
   readonly hit?: number;
   /** Missing = 1. */
   readonly artistRank?: number;
+  /** Missing = false. */
+  readonly seasonal?: boolean;
 }
 
 function indexOf(keys: readonly string[], key: string | null, what: string): number {
@@ -110,6 +128,7 @@ export function buildColumns(
     market: new Uint8Array(n),
     hit: new Float32Array(n),
     artistRank: new Uint8Array(n),
+    seasonal: new Uint8Array(n),
   };
   rows.forEach((row, i) => {
     dimensions.scalar.forEach((dim, d) => {
@@ -134,6 +153,7 @@ export function buildColumns(
     cols.market[i] = MARKETS.indexOf(row.market ?? "intl");
     cols.hit[i] = row.hit ?? 0.5;
     cols.artistRank[i] = Math.min(255, row.artistRank ?? 1);
+    cols.seasonal[i] = row.seasonal ? 1 : 0;
   });
   return { version, dimensions, n, scalars, ...cols };
 }

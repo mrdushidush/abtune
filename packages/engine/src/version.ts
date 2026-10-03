@@ -2,7 +2,7 @@ import { canonicalJson, sha256Hex } from "./hash.ts";
 import type { Bank } from "./types.ts";
 
 /** Keep in sync with packages/engine/package.json (a test enforces it). */
-export const ENGINE_SEMVER = "0.4.0";
+export const ENGINE_SEMVER = "0.5.0";
 
 const bankHashCache = new WeakMap<Bank, string>();
 

@@ -1,7 +1,7 @@
 // Which installed catalog the app uses: CATALOG_PATH if set, else the best one under data/catalog.
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
-import type { CatalogManifest } from "./manifest.ts";
+import { CATALOG_SCHEMA_VERSION, type CatalogManifest } from "./manifest.ts";
 
 export interface InstalledCatalog {
   readonly dir: string;
@@ -20,7 +20,8 @@ const KIND_RANK: Record<CatalogManifest["kind"], number> = { full: 2, "dev-sampl
 
 /**
  * `explicit` (CATALOG_PATH) wins and must contain a manifest. Otherwise prefer a full build over
- * a dev sample, then the newest version (by name). Undefined when nothing is installed.
+ * a dev sample, then the newest version (by name), among catalogs of this code's schema (an older
+ * download left in place is skipped). Undefined when nothing is installed.
  */
 export async function findCatalog(
   root: string,
@@ -42,7 +43,8 @@ export async function findCatalog(
   const found: InstalledCatalog[] = [];
   for (const name of names) {
     const manifest = await readManifest(path.join(root, name));
-    if (manifest?.name === "abtune-catalog") found.push({ dir: path.join(root, name), manifest });
+    if (manifest?.name === "abtune-catalog" && manifest.schema_version === CATALOG_SCHEMA_VERSION)
+      found.push({ dir: path.join(root, name), manifest });
   }
   found.sort(
     (a, b) =>

@@ -23,6 +23,7 @@ describe("API", async () => {
       packs: { core: 105, context: 17, deep: 112, vibe: 73, spicy: 9, il: 20 },
       catalog: null,
       ai: { enabled: false, rerank: false, sensitive_opt_in: false, model: null },
+      spotify: { configured: false },
     });
   });
 

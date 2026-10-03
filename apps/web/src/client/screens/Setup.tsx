@@ -1,5 +1,6 @@
-import { type Bank, defaultPacks, LENGTHS, MODES } from "@abtune/engine";
+import { type Bank, LENGTHS, MODES } from "@abtune/engine";
 import { useState } from "react";
+import { browserLocale, startingPacks } from "../lib/locale.ts";
 import type { SetupChoice } from "../state/app.ts";
 import type { HealthState } from "../state/hooks.ts";
 import { PACKS, packName, t } from "../strings.ts";
@@ -93,7 +94,9 @@ export function Setup({
 }) {
   const [mode, setMode] = useState(last?.mode ?? 20);
   const [length, setLength] = useState(last?.length ?? 25);
-  const [packs, setPacks] = useState<readonly string[]>(last?.packs ?? defaultPacks(bank));
+  const [packs, setPacks] = useState<readonly string[]>(
+    () => last?.packs ?? startingPacks(bank, browserLocale()),
+  );
   const optional = Object.keys(bank.packs).filter((p) => p !== "core");
   const toggle = (p: string) =>
     setPacks((cur) => (cur.includes(p) ? cur.filter((x) => x !== p) : [...cur, p].sort()));

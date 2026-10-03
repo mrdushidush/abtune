@@ -21,7 +21,7 @@ export function tierCeiling(t: number, params: GeneratorParams): number {
 /**
  * Hit rank of every track inside its familiarity group, (primary cluster, decade, market), among
  * the tracks of tier ≤ the ceiling. Rank 0 = the group's best-known track; tracks above the
- * ceiling get no rank (they are never eligible at that ceiling).
+ * ceiling, and holiday songs, get no rank (they are never eligible at that ceiling).
  */
 export interface FamiliarityRanks {
   readonly rank: Int32Array;
@@ -47,7 +47,7 @@ export function familiarityRanks(columns: CatalogColumns, ceiling: number): Fami
   const groupOf = new Int32Array(n).fill(-1);
   const counts = new Int32Array(G * D * M);
   for (let i = 0; i < n; i++) {
-    if ((columns.tier[i] as number) > ceiling) continue;
+    if ((columns.tier[i] as number) > ceiling || columns.seasonal[i] === 1) continue;
     const g = columns.primary[i] as number;
     const d = columns.decade[i] as number;
     const c =

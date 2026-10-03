@@ -118,7 +118,7 @@ export function generate(
   for (const { relax, maxTier } of ladder(ceiling)) {
     if (picks.tracks.length >= length) break;
     const elig = eligibility(columns, taste, params, relax, maxTier);
-    const key = `${elig.genres.join("")}|${elig.decades.join("")}|${elig.language}|${maxTier}`;
+    const key = `${elig.genres.join("")}|${elig.decades.join("")}|${elig.language}|${elig.avoid.join("")}|${maxTier}`;
     if (key === lastKey) continue; // nothing to relax at this level
     if (lastKey !== "") {
       const w =

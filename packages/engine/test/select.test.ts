@@ -22,6 +22,24 @@ describe("pacing (HANDOFF §8.3)", () => {
     expect(slotFor(7, true)).toBe("spicy");
     expect(slotFor(17, true)).toBe("spicy");
     expect(slotFor(7, false)).toBe("main");
+    const explore = Array.from({ length: 24 }, (_, i) => slotFor(i + 1, false, true));
+    expect(explore.flatMap((s, i) => (s === "explore" ? [i + 1] : []))).toEqual([5, 9, 13, 17]);
+    expect(slotFor(17, true, true)).toBe("spicy");
+  });
+
+  it("explore slots ask about a genre no card has touched, highest priority first", () => {
+    const rockPop = q("rock_pop", "core", 95, { rock: 1 }, { pop: 1 });
+    const strong = q("strong", "core", 90, { energy: 1, rock: 0.5 }, { energy: -1, pop: 0.5 });
+    const jazzMetal = q("jazz_metal", "core", 60, { jazz: 1 }, { metal: 1 });
+    const bothJazz = q("both_jazz", "core", 99, { jazz: 0.8, energy: 0.3 }, { jazz: 0.7 });
+    const bank = makeBank([rockPop, strong, jazzMetal, bothJazz]);
+    const log = [{ id: "rock_pop", choice: "a" as const }];
+    const pick = (explore: boolean) =>
+      nextQuestion(bank, foldProfile(bank, log), log, new Set(["core"]), 5, { explore })?.id;
+    // Without explore, IG prefers the strong scalar card. With it, the only card that sets an
+    // untouched genre against another: both_jazz names jazz on both sides, so it doesn't count.
+    expect(pick(false)).toBe("strong");
+    expect(pick(true)).toBe("jazz_metal");
   });
 
   it("puts community packs in the main slot", () => {

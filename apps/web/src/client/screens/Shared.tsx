@@ -19,6 +19,7 @@ import { download } from "../lib/download.ts";
 import { postPlaylist } from "../state/api.ts";
 import type { HealthState, PlaylistState } from "../state/hooks.ts";
 import { replayShare } from "../state/share.ts";
+import { offerSpotify } from "../state/spotify.ts";
 import { t } from "../strings.ts";
 import { Notice, PlaylistBody, toExport, tweakNames } from "./Result.tsx";
 
@@ -185,16 +186,18 @@ export function Shared({
         </header>
 
         <div className="flex flex-wrap gap-2">
-          <SpotifyButton
-            tracks={ready ? tracks : []}
-            request={ready?.request ?? null}
-            title={title.title}
-            description={description}
-            shareCode={code}
-            onExportCsv={() => onExport("csv")}
-            outcome={spotifyOutcome}
-            onOutcomeSeen={onSpotifySeen}
-          />
+          {offerSpotify(health, location.hostname) && (
+            <SpotifyButton
+              tracks={ready ? tracks : []}
+              request={ready?.request ?? null}
+              title={title.title}
+              description={description}
+              shareCode={code}
+              onExportCsv={() => onExport("csv")}
+              outcome={spotifyOutcome}
+              onOutcomeSeen={onSpotifySeen}
+            />
+          )}
           <ExportMenu onExport={onExport} disabled={!ready} />
           <ShareButton code={ready ? code : null} card={card} name={name} />
         </div>

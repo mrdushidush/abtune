@@ -11,6 +11,8 @@ export interface Eligibility {
   readonly decades: Uint8Array;
   /** Language index every track must have, or -1 for any language. */
   readonly language: number;
+  /** Per language index: 1 = left out (params.avoidLanguages). */
+  readonly avoid: Uint8Array;
   /** Deepest popularity tier allowed (TIER_HITS … TIER_TAIL). */
   readonly maxTier: number;
 }
@@ -93,15 +95,25 @@ export function eligibility(
   relax: 0 | 1 | 2,
   maxTier: number = TIER_TAIL,
 ): Eligibility {
-  const { genres, decades } = columns.dimensions;
+  const { genres, decades, languages } = columns.dimensions;
   const all = (k: number) => new Uint8Array(k + 1).fill(1);
   let language = -1;
-  if (relax < 2 && taste.languages) {
+  const avoid = new Uint8Array(languages.length);
+  if (relax < 2) {
     const p = taste.languages;
-    const total = p.reduce((a, b) => a + b, 0);
-    p.forEach((x, i) => {
-      if (x >= params.languageHardFilter * total) language = i;
-    });
+    if (p) {
+      const total = p.reduce((a, b) => a + b, 0);
+      p.forEach((x, i) => {
+        if (x >= params.languageHardFilter * total) language = i;
+      });
+    }
+    const top = p ? Math.max(...p) : 0;
+    for (const key of params.avoidLanguages) {
+      const i = languages.indexOf(key);
+      if (i < 0) continue;
+      const x = p ? (p[i] as number) : 0;
+      if (!p || (x < top && x * params.avoidRatio <= top)) avoid[i] = 1;
+    }
   }
   return {
     genres:
@@ -113,6 +125,7 @@ export function eligibility(
         ? coverMass(taste.decades, params.prefilterMass)
         : all(decades.length),
     language,
+    avoid,
     maxTier,
   };
 }
@@ -140,7 +153,7 @@ export function planCells(
   const nCells = (G + 1) * (D + 1);
   const cellOf = new Int16Array(columns.n);
   const counts = new Int32Array(nCells);
-  const { primary, decade, lang, tier } = columns;
+  const { primary, decade, lang, tier, seasonal } = columns;
   for (let i = 0; i < columns.n; i++) {
     const g = primary[i] as number;
     const d = decade[i] as number;
@@ -148,6 +161,8 @@ export function planCells(
     const db = d === NONE ? D : d;
     if (
       (tier[i] as number) <= elig.maxTier &&
+      seasonal[i] === 0 &&
+      elig.avoid[lang[i] as number] !== 1 &&
       elig.genres[gb] === 1 &&
       elig.decades[db] === 1 &&
       (elig.language < 0 || lang[i] === elig.language)

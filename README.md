@@ -17,7 +17,7 @@ Open <http://127.0.0.1:8787>. Use `127.0.0.1`, not `localhost`: Spotify only acc
 
 Pick how deep to go (10, 20, 50 or 100 questions) and a playlist length. Then tap, swipe or use the arrow keys through the cards (← → pick, ↑ both, ↓ skip, ⌫ back). You get a music-personality card and a playlist of songs people actually know (each artist's best-known songs, unless you ask for hidden gems). You can reshuffle it, tweak it ("more energy", "newer", …), add 25 deeper cuts, swap a song, play any song on YouTube or Spotify, extend the quiz with 10 more answers, and export as M3U, CSV, XSPF or JSON. **Share** gives a link that rebuilds your card and the exact playlist on any device, and saves the card as an image. Every session asks a different mix of cards. The quiz runs in your browser, and your answers never leave it: the server and share links only carry the resulting taste profile.
 
-While the repository is private, the dev catalog's download URL isn't public yet. Fetch the release asset with `gh release download catalog-2026.09 -R mrdushidush/abtune`, put the `.tar` in `data/catalog/`, and run `docker compose run --rm catalog --file data/catalog/catalog-2026.09-dev50k.tar`.
+While the repository is private, the dev catalog's download URL isn't public yet. Fetch the release asset with `gh release download catalog-2026.09.2 -R mrdushidush/abtune`, put the `.tar` in `data/catalog/`, and run `docker compose run --rm catalog --file data/catalog/catalog-2026.09.2-dev50k.tar`.
 
 ## Use it from Claude Code (MCP)
 
@@ -55,7 +55,7 @@ pnpm abtune eval   # persona eval + §16 checks; writes docs/eval/<date>.md on t
 pnpm abtune catalog --help
 ```
 
-Web app in dev mode: `pnpm --filter @abtune/web dev:server` and `pnpm --filter @abtune/web dev:client` in two terminals, then open the Vite URL. Set `CATALOG_PATH=data/catalog/catalog-2026.09-dev50k` for the server to restart in under a second (the full catalog takes ~8 s to load).
+Web app in dev mode: `pnpm --filter @abtune/web dev:server` and `pnpm --filter @abtune/web dev:client` in two terminals, then open the Vite URL. Set `CATALOG_PATH=data/catalog/catalog-2026.09.2-dev50k` for the server to restart in under a second (the full catalog takes ~8 s to load).
 
 Node runs the TypeScript sources directly (type stripping), so there is no build step for the server or CLI. Use erasable TypeScript only (no `enum`, no `namespace`) and `.ts` import extensions.
 
