@@ -1,0 +1,26 @@
+{
+  "name": "@abtune/mcp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ABTune MCP server: Claude Code (or any MCP host) takes the quiz, builds, shares and exports playlists.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "abtune-mcp": "./src/main.ts"
+  },
+  "exports": {
+    ".": "./src/server.ts"
+  },
+  "scripts": {
+    "start": "node src/main.ts",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@abtune/bank": "workspace:*",
+    "@abtune/catalog": "workspace:*",
+    "@abtune/connectors": "workspace:*",
+    "@abtune/engine": "workspace:*",
+    "@modelcontextprotocol/sdk": "1.32.0",
+    "zod": "^4.6.5"
+  }
+}

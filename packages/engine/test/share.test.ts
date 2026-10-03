@@ -1,12 +1,18 @@
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
 import {
+  applyEdit,
   decodeShare,
+  editStep,
   encodeShare,
+  firstStep,
+  followUpSeed,
   MAX_SHARE_OPS,
+  MORE_LENGTH,
   P_SCALE,
   type ShareData,
   ShareError,
+  type ShareOp,
   TARGET_SCALE,
   type TasteVector,
   WEIGHT_SCALE,
@@ -109,5 +115,25 @@ describe("share codes (HANDOFF §4.4)", () => {
     expect(() =>
       encodeShare(DIMENSIONS, { ...data, taste: { ...taste, target: [500, 0] } }),
     ).toThrow(ShareError);
+  });
+});
+
+describe("playlist edits (owner decision D9)", () => {
+  it("pins the follow-up seeds: share links made earlier must replay the same songs", () => {
+    expect(followUpSeed("0123456789abcdef", "more", 1)).toBe("c25ac26b38f9b54d");
+    expect(followUpSeed("0123456789abcdef", "swap", 2)).toBe("cc1adc674e0f9f20");
+  });
+
+  it("numbers pages and swaps separately and applies them to the list", () => {
+    const first = firstStep(DIMENSIONS, taste, {}, "0123456789abcdef", 3);
+    const done: ShareOp[] = [{ op: "more" }, { op: "swap", index: 0 }];
+    const more = editStep(DIMENSIONS, taste, {}, first, done, { op: "more" });
+    expect(more.seed).toBe(followUpSeed(first.seed, "more", 2));
+    expect([more.length, more.swap]).toEqual([MORE_LENGTH, false]);
+    const swap = editStep(DIMENSIONS, taste, {}, first, done, { op: "swap", index: 1 });
+    expect(swap.seed).toBe(followUpSeed(first.seed, "swap", 2));
+    expect([swap.length, swap.swap, swap.taste]).toEqual([1, true, first.taste]);
+    expect(applyEdit(["a", "b", "c"], { op: "swap", index: 1 }, ["x"])).toEqual(["a", "x", "c"]);
+    expect(applyEdit(["a"], { op: "more" }, ["x", "y"])).toEqual(["a", "x", "y"]);
   });
 });

@@ -153,3 +153,18 @@ One line per non-obvious choice: date · decision · why. Big decisions get an A
 - 2026-10-03 · **Fixed on the way:** "+25" and swap edits were keyed by the playlist seed, and a tweak keeps the seed, so tweaking after an edit showed the old edited list. They are now keyed by the playlist response itself.
 - 2026-10-03 · **Card image:** a 1080 × 1350 PNG (4:5, the shape social feeds crop least), drawn on a canvas from the same numbers as the on-screen card: archetype, trait chips, radar with the same axis labels, top genres, era columns, the playlist title and first songs (Hebrew lines right to left). No HTML-to-image library, no fonts to fetch. "Share image…" uses the Web Share API with a file where the browser supports it (phones); otherwise "Save image" downloads it.
 - 2026-10-03 · Client bundle 118 KB gzipped (105 KB before the 119 new cards and M6).
+
+## MCP server (HANDOFF §12, M8)
+
+- 2026-10-03 · `packages/mcp`, on the official `@modelcontextprotocol/sdk` 1.32 (ADR-0001) with zod 4, over stdio. It runs from the repo with `node packages/mcp/src/main.ts` (Node strips the types). An npm-published build is left for v0.1, when it would need a bundle (ADR-0001). `console.log` goes to stderr, because stdout carries the protocol.
+- 2026-10-03 · **In process, not over HTTP:** the server loads the bank and the installed catalog itself, so Claude Code needs no running web app. The catalog starts loading when the server starts (~8 s for the full one, ~350 MB) and is shared by every call. Playlists are made with the same generator steps the web app requests (`firstStep` / `editStep` / `applyEdit`, moved into the engine's `edits.ts` from the web client for this), so a share link gives the same songs in both. Checked: the same 6 shares (tweaks, "+25", swaps) through the web API and through the MCP server were identical on the fixture and on the full catalog.
+- 2026-10-03 · **Tools:**
+  - `list_questions`: default packs, canonical questions only, by priority (variants and the spicy pack on request).
+  - `start_quiz` / `answer`: interactive, with a random quiz seed per session.
+  - `submit_answers`: the key path. The host answers the quiz from a description; mode = answers given; packs = the defaults plus any pack it answered from.
+  - `get_profile`: the readable profile (archetype, sound, genres, era, languages).
+  - `generate_playlist`: from a session, a share code or link (exact replay, edits included), or a bare taste vector. Options: `length`, `reshuffle` (a session's seed salt, as in the web app), `tweaks` (the web app's preset ids) and `deeper_cuts` (pages of 25). It returns the songs, a `playlist_id` and a share link (`APP_BASE_URL`).
+  - `export_playlist`: the four §11.2 formats; it writes a file (or into a folder) when given a path, otherwise it returns the content.
+  - `push_to_spotify`: a clear error pointing to export until M5.
+- 2026-10-03 · Server `instructions` describe the "describe it → playlist" flow, so a host knows to skip questions a description doesn't cover (a skip adds nothing, whereas a forced pick adds evidence; see "Genre stability").
+- 2026-10-03 · §16 #11 is tested with the SDK's in-memory transport. A keyword stand-in for the host model answers "a rainy Sunday" → `submit_answers` → `generate_playlist` → a 25-row CSV file. Smoke-tested over real stdio on the full catalog: a clean protocol stream, 9.3 s for the first playlist (catalog load), 0.2 s after.

@@ -1,12 +1,12 @@
 import {
-  applyTweaks,
   type Bank,
   type Dimensions,
   engineVersion,
-  MAX_TWEAK_STEPS,
+  firstStep,
+  MORE_LENGTH,
+  type PlaylistStep,
   type SessionState,
   sessionSeed,
-  sha256Hex,
   type TasteVector,
   type TweakSteps,
   tasteVector,
@@ -45,53 +45,27 @@ export function firstRequest(
   tweaks: TweakSteps,
   rest: Omit<PlaylistRequest, "taste">,
 ): PlaylistRequest {
-  return { ...rest, taste: applyTweaks(dims, base, tweaks) };
+  return { ...rest, taste: firstStep(dims, base, tweaks, rest.seed, rest.length).taste };
 }
 
-/** Songs per "deeper cuts" page. */
-export const MORE_LENGTH = 25;
-
-/** A follow-up request's seed: the playlist's seed, what it is for, and a counter. */
-export function followUpSeed(seed: string, what: "more" | "swap", n: number): string {
-  return sha256Hex(`${seed}:${what}:${n}`).slice(0, 16);
-}
-
-/**
- * "+25 deeper cuts" (owner decision D9): the same profile one popularity step deeper, continuing
- * the playlist that's on screen (`shown`, in order) so §9.3 holds over the whole list.
- */
-export function moreRequest(
-  dims: Dimensions,
-  base: TasteVector,
-  tweaks: TweakSteps,
-  first: PlaylistRequest,
+/** The request for a planned step (engine `edits.ts`), continuing `shown` track ids in order. */
+export function stepRequest(
+  step: PlaylistStep,
+  versions: Pick<PlaylistRequest, "engine_version" | "catalog_version">,
   shown: readonly string[],
-  page: number,
 ): PlaylistRequest {
-  const deeper = Math.max(-MAX_TWEAK_STEPS, (tweaks.popularity ?? 0) - 1);
   return {
-    ...first,
-    taste: applyTweaks(dims, base, { ...tweaks, popularity: deeper }),
-    seed: followUpSeed(first.seed, "more", page),
-    length: MORE_LENGTH,
+    taste: step.taste,
+    seed: step.seed,
+    length: step.length,
+    engine_version: versions.engine_version,
+    catalog_version: versions.catalog_version,
     previous: shown,
+    ...(step.swap ? { swap: true } : {}),
   };
 }
 
-/** Swap one song for another by an artist not on the list yet. */
-export function swapRequest(
-  first: PlaylistRequest,
-  shown: readonly string[],
-  n: number,
-): PlaylistRequest {
-  return {
-    ...first,
-    seed: followUpSeed(first.seed, "swap", n),
-    length: 1,
-    previous: shown,
-    swap: true,
-  };
-}
+export { MORE_LENGTH };
 
 export type ApiResult<T> =
   | { readonly ok: true; readonly data: T }

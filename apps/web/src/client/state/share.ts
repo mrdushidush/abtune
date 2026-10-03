@@ -1,8 +1,10 @@
 // Share links (HANDOFF §4.4, M6) and the playlist edits they replay ("+25 deeper cuts", swaps).
 // The live result screen and a share replay build their requests here, so they can't drift apart.
 import {
+  applyEdit,
   type Dimensions,
   decodeShare,
+  editStep,
   encodeShare,
   type ShareData,
   type ShareOp,
@@ -10,17 +12,7 @@ import {
   type TweakSteps,
 } from "@abtune/engine";
 import type { PlaylistRequest, PlaylistResponse, PlaylistTrackOut } from "../../api-types.ts";
-import { type ApiResult, firstRequest, moreRequest, swapRequest } from "./api.ts";
-
-/** Edits on top of a first playlist, in order. Follow-up seeds count pages and swaps separately. */
-export interface Edits {
-  readonly ops: readonly ShareOp[];
-}
-
-export const NO_EDITS: Edits = { ops: [] };
-
-const count = (ops: readonly ShareOp[], kind: ShareOp["op"]) =>
-  ops.filter((o) => o.op === kind).length;
+import { type ApiResult, firstRequest, stepRequest } from "./api.ts";
 
 /** The request for one more edit, given the tracks on screen before it. */
 export function editRequest(
@@ -32,20 +24,13 @@ export function editRequest(
   done: readonly ShareOp[],
   op: ShareOp,
 ): PlaylistRequest {
-  const ids = shown.map((x) => x.track_id);
-  return op.op === "more"
-    ? moreRequest(dims, base, tweaks, first, ids, count(done, "more") + 1)
-    : swapRequest(first, ids, count(done, "swap") + 1);
-}
-
-/** The list after an edit's tracks arrive. */
-export function applyEdit(
-  shown: readonly PlaylistTrackOut[],
-  op: ShareOp,
-  got: readonly PlaylistTrackOut[],
-): PlaylistTrackOut[] {
-  if (op.op === "more") return [...shown, ...got];
-  return shown.map((x, k) => (k === op.index && got[0] ? got[0] : x));
+  const firstPlan = { taste: first.taste, seed: first.seed, length: first.length, swap: false };
+  const step = editStep(dims, base, tweaks, firstPlan, done, op);
+  return stepRequest(
+    step,
+    first,
+    shown.map((x) => x.track_id),
+  );
 }
 
 export type Post = (req: PlaylistRequest) => Promise<ApiResult<PlaylistResponse>>;
@@ -112,4 +97,4 @@ export function shareCodeOf(hash: string): string | null {
     : null;
 }
 
-export { decodeShare, encodeShare };
+export { applyEdit, decodeShare, encodeShare };

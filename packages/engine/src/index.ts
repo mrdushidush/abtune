@@ -1,5 +1,6 @@
 export * from "./archetype.ts";
 export * from "./dims.ts";
+export * from "./edits.ts";
 export * from "./generate/index.ts";
 export * from "./hash.ts";
 export * from "./hints.ts";

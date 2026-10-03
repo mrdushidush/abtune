@@ -14,6 +14,7 @@ COPY packages/cli/package.json packages/cli/
 COPY packages/catalog/package.json packages/catalog/
 COPY packages/eval/package.json packages/eval/
 COPY packages/connectors/package.json packages/connectors/
+COPY packages/mcp/package.json packages/mcp/
 COPY apps/web/package.json apps/web/
 
 FROM manifests AS build
