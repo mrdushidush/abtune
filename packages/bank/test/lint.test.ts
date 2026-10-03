@@ -127,6 +127,14 @@ describe("authoring rules (§8.4)", () => {
       `questions:\n${question("q_g", "    unlock_if: { top_genres: [vaporwave] }\n")}`,
     ],
     [
+      "unlock-genre",
+      `questions:\n${question("q_g2", "    unlock_if: { all_top_genres: [rock, vaporwave] }\n")}`,
+    ],
+    [
+      "unlock-genre",
+      `questions:\n${question("q_g3", "    unlock_if: { all_top_genres: [rock, pop, rock, pop] }\n")}`,
+    ],
+    [
       "sensitive-fx",
       `questions:\n${question("q_s1", "    sensitive: political\n", "{ rock: 0.2 }")}`,
     ],

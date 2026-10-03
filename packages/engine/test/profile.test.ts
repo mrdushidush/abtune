@@ -78,4 +78,22 @@ describe("group helpers", () => {
     expect(values.reduce((x, y) => x + y, 0)).toBeCloseTo(1);
     expect(dist?.rock).toBeGreaterThan(dist?.pop ?? 1);
   });
+
+  it("relativeTau keeps a deep profile's split scale-invariant; shallow profiles keep τ", () => {
+    const withScores = (rock: number, pop: number) => {
+      const p = emptyProfile(bank);
+      const genres = { s: { ...p.groups.genres.s, rock, pop }, evidence: rock + pop };
+      return { ...p, groups: { ...p.groups, genres } };
+    };
+    const split = (rock: number, pop: number, rel: number) =>
+      groupDistribution(bank, withScores(rock, pop), "genres", 0.25, rel)?.rock ?? 0;
+    // A fixed τ sharpens as the same 5:4 ratio accumulates; the relative one doesn't.
+    expect(split(5, 4, 0)).toBeGreaterThan(0.97);
+    expect(split(10, 8, 0)).toBeGreaterThan(0.999);
+    expect(split(5, 4, 0.15)).toBeCloseTo(split(10, 8, 0.15), 10);
+    expect(split(5, 4, 0.15)).toBeGreaterThan(0.5);
+    expect(split(5, 4, 0.15)).toBeLessThan(0.8);
+    // Below τ / relativeTau the plain τ applies.
+    expect(split(1, 0.5, 0.15)).toBe(split(1, 0.5, 0));
+  });
 });

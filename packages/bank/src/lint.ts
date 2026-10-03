@@ -1,4 +1,4 @@
-import type { Question } from "@abtune/engine";
+import { type Question, UNLOCK_TOP_GENRES } from "@abtune/engine";
 import { type Diagnostic, diagnostic, locate, locateKey, type MergedBank } from "./parse.ts";
 
 export interface LintOptions {
@@ -158,8 +158,28 @@ export function lintBank(merged: MergedBank, options: LintOptions = {}): Diagnos
         );
       }
     });
-    if (q.unlock_if && !q.unlock_if.any && !q.unlock_if.top_genres) {
-      report(at("unlock_if"), "unlock-ref", "unlock_if needs `any` and/or `top_genres`.");
+    q.unlock_if?.all_top_genres?.forEach((g, i) => {
+      if (!genres.has(g)) {
+        report(
+          at("unlock_if", "all_top_genres", i),
+          "unlock-genre",
+          `unlock_if.all_top_genres "${g}" is not a genre cluster.`,
+        );
+      }
+    });
+    if ((q.unlock_if?.all_top_genres?.length ?? 0) > UNLOCK_TOP_GENRES) {
+      report(
+        at("unlock_if", "all_top_genres"),
+        "unlock-genre",
+        `unlock_if.all_top_genres can list at most ${UNLOCK_TOP_GENRES} genres (the top ${UNLOCK_TOP_GENRES}).`,
+      );
+    }
+    if (q.unlock_if && !q.unlock_if.any && !q.unlock_if.top_genres && !q.unlock_if.all_top_genres) {
+      report(
+        at("unlock_if"),
+        "unlock-ref",
+        "unlock_if needs `any`, `top_genres` and/or `all_top_genres`.",
+      );
     }
 
     // Families: a variant points at its canonical question and is asked in its place.

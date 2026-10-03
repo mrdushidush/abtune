@@ -336,6 +336,8 @@ p_G = softmax(s / τ_G)      # τ tuned by the eval harness
 - If `E_G == 0`: the group has **no preference**. Ranking ignores it and uses the catalog's natural distribution.
 - Languages are a soft preference only, never a hard filter unless `p_lang` for one language ≥ 0.8.
 
+**Amended 2026-10-03 (see DECISIONS.md):** for genres, τ grows with the evidence: τ′ = max(τ, 0.15 · s_top), where s_top is the best positive score. Scores are sums, so with a fixed τ a near-tie became 90/10 after 50 answers and could flip to 10/90 at 60. Deep profiles now keep their mix; shallow ones are unchanged.
+
 ---
 
 ## 8. Question engine (the state machine)
@@ -366,6 +368,7 @@ Session state is only `{config, answer_log, seed_salt}`. Everything else is deri
   unlock_if:                   # optional; eligible if ANY condition holds
     any: ["rock_pop=a"]        #   an answer in the log
     top_genres: [metal]        #   genre in current top-3 with s_c > 0
+    all_top_genres: [metal, edm] # every listed genre in the top 3 (added 2026-10-03, for duels)
   a: { label: "Bon Jovi", emoji: "🎸", fx: { classic_rock: 1, dec80: 0.8 } }
   b: { label: "Britney Spears", emoji: "💃", fx: { pop: 0.8, dance_pop: 0.8 } }
 ```
@@ -391,6 +394,8 @@ Session state is only `{config, answer_log, seed_salt}`. Everything else is deri
 4. Pick the max score. **Tie-break by `id`, lexicographic.** No randomness.
 
    **Amended 2026-10-03 (owner decision D7, see DECISIONS.md):** a session may carry a random quiz seed. With one, the card is a seeded draw (weighted by score) among the slot's questions scoring within a band of the best (vibe 60%, main 10%, hook and spicy 0), and a question family (`family:`, interchangeable variants) is asked once, as a seeded variant that avoids the previous session's cards. Without a seed, the rule above holds exactly, and only canonical questions are asked.
+
+   **Amended 2026-10-03 (see DECISIONS.md):** from position 21 on, a card that splits two leading genres scores × (1 + 3 · duel value), where the duel value is c₁ · c₂ · min(|Δ₁|, |Δ₂|) for the best pair of genres the card moves in opposite directions, and c = max(0, s) / s_top. The hook never gets this bonus, and neither do positions 4–20.
 5. Stop when answered (non-skip) count == mode, or the eligible pool is empty. In that case finish early with a friendly "you've exhausted the bank" message.
 
 ### 8.4 Authoring rules (enforced by `lint`)
@@ -659,6 +664,8 @@ SPICY_PACK_DEFAULT=off
     The original table above is still reproduced with `igNorm: "none"` (§8.3 as written), and a test pins both.
 
     **2026-10-03:** the bank grew past the seed (`more.yaml`, `il.yaml`), so both tables are pinned on a frozen copy of the seed as of M3 (`packages/cli/test/fixtures/m3-bank/`), with no quiz seed. The live bank's first cards are a snapshot test instead.
+
+    **2026-10-03, later:** the genre-duel bonus (§8.3) leaves the M3 table unchanged. The brief's original table is reproduced with `igNorm: "none"` and `duel: 0`.
 
 ---
 

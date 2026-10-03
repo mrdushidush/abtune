@@ -165,19 +165,28 @@ export function topCategories(bank: Bank, profile: Profile, group: GroupName, n:
 }
 
 /**
- * p_G = softmax(s / τ) in declaration order, or null when the group has no evidence
+ * p_G = softmax(s / τ') in declaration order, or null when the group has no evidence
  * (E_G = 0: no preference, so ranking uses the catalog's natural distribution).
+ *
+ * τ' = max(τ, relativeTau · s_top), where s_top is the best positive score. Scores are sums, so they
+ * grow with every answer. With a fixed τ the split sharpens without limit, so after 50 answers a
+ * near-tie becomes 90/10, and a single answer can flip it to 10/90. The relative term makes deep
+ * profiles scale-invariant: the split depends on s_c / s_top, not on how many answers were given.
  */
 export function groupDistribution(
   bank: Bank,
   profile: Profile,
   group: GroupName,
   tau: number,
+  relativeTau = 0,
 ): Readonly<Record<string, number>> | null {
   const state = profile.groups[group];
   if (state.evidence === 0) return null;
   const keys = bank.dimensions[group];
-  const logits = keys.map((k) => (state.s[k] ?? 0) / tau);
+  let top = 0;
+  for (const k of keys) top = Math.max(top, state.s[k] ?? 0);
+  const t = Math.max(tau, relativeTau * top);
+  const logits = keys.map((k) => (state.s[k] ?? 0) / t);
   const max = Math.max(...logits);
   const exps = logits.map((l) => Math.exp(l - max));
   const total = exps.reduce((a, b) => a + b, 0);

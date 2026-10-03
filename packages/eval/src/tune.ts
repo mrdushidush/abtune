@@ -44,6 +44,12 @@ export const TUNE_SPACE: readonly TuneDim[] = [
     set: (s, v) => taste(s, { tau: { ...s.taste.tau, genres: v as number } }),
   },
   {
+    name: "taste.relativeTau.genres",
+    values: [0, 0.1, 0.15, 0.2],
+    get: (s) => s.taste.relativeTau?.genres ?? 0,
+    set: (s, v) => taste(s, { relativeTau: { ...s.taste.relativeTau, genres: v as number } }),
+  },
+  {
     name: "taste.tau.decades",
     values: [0.25, 0.5, 1, 2],
     get: (s) => s.taste.tau.decades,

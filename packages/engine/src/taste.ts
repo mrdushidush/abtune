@@ -33,6 +33,11 @@ export interface TasteParams {
   /** Softmax temperature τ per categorical group (HANDOFF §7.3). */
   readonly tau: Readonly<Record<GroupName, number>>;
   /**
+   * Per group: the temperature grows to this × the top score once that exceeds τ, so deep profiles
+   * keep a stable mix instead of collapsing to one category (see groupDistribution). 0 = off.
+   */
+  readonly relativeTau?: Readonly<Partial<Record<GroupName, number>>>;
+  /**
    * `mu`: the fold's μ, which the prior pulls toward 0. `evidence`: the evidence-weighted mean of the
    * answers alone (μ·C / (C − prior)); confidence is then carried by κ only.
    */
@@ -44,10 +49,14 @@ export interface TasteParams {
   readonly popularityLean: { readonly weight: number; readonly target: number };
 }
 
-/** Tuned with the persona eval (M3, see DECISIONS.md); the brief's start: K 3, τ 1, target mu. */
+/**
+ * Tuned with the persona eval (M3, see DECISIONS.md); the brief's start: K 3, τ 1, target mu.
+ * relativeTau.genres 0.15 was added on 2026-10-03 (the 50-question playlist flipped genres).
+ */
 export const DEFAULT_TASTE_PARAMS: TasteParams = {
   confidenceRamp: 5,
   tau: { decades: 1, genres: 0.25, languages: 1 },
+  relativeTau: { genres: 0.15 },
   target: "evidence",
   popularityLean: { weight: 0.6, target: 0.6 },
 };
@@ -90,7 +99,13 @@ export function tasteVector(
   }
   const groups = {} as Record<GroupName, number[] | null>;
   for (const group of GROUPS) {
-    const p = groupDistribution(bank, profile, group, params.tau[group]);
+    const p = groupDistribution(
+      bank,
+      profile,
+      group,
+      params.tau[group],
+      params.relativeTau?.[group] ?? 0,
+    );
     groups[group] = p ? bank.dimensions[group].map((k) => quantize(p[k] ?? 0, P_SCALE)) : null;
   }
   return { target, weight, ...groups };

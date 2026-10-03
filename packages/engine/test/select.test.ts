@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   type AnswerEvent,
+  DEFAULT_DUEL,
+  DEFAULT_DUEL_FROM,
+  duelValue,
   eligibleQuestions,
   foldProfile,
   inSlot,
@@ -67,6 +70,51 @@ describe("eligibility and unlocks", () => {
 
   it("unlocks by top-3 genre with positive score", () => {
     expect(ids([{ id: "root_q", choice: "b" }])).toContain("genre_q");
+  });
+
+  it("all_top_genres needs every listed genre in the top 3", () => {
+    const duel = q(
+      "duel_q",
+      "deep",
+      50,
+      { rock: 1 },
+      { jazz: 1 },
+      {
+        unlock_if: { all_top_genres: ["rock", "jazz"] },
+      },
+    );
+    const rockOnly = q("rock_only", "core", 50, { rock: 1 }, { pop: 1 });
+    const rockJazz = q("rock_jazz", "core", 50, { rock: 1, jazz: 0.5 }, { pop: 1 });
+    const b = makeBank([rockOnly, rockJazz, duel]);
+    const open = (log: AnswerEvent[]) =>
+      eligibleQuestions(b, foldProfile(b, log), log, packs).some((x) => x.id === "duel_q");
+    expect(open([{ id: "rock_only", choice: "a" }])).toBe(false);
+    expect(open([{ id: "rock_jazz", choice: "a" }])).toBe(true);
+  });
+});
+
+describe("genre duels", () => {
+  const duel = q("duel", "core", 50, { rock: 1 }, { jazz: 1 });
+  const same = q("same", "core", 50, { rock: 1 }, { rock: 0.5 });
+  const rockJazz = q("rock_jazz", "core", 50, { rock: 1, jazz: 1 }, { pop: 1 });
+  const rockHalfJazz = q("rock_half_jazz", "core", 50, { rock: 1, jazz: 0.5 }, { pop: 1 });
+  const bank = makeBank([duel, same, rockJazz, rockHalfJazz]);
+
+  it("values a card by how evenly matched the two genres it splits are", () => {
+    expect(duelValue(bank, foldProfile(bank, []), duel)).toBe(0);
+    const tied = foldProfile(bank, [{ id: "rock_jazz", choice: "a" }]);
+    expect(duelValue(bank, tied, duel)).toBe(1);
+    // Both sides add rock: nothing to settle.
+    expect(duelValue(bank, tied, same)).toBe(0);
+    const behind = foldProfile(bank, [{ id: "rock_half_jazz", choice: "a" }]);
+    expect(duelValue(bank, behind, duel)).toBe(0.5);
+  });
+
+  it("multiplies the score by 1 + duel · value, from DEFAULT_DUEL_FROM on", () => {
+    const tied = foldProfile(bank, [{ id: "rock_jazz", choice: "a" }]);
+    const plain = scoreQuestion(bank, tied, duel, { duel: 0 });
+    expect(scoreQuestion(bank, tied, duel)).toBeCloseTo(plain * (1 + DEFAULT_DUEL));
+    expect(DEFAULT_DUEL_FROM).toBeGreaterThan(3);
   });
 });
 

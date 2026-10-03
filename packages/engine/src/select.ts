@@ -95,8 +95,9 @@ export const UNLOCK_TOP_GENRES = 3;
 /**
  * Eligible = family not yet asked (skips count as asked), pack enabled, and its canonical
  * question's `unlock_if` satisfied: any listed answer is in the log (a "both" answer satisfies
- * =a and =b; an answer to any variant counts for its family), or any listed genre is in the
- * current top 3 with s_c > 0. Variants of an eligible family are eligible too.
+ * =a and =b; an answer to any variant counts for its family), or any `top_genres` genre is in
+ * the current top 3 with s_c > 0, or every `all_top_genres` genre is. Variants of an eligible
+ * family are eligible too.
  */
 export function eligibleQuestions(
   bank: Bank,
@@ -119,9 +120,10 @@ export function eligibleQuestions(
       const choice = choices.get(fam(ref.id));
       if (choice === ref.side || choice === "both") return true;
     }
-    if (!unlock.top_genres) return false;
+    if (!unlock.top_genres && !unlock.all_top_genres) return false;
     top ??= new Set(topCategories(bank, profile, "genres", UNLOCK_TOP_GENRES));
-    return unlock.top_genres.some((g) => top?.has(g));
+    if (unlock.top_genres?.some((g) => top?.has(g))) return true;
+    return unlock.all_top_genres?.every((g) => top?.has(g)) ?? false;
   });
 }
 
@@ -135,16 +137,63 @@ export interface SelectOptions {
   readonly igNorm?: IgNorm;
   /** Score the hook (positions 1–3) by §8.3 as written, normalizing only from position 4. */
   readonly rawHook?: boolean;
+  /**
+   * Weight of the genre-duel bonus: score × (1 + duel · duelValue). 0 = §8.3 without it.
+   * Default: DEFAULT_DUEL. The hook never gets it.
+   */
+  readonly duel?: number;
+  /** First 1-based position the duel bonus applies at. Default: DEFAULT_DUEL_FROM. */
+  readonly duelFrom?: number;
+}
+
+/**
+ * Genre duels (2026-10-03, see DECISIONS.md): how well `question` splits two of the leading
+ * genres, in [0, 1]. A forced choice adds evidence to whichever side is picked, so a genre the
+ * listener doesn't care about can tie the one they love; only a card that pits the two against each
+ * other settles it. Each genre's contender weight is c = max(0, s) / s_top. For each pair of genres
+ * the card moves in opposite directions, the value is c₁ · c₂ · min(|Δ₁|, |Δ₂|), and the card
+ * scores its best pair: 1 for a full-strength card between two tied leaders.
+ */
+export function duelValue(bank: Bank, profile: Profile, question: Question): number {
+  const s = profile.groups.genres.s;
+  let top = 0;
+  for (const g of bank.dimensions.genres) top = Math.max(top, s[g] ?? 0);
+  if (top <= 0) return 0;
+  const diffs: { c: number; d: number }[] = [];
+  for (const g of bank.dimensions.genres) {
+    const d = (question.a.fx[g] ?? 0) - (question.b.fx[g] ?? 0);
+    const c = Math.max(0, s[g] ?? 0) / top;
+    if (d !== 0 && c > 0) diffs.push({ c, d });
+  }
+  let best = 0;
+  for (let i = 0; i < diffs.length; i++) {
+    for (let j = i + 1; j < diffs.length; j++) {
+      const x = diffs[i] as { c: number; d: number };
+      const y = diffs[j] as { c: number; d: number };
+      if (x.d * y.d >= 0) continue;
+      best = Math.max(best, x.c * y.c * Math.min(Math.abs(x.d), Math.abs(y.d)));
+    }
+  }
+  return best;
 }
 
 /** The engine's question-selection rule (set by the M3 persona eval; see DECISIONS.md). */
 export const DEFAULT_IG_NORM: IgNorm = "keys";
 export const DEFAULT_RAW_HOOK = true;
+/**
+ * Genre-duel bonus (2026-10-03, set with simulated listeners; see DECISIONS.md). The first 20
+ * cards explore every dimension (a bonus there pushed out the language card); from card 21 on,
+ * close genre leaders get a card that settles them, so the playlist stops flipping between 50
+ * and 60 answers.
+ */
+export const DEFAULT_DUEL = 3;
+export const DEFAULT_DUEL_FROM = 21;
 
 /**
  * HANDOFF §8.3 information gain:
  *   u(k) = 1 / C_k for scalars, 1 / (1 + E_G(k)) for categoricals
  *   IG(q) = Σ_k |fx_a[k] − fx_b[k]| · u(k) · w_q,  score = IG · (0.5 + pri/100)
+ * then IG ÷ key count (DEFAULT_IG_NORM) and × (1 + duel · duelValue) (DEFAULT_DUEL).
  */
 export function scoreQuestion(
   bank: Bank,
@@ -166,7 +215,9 @@ export function scoreQuestion(
   const norm = options.igNorm ?? DEFAULT_IG_NORM;
   if (keys > 0 && norm === "keys") ig /= keys;
   else if (keys > 0 && norm === "sqrt") ig /= Math.sqrt(keys);
-  return ig * (0.5 + question.pri / 100);
+  const duel = options.duel ?? DEFAULT_DUEL;
+  const bonus = duel > 0 ? 1 + duel * duelValue(bank, profile, question) : 1;
+  return ig * (0.5 + question.pri / 100) * bonus;
 }
 
 /** Code-unit comparison: locale-independent, so ordering is identical on every machine. */
@@ -231,7 +282,11 @@ export function nextQuestion(
   const inPool = eligible.filter((q) => inSlot(q.pack, slot));
   const pool = inPool.length > 0 ? inPool : eligible;
   const scoring: SelectOptions =
-    slot === "hook" && (options.rawHook ?? DEFAULT_RAW_HOOK) ? { igNorm: "none" } : options;
+    slot === "hook" && (options.rawHook ?? DEFAULT_RAW_HOOK)
+      ? { igNorm: "none", duel: 0 }
+      : position < (options.duelFrom ?? DEFAULT_DUEL_FROM)
+        ? { ...options, duel: 0 }
+        : options;
   const scored = pool
     .map((q) => ({ q, score: scoreQuestion(bank, profile, q, scoring) }))
     .sort((x, y) => y.score - x.score || compareIds(x.q.id, y.q.id));

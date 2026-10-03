@@ -13,6 +13,7 @@ const option = z.strictObject({
 const unlockIf = z.strictObject({
   any: z.array(z.string()).min(1).optional(),
   top_genres: z.array(z.string()).min(1).optional(),
+  all_top_genres: z.array(z.string()).min(2).optional(),
 });
 
 const question = z.strictObject({
@@ -67,6 +68,7 @@ export function bankFileJsonSchema(dims: Dimensions): Record<string, unknown> {
       .min(1)
       .optional(),
     top_genres: z.array(z.enum(dims.genres)).min(1).optional(),
+    all_top_genres: z.array(z.enum(dims.genres)).min(2).max(3).optional(),
   });
   const strictQuestion = question.extend({
     id: z.string().regex(/^[a-z][a-z0-9_]*$/),

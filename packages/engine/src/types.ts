@@ -16,6 +16,11 @@ export interface UnlockIf {
   readonly any?: readonly string[];
   /** Satisfied if any of these genres is in the current top 3 with s_c > 0. */
   readonly top_genres?: readonly string[];
+  /**
+   * Satisfied if every one of these genres is in the current top 3 with s_c > 0. For duels between
+   * two genres: they only help when both are contenders.
+   */
+  readonly all_top_genres?: readonly string[];
 }
 
 export interface Question {

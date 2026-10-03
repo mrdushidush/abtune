@@ -401,5 +401,6 @@ describe("generator defaults", () => {
     const p = DEFAULT_GENERATOR_PARAMS;
     expect([p.wScalar, p.wGenre, p.wDecade, p.wLanguage]).toEqual([0.45, 0.3, 0.15, 0.2]);
     expect(DEFAULT_TASTE_PARAMS.tau.genres).toBe(0.25);
+    expect(DEFAULT_TASTE_PARAMS.relativeTau?.genres).toBe(0.15);
   });
 });

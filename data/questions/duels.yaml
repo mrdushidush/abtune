@@ -1,0 +1,233 @@
+# yaml-language-server: $schema=./schema.json
+# Genre duels (2026-10-03). A forced choice adds evidence to the side picked even when the listener
+# likes neither ("Mozart or Avicii?" for a metalhead adds EDM). By 50 answers a genre the listener
+# doesn't care about often ties the one they love, and only 73 of the 276 genre pairs had a card
+# that splits them. Each duel pits two genres that often end up neck and neck at the top of a
+# simulated profile. It unlocks only once both are in the listener's top 3 (`all_top_genres`), so
+# nobody gets a duel between a genre they love and one they never picked.
+
+version: 1
+
+questions:
+
+# ─────────────────────────── ROCK & METAL ───────────────────────────
+
+- id: rockanthems_housemusic
+  pack: deep
+  pri: 60
+  unlock_if: { all_top_genres: [classic_rock, house_techno] }
+  a: { label: "Classic rock anthems", emoji: "🎸", fx: { classic_rock: 1, acoustic: 0.4 } }
+  b: { label: "House music", emoji: "🏠", fx: { house_techno: 1, acoustic: -0.8 } }
+
+- id: classicrock_heavymetal
+  pack: deep
+  pri: 60
+  unlock_if: { all_top_genres: [classic_rock, metal] }
+  a: { label: "Classic rock", emoji: "🎸", fx: { classic_rock: 1, dec70: 0.5 } }
+  b: { label: "Heavy metal", emoji: "🤘", fx: { metal: 1, intensity: 0.9 } }
+
+- id: headbang_rave
+  pack: deep
+  pri: 60
+  q: "Turn it up:"
+  unlock_if: { all_top_genres: [metal, edm] }
+  a: { label: "Headbanging riffs", emoji: "🤘", fx: { metal: 1, acoustic: 0.3 } }
+  b: { label: "Rave drops", emoji: "🎛️", fx: { edm: 1, acoustic: -0.8, dance: 0.6 } }
+
+- id: slipknot_taylorswift
+  pack: deep
+  pri: 58
+  unlock_if: { all_top_genres: [metal, pop] }
+  a: { label: "Slipknot", emoji: "🎭", fx: { metal: 1, intensity: 1, dec00: 0.4 } }
+  b: { label: "Taylor Swift", emoji: "💖", fx: { pop: 1, dec10: 0.5, valence: 0.3 } }
+
+- id: moshmetal_rap
+  pack: deep
+  pri: 56
+  unlock_if: { all_top_genres: [metal, hiphop] }
+  a: { label: "Mosh-pit metal", emoji: "🤘", fx: { metal: 1, intensity: 0.9 } }
+  b: { label: "Rap verses", emoji: "🎤", fx: { hiphop: 1, vocal: 0.7 } }
+
+- id: thrash_retrosynths
+  pack: deep
+  pri: 54
+  unlock_if: { all_top_genres: [metal, synth_newwave] }
+  a: { label: "Thrash guitars", emoji: "🤘", fx: { metal: 1, intensity: 0.9 } }
+  b: { label: "Retro synths", emoji: "🎹", fx: { synth_newwave: 1, dec80: 0.6 } }
+
+- id: punk_metal
+  pack: deep
+  pri: 56
+  unlock_if: { all_top_genres: [punk, metal] }
+  a: { label: "Three-chord punk", emoji: "🧷", fx: { punk: 1, complexity: -0.5 } }
+  b: { label: "Technical metal", emoji: "🤘", fx: { metal: 1, complexity: 0.4 } }
+
+# ─────────────────────────── INDIE & FOLK ───────────────────────────
+
+- id: strokes_mumford
+  pack: deep
+  pri: 58
+  unlock_if: { all_top_genres: [alt_indie, folk] }
+  a: { label: "The Strokes", emoji: "🎸", fx: { alt_indie: 1, dec00: 0.6, energy: 0.4 } }
+  b: { label: "Mumford & Sons", emoji: "🪕", fx: { folk: 1, dec10: 0.6, acoustic: 0.7 } }
+
+- id: indieband_jazztrio
+  pack: deep
+  pri: 54
+  unlock_if: { all_top_genres: [alt_indie, jazz] }
+  a: { label: "Indie guitar band", emoji: "🎒", fx: { alt_indie: 1, energy: 0.3 } }
+  b: { label: "Jazz trio", emoji: "🎷", fx: { jazz: 1, complexity: 0.6 } }
+
+- id: acousticfolk_latindance
+  pack: deep
+  pri: 54
+  unlock_if: { all_top_genres: [folk, latin] }
+  a: { label: "Acoustic folk", emoji: "🪕", fx: { folk: 1, acoustic: 0.7 } }
+  b: { label: "Latin dance", emoji: "💃", fx: { latin: 1, dance: 0.8, lang_es: 0.3 } }
+
+- id: clubpop_folksongs
+  pack: deep
+  pri: 54
+  unlock_if: { all_top_genres: [dance_pop, folk] }
+  a: { label: "Club pop", emoji: "💃", fx: { dance_pop: 1, dance: 0.8 } }
+  b: { label: "Folk songs", emoji: "🪕", fx: { folk: 1, acoustic: 0.8 } }
+
+- id: stringquartet_countryband
+  pack: deep
+  pri: 54
+  unlock_if: { all_top_genres: [classical, country] }
+  a: { label: "String quartet", emoji: "🎻", fx: { classical: 1, complexity: 0.6 } }
+  b: { label: "Country band", emoji: "🤠", fx: { country: 1, vocal: 0.6 } }
+
+# ─────────────────────────── ELECTRONIC ───────────────────────────
+
+- id: symphonyhall_technoclub
+  pack: deep
+  pri: 56
+  unlock_if: { all_top_genres: [classical, house_techno] }
+  a: { label: "Symphony hall", emoji: "🎻", fx: { classical: 1, acoustic: 0.8 } }
+  b: { label: "Techno club", emoji: "🔁", fx: { house_techno: 1, acoustic: -0.8, dance: 0.6 } }
+
+- id: pophits_undergroundhouse
+  pack: deep
+  pri: 56
+  unlock_if: { all_top_genres: [dance_pop, house_techno] }
+  a: { label: "Pop dance hits", emoji: "💃", fx: { dance_pop: 1, mainstream: 0.6 } }
+  b: { label: "Underground house", emoji: "🏠", fx: { house_techno: 1, mainstream: -0.6 } }
+
+- id: popvocals_djanthems
+  pack: deep
+  pri: 56
+  unlock_if: { all_top_genres: [dance_pop, edm] }
+  a: { label: "Dance-pop vocals", emoji: "🎤", fx: { dance_pop: 1, vocal: 0.7 } }
+  b: { label: "DJ anthems", emoji: "🎛️", fx: { edm: 1, vocal: -0.5 } }
+
+- id: festivaledm_hiphop
+  pack: deep
+  pri: 58
+  unlock_if: { all_top_genres: [edm, hiphop] }
+  a: { label: "Festival EDM", emoji: "🎆", fx: { edm: 1, acoustic: -0.5 } }
+  b: { label: "Hip-hop", emoji: "🎤", fx: { hiphop: 1, vocal: 0.6 } }
+
+- id: edmdrops_reggaeton
+  pack: deep
+  pri: 54
+  unlock_if: { all_top_genres: [edm, latin] }
+  a: { label: "EDM drops", emoji: "🎛️", fx: { edm: 1, acoustic: -0.6 } }
+  b: { label: "Reggaeton", emoji: "🔥", fx: { latin: 1, lang_es: 0.5, dance: 0.6 } }
+
+- id: rave_discoball
+  pack: deep
+  pri: 54
+  unlock_if: { all_top_genres: [edm, funk_disco] }
+  a: { label: "Rave", emoji: "🎛️", fx: { edm: 1, energy: 0.7 } }
+  b: { label: "Disco ball", emoji: "🪩", fx: { funk_disco: 1, dec70: 0.5 } }
+
+- id: edmanthem_slowjam
+  pack: deep
+  pri: 54
+  unlock_if: { all_top_genres: [edm, rnb_soul] }
+  a: { label: "EDM anthem", emoji: "🎆", fx: { edm: 1, energy: 0.8 } }
+  b: { label: "Slow-jam R&B", emoji: "🌙", fx: { rnb_soul: 1, energy: -0.4 } }
+
+# ─────────────────────────── CHILL ───────────────────────────
+
+- id: ambientchill_hardrap
+  pack: deep
+  pri: 58
+  q: "Headphones on:"
+  unlock_if: { all_top_genres: [chill_ambient, hiphop] }
+  a: { label: "Ambient chill", emoji: "🌊", fx: { chill_ambient: 1, energy: -0.6 } }
+  b: { label: "Hard-hitting rap", emoji: "🎤", fx: { hiphop: 1, energy: 0.5 } }
+
+- id: floatingambient_disco
+  pack: deep
+  pri: 54
+  unlock_if: { all_top_genres: [chill_ambient, funk_disco] }
+  a: { label: "Floating ambient", emoji: "🌌", fx: { chill_ambient: 1, energy: -0.6 } }
+  b: { label: "Disco grooves", emoji: "🪩", fx: { funk_disco: 1, dance: 0.8 } }
+
+- id: lounge_rootsreggae
+  pack: deep
+  pri: 54
+  unlock_if: { all_top_genres: [chill_ambient, reggae] }
+  a: { label: "Chill-out lounge", emoji: "🛋️", fx: { chill_ambient: 1, tempo: -0.4 } }
+  b: { label: "Roots reggae", emoji: "🌴", fx: { reggae: 1, valence: 0.4 } }
+
+- id: chillbeats_bigdrop
+  pack: deep
+  pri: 54
+  unlock_if: { all_top_genres: [chill_ambient, edm] }
+  a: { label: "Chill beats", emoji: "🌊", fx: { chill_ambient: 1, energy: -0.6 } }
+  b: { label: "Festival bangers", emoji: "🎆", fx: { edm: 1, energy: 0.8 } }
+
+# ─────────────────────────── SOUL, JAZZ & POP ───────────────────────────
+
+- id: hardrap_smoothrnb
+  pack: deep
+  pri: 58
+  unlock_if: { all_top_genres: [hiphop, rnb_soul] }
+  a: { label: "Hard rap", emoji: "🎤", fx: { hiphop: 1, intensity: 0.5 } }
+  b: { label: "Smooth R&B", emoji: "🌙", fx: { rnb_soul: 1, intensity: -0.4 } }
+
+- id: soulsinger_jazzcombo
+  pack: deep
+  pri: 56
+  unlock_if: { all_top_genres: [rnb_soul, jazz] }
+  a: { label: "Soul singer", emoji: "🎤", fx: { rnb_soul: 1, vocal: 0.8 } }
+  b: { label: "Jazz combo", emoji: "🎷", fx: { jazz: 1, vocal: -0.5 } }
+
+- id: ewf_coltrane
+  pack: deep
+  pri: 54
+  unlock_if: { all_top_genres: [funk_disco, jazz] }
+  a: { label: "Earth, Wind & Fire", emoji: "🔥", fx: { funk_disco: 1, dance: 0.7, dec70: 0.5 } }
+  b: { label: "John Coltrane", emoji: "🎷", fx: { jazz: 1, complexity: 0.8, dec60: 0.5 } }
+
+- id: clubbangers_latejazz
+  pack: deep
+  pri: 54
+  unlock_if: { all_top_genres: [dance_pop, jazz] }
+  a: { label: "Club bangers", emoji: "💃", fx: { dance_pop: 1, energy: 0.7 } }
+  b: { label: "Late-night jazz", emoji: "🎷", fx: { jazz: 1, energy: -0.5 } }
+
+- id: cooljazz_latinparty
+  pack: deep
+  pri: 54
+  unlock_if: { all_top_genres: [jazz, latin] }
+  a: { label: "Cool jazz", emoji: "🎷", fx: { jazz: 1, energy: -0.4 } }
+  b: { label: "Latin party", emoji: "🪅", fx: { latin: 1, dance: 0.8, lang_es: 0.3 } }
+
+- id: funkband_latinband
+  pack: deep
+  pri: 52
+  unlock_if: { all_top_genres: [funk_disco, latin] }
+  a: { label: "Funk band", emoji: "🎺", fx: { funk_disco: 1, dec70: 0.4 } }
+  b: { label: "Latin band", emoji: "🪇", fx: { latin: 1, lang_es: 0.4 } }
+
+- id: beethoven_moviescores
+  pack: deep
+  pri: 54
+  unlock_if: { all_top_genres: [classical, soundtrack] }
+  a: { label: "Beethoven", emoji: "🎼", fx: { classical: 1, complexity: 0.6 } }
+  b: { label: "Movie soundtracks", emoji: "🎬", fx: { soundtrack: 1, energy: 0.3 } }

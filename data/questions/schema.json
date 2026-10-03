@@ -145,6 +145,40 @@
                     "kpop"
                   ]
                 }
+              },
+              "all_top_genres": {
+                "minItems": 2,
+                "maxItems": 3,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "classic_rock",
+                    "alt_indie",
+                    "metal",
+                    "punk",
+                    "pop",
+                    "dance_pop",
+                    "hiphop",
+                    "rnb_soul",
+                    "funk_disco",
+                    "house_techno",
+                    "edm",
+                    "chill_ambient",
+                    "synth_newwave",
+                    "folk",
+                    "country",
+                    "blues",
+                    "jazz",
+                    "classical",
+                    "soundtrack",
+                    "reggae",
+                    "latin",
+                    "world",
+                    "mizrahi",
+                    "kpop"
+                  ]
+                }
               }
             },
             "additionalProperties": false
