@@ -1,0 +1,11 @@
+# HTTPS in front of the app (COMPOSE_PROFILES=caddy). Caddy gets and renews the certificates.
+{$SITE_HOST} {
+	encode zstd gzip
+	# The app leaves HSTS to the proxy.
+	header Strict-Transport-Security "max-age=31536000"
+	reverse_proxy app:8787
+}
+
+www.{$SITE_HOST} {
+	redir https://{$SITE_HOST}{uri} permanent
+}

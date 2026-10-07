@@ -1,0 +1,36 @@
+name: "This playlist isn't me"
+description: A playlist that missed your taste. The share link rebuilds it exactly, so we can see why.
+labels: ["playlist quality"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks! On the result screen, press **Share** and copy the link. It holds your taste profile
+        and playlist settings, never your answers.
+  - type: input
+    id: link
+    attributes:
+      label: Share link
+      placeholder: "https://abtune.com/#s=…"
+    validations:
+      required: true
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What's off?
+      description: Songs that don't belong, what's missing, a wrong genre or era on the card.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What do you actually listen to?
+      description: A few artists or songs you'd expect.
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where did you take the quiz?
+      options:
+        - abtune.com
+        - Self-hosted (dev sample, 50k songs)
+        - Self-hosted (full catalog)

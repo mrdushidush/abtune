@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { AI_OFF } from "@abtune/ai";
 import {
   missingSettings,
@@ -12,8 +14,10 @@ import { secureHeaders } from "hono/secure-headers";
 import type { ApiError, Health } from "../api-types.ts";
 import { aiHealth, mountAi, type ServerAi } from "./ai.ts";
 import { type CatalogSlot, catalogHealth, readyCatalog } from "./catalog.ts";
+import { sameOrigin } from "./http.ts";
 import { buildPlaylist, parsePlaylistRequest, UnknownTrackError } from "./playlist.ts";
 import { mountSpotify } from "./spotify.ts";
+import { isStatEvent, type Stats } from "./stats.ts";
 
 export interface AppOptions {
   readonly bank: Bank;
@@ -31,7 +35,47 @@ export interface AppOptions {
    * SPOTIFY_REDIRECT_URI's (a reverse proxy's public name).
    */
   readonly hosts?: readonly string[];
+  /** Where share links and link previews point (`shareBaseUrl`); ends with "/". */
+  readonly publicUrl?: string;
+  /** Usage counters (STATS_FILE). Omitted: none are kept and /api/event doesn't exist. */
+  readonly stats?: Stats | null;
 }
+
+/** The public instance: where share links from a loopback or home-network install point. */
+export const PUBLIC_INSTANCE_URL = "https://abtune.com/";
+
+/**
+ * Where share links (and link previews) point: SHARE_BASE_URL, else APP_BASE_URL when it is a
+ * public name, else the public instance. A link opened on another server rebuilds the playlist
+ * from that server's catalog.
+ */
+export function shareBaseUrl(appBaseUrl?: string, shareBase?: string): string {
+  const candidates: [string | undefined, boolean][] = [
+    [shareBase, false],
+    [appBaseUrl, true],
+  ];
+  for (const [u, mustBePublic] of candidates) {
+    if (!u) continue;
+    let url: URL;
+    try {
+      url = new URL(u);
+    } catch {
+      continue;
+    }
+    if (url.protocol !== "http:" && url.protocol !== "https:") continue;
+    // Loopback names, IP addresses and dotless (home network) names can't be opened elsewhere.
+    if (mustBePublic && (knownHost(url.hostname, new Set()) || !url.hostname.includes(".")))
+      continue;
+    return `${url.origin}${url.pathname.replace(/\/*$/, "/")}`;
+  }
+  return PUBLIC_INSTANCE_URL;
+}
+
+/** In the built index.html: replaced with the public URL (link-preview tags need absolute URLs). */
+export const URL_PLACEHOLDER = "__ABTUNE_URL__";
+
+const attr = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 /**
  * A host a browser may reach this server by. DNS rebinding points a site's own name at this
@@ -73,6 +117,8 @@ const SECURITY_HEADERS = secureHeaders({
 
 /** A playlist request is a taste vector and a few strings: well under this. */
 export const MAX_BODY_BYTES = 16 * 1024;
+/** An event report is one name. */
+export const MAX_EVENT_BYTES = 256;
 
 export function packCounts(bank: Bank): Record<string, number> {
   const counts: Record<string, number> = {};
@@ -92,6 +138,8 @@ export function createApp({
   spotify = unconfiguredSpotify(),
   ai = { settings: AI_OFF, runtime: null },
   hosts = [],
+  publicUrl = PUBLIC_INSTANCE_URL,
+  stats = null,
 }: AppOptions): Hono {
   const app = new Hono();
   const engine = engineVersion(bank);
@@ -118,6 +166,8 @@ export function createApp({
       catalog: catalogHealth(catalog),
       ai: aiHealth(ai),
       spotify: { configured: missingSettings(spotify).length === 0 },
+      share_url: publicUrl,
+      stats: stats !== null,
     } satisfies Health),
   );
 
@@ -162,12 +212,60 @@ export function createApp({
   mountSpotify(app, { settings: spotify, bank, catalog, engine });
   mountAi(app, { ai, bank, engine });
 
+  if (stats) {
+    // A name from STAT_EVENTS and nothing else: the count is all that's kept.
+    app.post(
+      "/api/event",
+      bodyLimit({
+        maxSize: MAX_EVENT_BYTES,
+        onError: (c) => fail(c, 413, { error: "too_large", message: "Request body too large." }),
+      }),
+      async (c) => {
+        if (!sameOrigin(c)) return fail(c, 403, { error: "cross_site" });
+        let event: unknown;
+        try {
+          // Sent as text/plain (sendBeacon), so it's parsed here.
+          event = (JSON.parse(await c.req.text()) as { e?: unknown } | null)?.e;
+        } catch {
+          event = undefined;
+        }
+        if (!isStatEvent(event))
+          return fail(c, 400, { error: "bad_request", message: "Unknown event." });
+        stats.count(event);
+        return c.body(null, 204);
+      },
+    );
+    app.get("/api/stats", (c) => {
+      c.header("Cache-Control", "no-store");
+      return c.json(stats.snapshot());
+    });
+  }
+
   app.all("/api/*", (c) => fail(c, 404, { error: "not_found" }));
 
   if (staticRoot !== undefined) {
+    // index.html with the public URL filled in, read once.
+    let index: Promise<string | null> | null = null;
+    const page = async (c: Context) => {
+      index ??= readFile(path.join(staticRoot, "index.html"), "utf8").then(
+        (html) => html.replaceAll(URL_PLACEHOLDER, attr(publicUrl)),
+        () => null,
+      );
+      const html = await index;
+      if (html === null) return c.text("Not found", 404);
+      c.header("Cache-Control", "no-cache");
+      return c.html(html);
+    };
+    app.get("/", page);
+    app.get("/index.html", page);
+    // Built assets have content hashes in their names: cache them for good.
+    app.use("/assets/*", async (c, next) => {
+      await next();
+      if (c.res.status === 200) c.header("Cache-Control", "public, max-age=31536000, immutable");
+    });
     app.use("/*", serveStatic({ root: staticRoot }));
     // SPA fallback: client-side routes get index.html.
-    app.get("*", serveStatic({ root: staticRoot, path: "index.html" }));
+    app.get("*", page);
   }
 
   return app;

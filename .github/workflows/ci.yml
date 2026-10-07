@@ -18,9 +18,9 @@ jobs:
     name: Lint, typecheck, test (Linux)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -43,9 +43,9 @@ jobs:
         os: ${{ fromJSON(github.event_name == 'pull_request' && '["windows-latest"]' || '["windows-latest","macos-latest"]') }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -57,7 +57,7 @@ jobs:
     name: docker compose smoke test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Install the committed 5k fixture as the catalog
         run: cp -r data/catalog-fixture data/catalog/fixture
       - run: docker compose up -d --build
@@ -72,8 +72,11 @@ jobs:
           curl -s http://127.0.0.1:8787/api/health
           docker compose logs
           exit 1
-      - name: Serves the web app
-        run: curl -sf http://127.0.0.1:8787/ | grep -q "<title>ABTune</title>"
+      - name: Serves the web app, with link previews pointing at the public instance
+        run: |
+          curl -sf http://127.0.0.1:8787/ | grep -q "<title>ABTune</title>"
+          curl -sf http://127.0.0.1:8787/ | grep -q 'og:image" content="https://abtune.com/og.png"'
+          curl -sf -o /dev/null http://127.0.0.1:8787/og.png
       - name: Generates a playlist, identically twice
         run: |
           BODY=$(curl -sf http://127.0.0.1:8787/api/health | jq -c '{

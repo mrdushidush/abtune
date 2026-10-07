@@ -43,8 +43,8 @@ COPY data/questions data/questions
 COPY data/personas data/personas
 COPY --from=build /app/apps/web/dist apps/web/dist
 # Catalogs are mounted here (compose) and written by `abtune catalog fetch`; Spotify connections
-# (encrypted) are kept in data/spotify.
-RUN mkdir -p data/catalog data/spotify && chown node:node data/catalog data/spotify
+# (encrypted) are kept in data/spotify, and a public instance's usage counters in data/stats.
+RUN mkdir -p data/catalog data/spotify data/stats && chown node:node data/catalog data/spotify data/stats
 USER node
 EXPOSE 8787
 HEALTHCHECK --interval=10s --timeout=3s --start-period=10s --retries=3 \

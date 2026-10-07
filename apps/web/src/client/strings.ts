@@ -140,6 +140,9 @@ export const t = {
     shareText: (name: string) => `My music personality: ${name}. Take the quiz and get yours.`,
     onThePlaylist: "On the playlist",
     tagline: "ABTune · A/B test your taste",
+    storyAsk: "What's your music personality?",
+    formats: { post: "Post 4:5", story: "Story 9:16" },
+    opensOn: (host: string) => `The link opens on ${host}, the public ABTune.`,
     imageAlt: (name: string) => `Music personality card: ${name}`,
     // The shared view (someone opened a link).
     sharedKicker: "A shared music personality",
@@ -237,6 +240,11 @@ export const t = {
     exportInstead: "Export CSV instead",
   },
   footerNoCatalog: "No catalog installed yet",
+  privacyLine:
+    "No login. Your answers stay in this browser; the server only gets your taste profile to pick the songs.",
+  statsLine:
+    "This site counts finished quizzes, shares and exports: numbers only, nothing about you.",
+  source: "Open source on GitHub",
   catalogLine: (version: string, tracks: number) =>
     `${version} · ${tracks.toLocaleString("en-US")} songs`,
 };

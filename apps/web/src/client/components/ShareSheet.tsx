@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { type CardInput, cardImage } from "../lib/card-image.ts";
+import { type CardFormat, type CardInput, cardImage } from "../lib/card-image.ts";
 import { saveBlob } from "../lib/download.ts";
 import { shareUrl } from "../state/share.ts";
+import { track } from "../state/stats.ts";
 import { t } from "../strings.ts";
 
 const slug = (s: string) =>
@@ -13,6 +14,15 @@ const slug = (s: string) =>
 const btn =
   "flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-xl bg-raised px-3 text-sm font-bold text-text hover:bg-line disabled:opacity-40";
 
+/** The host a link or card names ("abtune.com"). */
+const hostOf = (url: string) => {
+  try {
+    return new URL(url).host;
+  } catch {
+    return "";
+  }
+};
+
 /**
  * Share ↗ (HANDOFF §4.4, M6): a link that rebuilds this card and playlist on any device, and the
  * card as a PNG. The link is a URL fragment, so opening it sends the server nothing but the usual
@@ -22,12 +32,15 @@ export function ShareButton({
   code,
   card,
   name,
+  baseUrl,
 }: {
   /** Null until the playlist is ready. */
   code: string | null;
   card: CardInput | null;
   /** The archetype, for the share text and file name. */
   name: string;
+  /** Where the link points (health `share_url`): this server's public URL or the public instance. */
+  baseUrl: string;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [open, setOpen] = useState(false);
@@ -56,7 +69,13 @@ export function ShareButton({
         className="m-auto w-[min(30rem,calc(100%-2rem))] rounded-3xl border border-line bg-surface p-0 text-text backdrop:bg-ink/80"
       >
         {open && code && card && (
-          <ShareBody code={code} card={card} name={name} onClose={() => dialog.current?.close()} />
+          <ShareBody
+            code={code}
+            card={card}
+            name={name}
+            baseUrl={baseUrl}
+            onClose={() => dialog.current?.close()}
+          />
         )}
       </dialog>
     </>
@@ -67,23 +86,29 @@ function ShareBody({
   code,
   card,
   name,
+  baseUrl,
   onClose,
 }: {
   code: string;
   card: CardInput;
   name: string;
+  baseUrl: string;
   onClose: () => void;
 }) {
-  const url = shareUrl(location.href, code);
+  const url = shareUrl(baseUrl, code);
+  const site = hostOf(url);
   const field = useRef<HTMLInputElement>(null);
   const [copy, setCopy] = useState<"idle" | "done" | "failed">("idle");
+  const [format, setFormat] = useState<CardFormat>("post");
   const [image, setImage] = useState<{ blob: Blob; url: string } | null>(null);
   const [imageFailed, setImageFailed] = useState(false);
 
   useEffect(() => {
     let alive = true;
     let objectUrl: string | null = null;
-    cardImage(card)
+    setImage(null);
+    setImageFailed(false);
+    cardImage(site ? { ...card, site } : card, format)
       .then((blob) => {
         if (!alive) return;
         objectUrl = URL.createObjectURL(blob);
@@ -94,16 +119,19 @@ function ShareBody({
       alive = false;
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [card]);
+  }, [card, site, format]);
 
   const file = image
-    ? new File([image.blob], `abtune-${slug(name)}.png`, { type: "image/png" })
+    ? new File([image.blob], `abtune-${slug(name)}${format === "story" ? "-story" : ""}.png`, {
+        type: "image/png",
+      })
     : null;
   const canShareLink = typeof navigator.share === "function";
   const canShareFile = !!file && (navigator.canShare?.({ files: [file] }) ?? false);
   const text = t.share.shareText(name);
 
   const onCopy = async () => {
+    track("share_link");
     try {
       await navigator.clipboard.writeText(url);
       setCopy("done");
@@ -150,7 +178,10 @@ function ShareBody({
             <button
               type="button"
               className={btn}
-              onClick={() => share({ title: "ABTune", text, url })}
+              onClick={() => {
+                track("share_link");
+                share({ title: "ABTune", text, url });
+              }}
             >
               {t.share.shareLink}
             </button>
@@ -158,12 +189,40 @@ function ShareBody({
         </div>
         <p className="text-xs text-text-3" role="status">
           {copy === "failed" ? t.share.copyFailed : t.share.privacy}
+          {site && site !== location.host && ` ${t.share.opensOn(site)}`}
         </p>
       </div>
 
       <div className="flex flex-col gap-2">
-        <p className="text-sm font-bold text-text-2">{t.share.image}</p>
-        <div className="mx-auto aspect-[4/5] w-full max-w-60 overflow-hidden rounded-2xl bg-ink">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-sm font-bold text-text-2">{t.share.image}</p>
+          <fieldset className="flex gap-1 rounded-xl bg-ink p-1">
+            <legend className="sr-only">{t.share.image}</legend>
+            {(["post", "story"] as const).map((f) => (
+              <label
+                key={f}
+                className={`cursor-pointer rounded-lg px-2.5 py-1 text-xs font-bold has-focus-visible:ring-2 has-focus-visible:ring-profile ${
+                  format === f ? "bg-raised text-text" : "text-text-3 hover:text-text"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="card-format"
+                  value={f}
+                  checked={format === f}
+                  onChange={() => setFormat(f)}
+                  className="sr-only"
+                />
+                {t.share.formats[f]}
+              </label>
+            ))}
+          </fieldset>
+        </div>
+        <div
+          className={`mx-auto w-full overflow-hidden rounded-2xl bg-ink ${
+            format === "story" ? "aspect-[9/16] max-w-44" : "aspect-[4/5] max-w-60"
+          }`}
+        >
           {image ? (
             <img src={image.url} alt={t.share.imageAlt(name)} className="size-full" />
           ) : (
@@ -177,7 +236,11 @@ function ShareBody({
             type="button"
             className={btn}
             disabled={!file}
-            onClick={() => file && saveBlob(file, file.name)}
+            onClick={() => {
+              if (!file) return;
+              track("share_image");
+              saveBlob(file, file.name);
+            }}
           >
             ⬇ {t.share.saveImage}
           </button>
@@ -185,7 +248,10 @@ function ShareBody({
             <button
               type="button"
               className={btn}
-              onClick={() => share({ files: [file], title: "ABTune", text: `${text} ${url}` })}
+              onClick={() => {
+                track("share_image");
+                share({ files: [file], title: "ABTune", text: `${text} ${url}` });
+              }}
             >
               {t.share.shareImage}
             </button>

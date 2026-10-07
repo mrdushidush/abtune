@@ -9,8 +9,9 @@ import { missingSettings, spotifySettings } from "@abtune/connectors/spotify";
 import { naturalShares, warmFamiliarity } from "@abtune/engine";
 import { serve } from "@hono/node-server";
 import pkg from "../../package.json" with { type: "json" };
-import { createApp } from "./app.ts";
+import { createApp, shareBaseUrl } from "./app.ts";
 import { type CatalogSlot, catalogInfo, catalogSlot } from "./catalog.ts";
+import { Stats } from "./stats.ts";
 
 const repoRoot = path.resolve(import.meta.dirname, "../../../..");
 // `.env` at the repo root when run with Node directly (Docker passes it as the environment).
@@ -71,8 +72,15 @@ const hostsOf = (...urls: (string | undefined)[]) =>
       return [];
     }
   });
+// Usage counters only when STATS_FILE names a file (a public instance); saved every minute and
+// on shutdown.
+const statsFile = process.env.STATS_FILE ? path.resolve(repoRoot, process.env.STATS_FILE) : null;
+const stats = statsFile ? await Stats.open(statsFile) : null;
+const publicUrl = shareBaseUrl(process.env.APP_BASE_URL, process.env.SHARE_BASE_URL);
 const app = createApp({
   hosts: hostsOf(process.env.APP_BASE_URL, spotify.redirectUri),
+  publicUrl,
+  stats,
   bank,
   catalog,
   spotify,
@@ -82,11 +90,27 @@ const app = createApp({
 });
 const spotifyMissing = missingSettings(spotify);
 
-serve({ fetch: app.fetch, port, hostname }, (info) => {
+const server = serve({ fetch: app.fetch, port, hostname }, (info) => {
   console.log(
     `ABTune ${pkg.version} on http://${info.address}:${info.port} (${bank.questions.length} questions, ` +
       `catalog: ${catalog ? `${catalog.info.version} ${catalog.info.kind}, ${catalog.info.tracks} tracks, loading` : "none; run `abtune catalog fetch`"}; ` +
       `Spotify: ${spotifyMissing.length ? `not set up (${spotifyMissing.join(", ")})` : `redirect ${spotify.redirectUri}`}; ` +
-      `AI: ${ai.runtime ? `${aiConfig.model} at ${aiConfig.baseUrl}${aiConfig.rerank ? ", rerank on" : ""}` : "off"})`,
+      `AI: ${ai.runtime ? `${aiConfig.model} at ${aiConfig.baseUrl}${aiConfig.rerank ? ", rerank on" : ""}` : "off"}; ` +
+      `share links: ${publicUrl}${statsFile ? `; counting usage in ${statsFile}` : ""})`,
   );
 });
+
+const saveStats = async () => {
+  try {
+    await stats?.flush();
+  } catch (err) {
+    console.error(`Stats: couldn't write ${statsFile}: ${(err as Error).message}`);
+  }
+};
+if (stats) setInterval(saveStats, 60_000).unref();
+// `docker stop` sends SIGTERM (Node as PID 1 would ignore it): save the counters, then exit.
+for (const signal of ["SIGTERM", "SIGINT"] as const)
+  process.once(signal, () => {
+    server.close();
+    saveStats().finally(() => process.exit(0));
+  });

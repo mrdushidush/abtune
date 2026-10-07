@@ -1,5 +1,6 @@
 import { type Bank, LENGTHS, MODES } from "@abtune/engine";
 import { useState } from "react";
+import { SourceLink } from "../components/SourceLink.tsx";
 import { browserLocale, startingPacks } from "../lib/locale.ts";
 import type { SetupChoice } from "../state/app.ts";
 import type { HealthState } from "../state/hooks.ts";
@@ -193,13 +194,21 @@ export function Setup({
         {t.setup.start} →
       </button>
 
-      <p className="text-center text-xs text-text-3">
-        {catalog
-          ? t.catalogLine(catalog.version, catalog.tracks)
-          : health.kind === "ok"
-            ? t.footerNoCatalog
-            : ""}
-      </p>
+      <footer className="flex flex-col gap-2 text-center text-xs leading-relaxed text-text-3">
+        <p>
+          {t.privacyLine}
+          {health.kind === "ok" && health.health.stats && ` ${t.statsLine}`}
+        </p>
+        <p>
+          {catalog
+            ? t.catalogLine(catalog.version, catalog.tracks)
+            : health.kind === "ok"
+              ? t.footerNoCatalog
+              : ""}
+          {" · "}
+          <SourceLink />
+        </p>
+      </footer>
     </main>
   );
 }

@@ -331,3 +331,20 @@ Three reviewer agents looked at ABTune before launch from three sides: a develop
   - **Picked-artist anchors** (owner): a picked artist's best-known song in the top 10. It would send non-sensitive picks to the server and into share links.
   - **Bank content:** blues, reggae, K-pop and country are still rarely asked, because few cards set them against something else.
   - **Mood cards:** several mood cards ask the same thing in other words. Merging them into families needs the owner's review.
+
+## Public instance and v0.1 release (owner, 2026-10-07)
+
+- 2026-10-07 · **Ship plan (owner):** on ~2026-10-11 the repo goes public, the hosted demo at abtune.com goes live and a private beta of 30–50 people starts. The Show HN / Reddit launch follows in mid-November, before Spotify Wrapped.
+- 2026-10-07 · **Hosted demo runs the full catalog:**
+  - Measured: the full catalog takes ~450 MB of memory on the laptop (RSS 423 MB after load, 10.2 s) and 1.3 GB in Docker on the server (Hostinger KVM 1: 1 vCPU, 4 GB; loads in 13.4 s; 50-track playlists p50 465 ms, p95 720 ms, n=40). The dev sample takes ~30 MB. So the 4 GB server holds the full catalog and the demo matches the eval exactly. No hits-only cut; for the November spike, 2+ vCPUs.
+  - Host: a small Hostinger server (KVM 1, Ubuntu 26.04) at abtune.com. Kit in `deploy/`, steps in [DEPLOY.md](DEPLOY.md).
+  - **Way in (owner: "go direct"):** the domain's A record points at the server and Caddy serves HTTPS (Let's Encrypt), www → apex. No rate limit for the beta. The Cloudflare Tunnel stays in the kit (`COMPOSE_PROFILES=tunnel`) for the November launch: edge caching, rate limit, no open ports.
+- 2026-10-07 · **Share links point at a public URL:**
+  - `SHARE_BASE_URL`, else `APP_BASE_URL` when it's a public name, else https://abtune.com/. Loopback, IP addresses, `*.localhost` and dotless names don't count as public, so a self-hosted install's links open on abtune.com (the sheet says so).
+  - `/api/health` reports it as `share_url`. The server fills it into `index.html`'s link-preview tags (`__ABTUNE_URL__`), since those need absolute URLs; `og.png` is 1200×630.
+- 2026-10-07 · **The card names the site:** the share host in the card's footer, and a 9:16 story version (the post card at 92%, clear of story apps' top and bottom bars, with "What's your music personality?" and the host under it).
+- 2026-10-07 · **Usage counters (`STATS_FILE`, off by default):**
+  - The client sends an event name only (`STAT_EVENTS`: quiz started and finished, 10 more, shared link opened, link and image shares, exports by format). Counts per UTC day; no IDs, IPs or cookies. `quiz_done` and `shared_open` count once per quiz seed or link on a device (local storage).
+  - `GET /api/stats` is public; the start screen says the site counts. Saved every minute and on SIGTERM.
+  - Why our own counters and not an analytics script: the privacy story ("no login, answers stay in your browser") and the strict CSP.
+- 2026-10-07 · **Release plumbing:** CI actions pinned to commit SHAs (Dependabot keeps them current); `image.yml` publishes `ghcr.io/mrdushidush/abtune` for amd64 and arm64 (`:main` per push, `:x.y.z` and `:latest` per release tag).

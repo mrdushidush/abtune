@@ -1,0 +1,60 @@
+# A public ABTune instance (docs/DEPLOY.md). The app, plus one way in, picked by COMPOSE_PROFILES in
+# .env:
+#   caddy   the domain points at this server; Caddy serves HTTPS (automatic certificates) on 80/443
+#   tunnel  a Cloudflare Tunnel; the server opens no ports and Cloudflare serves HTTPS
+#
+#   cd deploy && cp .env.example .env    (fill it in)
+#   docker compose up -d --build         (or `docker compose pull` with a published image)
+name: abtune-public
+
+services:
+  app:
+    build: ..
+    image: ${ABTUNE_IMAGE:-abtune:local}
+    env_file: .env
+    environment:
+      # Usage counters (numbers per day, no IDs), kept in the stats volume.
+      STATS_FILE: data/stats/stats.json
+    volumes:
+      - ./catalog:/app/data/catalog:ro
+      - stats:/app/data/stats
+    # Reached only by Caddy or the tunnel, over the compose network: no published ports.
+    expose:
+      - "8787"
+    init: true
+    restart: unless-stopped
+
+  caddy:
+    profiles: [caddy]
+    image: caddy:2.11.7-alpine
+    # SITE_HOST names the site (and www.SITE_HOST redirects to it).
+    env_file: .env
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # Certificates live here: keep the volume, or Let's Encrypt is asked again.
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: unless-stopped
+
+  tunnel:
+    profiles: [tunnel]
+    image: cloudflare/cloudflared:2026.10.0
+    command: tunnel --no-autoupdate run
+    # TUNNEL_TOKEN comes from .env; without it the tunnel exits and says so in its logs.
+    env_file: .env
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  stats:
+  caddy_data:
+  caddy_config:

@@ -19,10 +19,16 @@ export interface CardInput {
   /** The playlist's title and first songs. */
   readonly title: string;
   readonly tracks: readonly { readonly title: string; readonly artist: string }[];
+  /** Where to get yours (the share link's host), in the footer. */
+  readonly site?: string;
 }
+
+/** A 4:5 feed post, or a 9:16 story (the post card with a call to action below). */
+export type CardFormat = "post" | "story";
 
 export const CARD_WIDTH = 1080;
 export const CARD_HEIGHT = 1350;
+export const STORY_HEIGHT = 1920;
 
 const FONT = `system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Sans Hebrew", sans-serif, "Apple Color Emoji", "Segoe UI Emoji"`;
 
@@ -349,13 +355,51 @@ export async function drawCard(canvas: HTMLCanvasElement, input: CardInput): Pro
   ctx.fillStyle = c.text3;
   ctx.fillText(t.result.builtFrom(answered), left, H - 92);
   ctx.textAlign = "right";
-  ctx.fillText(t.share.tagline, right, H - 92);
+  if (input.site) {
+    font(ctx, 800, 28);
+    ctx.fillStyle = c.text;
+    ctx.fillText(input.site, right, H - 92);
+  } else ctx.fillText(t.share.tagline, right, H - 92);
+}
+
+/**
+ * The story: the post card, a little smaller so it clears the top and bottom bars story apps draw
+ * over the image, with the question and the site under it.
+ */
+export async function drawStory(canvas: HTMLCanvasElement, input: CardInput): Promise<void> {
+  const card = document.createElement("canvas");
+  await drawCard(card, input);
+  const c = palette();
+  canvas.width = CARD_WIDTH;
+  canvas.height = STORY_HEIGHT;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("no 2d canvas");
+  const W = CARD_WIDTH;
+  ctx.fillStyle = c.ink;
+  ctx.fillRect(0, 0, W, STORY_HEIGHT);
+  const scale = 0.92;
+  const w = W * scale;
+  const h = CARD_HEIGHT * scale;
+  const top = 190;
+  ctx.drawImage(card, (W - w) / 2, top, w, h);
+  ctx.textAlign = "center";
+  font(ctx, 800, 50);
+  ctx.fillStyle = c.text;
+  ctx.fillText(t.share.storyAsk, W / 2, top + h + 112);
+  if (input.site) {
+    font(ctx, 900, 64);
+    const g = ctx.createLinearGradient(W / 2 - 220, 0, W / 2 + 220, 0);
+    g.addColorStop(0, c.a);
+    g.addColorStop(1, c.b);
+    ctx.fillStyle = g;
+    ctx.fillText(input.site, W / 2, top + h + 196);
+  }
 }
 
 /** The card as a PNG blob. */
-export async function cardImage(input: CardInput): Promise<Blob> {
+export async function cardImage(input: CardInput, format: CardFormat = "post"): Promise<Blob> {
   const canvas = document.createElement("canvas");
-  await drawCard(canvas, input);
+  await (format === "story" ? drawStory : drawCard)(canvas, input);
   return new Promise((resolve, reject) =>
     canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("toBlob failed"))), "image/png"),
   );

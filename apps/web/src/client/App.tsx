@@ -16,6 +16,7 @@ import {
 import { useHealth } from "./state/hooks.ts";
 import { shareCodeOf } from "./state/share.ts";
 import { takeOutcome } from "./state/spotify.ts";
+import { setCounting, track } from "./state/stats.ts";
 
 const reducer = (s: AppState, a: AppAction) => appReducer(bank, s, a);
 
@@ -43,6 +44,9 @@ export function App() {
   useEffect(() => {
     saveState(bank, state);
   }, [state]);
+  useEffect(() => {
+    if (health.kind !== "loading") setCounting(health.kind === "ok" && health.health.stats);
+  }, [health]);
   // Block body on purpose: newer browsers return a Promise from scrollTo, and React would call
   // an effect's return value as its cleanup.
   // biome-ignore lint/correctness/useExhaustiveDependencies: scroll on screen change only
@@ -71,7 +75,10 @@ export function App() {
         bank={bank}
         last={state.setup}
         health={health}
-        onStart={(setup) => dispatch({ type: "start", setup, quizSeed: randomQuizSeed() })}
+        onStart={(setup) => {
+          track("quiz_start");
+          dispatch({ type: "start", setup, quizSeed: randomQuizSeed() });
+        }}
       />
     );
   if (screen === "quiz") return <Quiz bank={bank} session={state.session} dispatch={dispatch} />;

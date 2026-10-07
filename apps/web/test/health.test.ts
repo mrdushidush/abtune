@@ -24,6 +24,8 @@ describe("API", async () => {
       catalog: null,
       ai: { enabled: false, rerank: false, sensitive_opt_in: false, model: null },
       spotify: { configured: false },
+      share_url: "https://abtune.com/",
+      stats: false,
     });
   });
 

@@ -10,3 +10,5 @@ data/build
 .env.*
 *.log
 data/spotify
+deploy/catalog
+**/.env

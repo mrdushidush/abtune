@@ -18,3 +18,5 @@ data/dumps/
 data/build/
 # AI layer caches (T4 enrich answers; catalog text only)
 data/ai/
+# A public instance's catalog (deploy/compose.yaml mounts it).
+deploy/catalog/

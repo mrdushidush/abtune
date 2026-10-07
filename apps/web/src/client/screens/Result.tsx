@@ -12,7 +12,7 @@ import {
   traits,
   viewSession,
 } from "@abtune/engine";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type {
   PlaylistRequest,
   PlaylistResponse,
@@ -23,6 +23,7 @@ import { PersonalityCard } from "../components/PersonalityCard.tsx";
 import { PlaylistRows, SkeletonRows } from "../components/PlaylistRows.tsx";
 import { ExportMenu, Feedback, TextTweak, TweakBar } from "../components/ResultActions.tsx";
 import { ShareButton } from "../components/ShareSheet.tsx";
+import { SourceLink } from "../components/SourceLink.tsx";
 import { SpotifyButton } from "../components/SpotifySheet.tsx";
 import type { CardInput } from "../lib/card-image.ts";
 import { download } from "../lib/download.ts";
@@ -36,8 +37,9 @@ import {
   useAiInterpret,
   usePlaylist,
 } from "../state/hooks.ts";
-import { applyEdit, editRequest } from "../state/share.ts";
+import { applyEdit, editRequest, shareBase } from "../state/share.ts";
 import { offerSpotify } from "../state/spotify.ts";
+import { track, trackOnce } from "../state/stats.ts";
 import { t, tweakSummary } from "../strings.ts";
 
 const NO_OPS: readonly ShareOp[] = [];
@@ -314,7 +316,13 @@ export function Result({
     [bank, taste, view.answered, title.title, ready, shown],
   );
 
+  // A finished quiz, counted once (a public instance's usage counters).
+  const quizSeed = session.config.quiz_seed ?? "none";
+  useEffect(() => {
+    if (ready) trackOnce("quiz_done", quizSeed);
+  }, [ready, quizSeed]);
   const onExport = (f: ExportFormat) => {
+    if (ready) track(`export_${f}`);
     if (ready)
       download(
         exportPlaylist(
@@ -424,7 +432,7 @@ export function Result({
             />
           )}
           <ExportMenu onExport={onExport} disabled={!ready} />
-          <ShareButton code={shareCode} card={card} name={name} />
+          <ShareButton code={shareCode} card={card} name={name} baseUrl={shareBase(health)} />
           <button
             type="button"
             disabled={busy || state.kind !== "ready"}
@@ -437,7 +445,10 @@ export function Result({
             <button
               type="button"
               className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-2xl border-2 border-profile/60 px-4 font-bold text-text hover:bg-profile/10 sm:w-auto sm:flex-1"
-              onClick={() => dispatch({ type: "session", action: { type: "ten_more" } })}
+              onClick={() => {
+                track("ten_more");
+                dispatch({ type: "session", action: { type: "ten_more" } });
+              }}
             >
               ＋ {t.result.tenMore}
             </button>
@@ -511,6 +522,9 @@ export function Result({
             </a>
           </p>
         )}
+        <p>
+          <SourceLink />
+        </p>
       </footer>
     </main>
   );

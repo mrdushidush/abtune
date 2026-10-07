@@ -1,0 +1,41 @@
+name: Bug
+description: Something broke or behaves wrongly.
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. …
+        2. …
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where
+      options:
+        - abtune.com
+        - Self-hosted with Docker
+        - Self-hosted with Node (pnpm)
+        - MCP server
+        - CLI
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Browser or OS, and ABTune version
+      description: "`/api/health` shows the version."
+      placeholder: "Chrome 141 on Android, 0.1.0"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or errors
+      description: "`docker compose logs app`, the browser console, or the command's output."
+      render: text

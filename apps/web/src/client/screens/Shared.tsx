@@ -13,13 +13,15 @@ import type { PlaylistTrackOut, SpotifyOutcome } from "../../api-types.ts";
 import { PersonalityCard } from "../components/PersonalityCard.tsx";
 import { ExportMenu } from "../components/ResultActions.tsx";
 import { ShareButton } from "../components/ShareSheet.tsx";
+import { SourceLink } from "../components/SourceLink.tsx";
 import { SpotifyButton } from "../components/SpotifySheet.tsx";
 import type { CardInput } from "../lib/card-image.ts";
 import { download } from "../lib/download.ts";
 import { postPlaylist } from "../state/api.ts";
 import type { HealthState, PlaylistState } from "../state/hooks.ts";
-import { replayShare } from "../state/share.ts";
+import { replayShare, shareBase } from "../state/share.ts";
 import { offerSpotify } from "../state/spotify.ts";
+import { track, trackOnce } from "../state/stats.ts";
 import { t } from "../strings.ts";
 import { Notice, PlaylistBody, toExport, tweakNames } from "./Result.tsx";
 
@@ -89,6 +91,7 @@ export function Shared({
     ).then((r) => {
       if (!alive) return;
       if (r.ok) {
+        trackOnce("shared_open", code);
         setTracks(r.tracks);
         setSkipped(r.skipped);
         return setState({ kind: "ready", data: r.response, request: r.first });
@@ -101,7 +104,7 @@ export function Shared({
     return () => {
       alive = false;
     };
-  }, [bank, data, health, stale, catalog?.status, catalog?.version, attempt]);
+  }, [bank, code, data, health, stale, catalog?.status, catalog?.version, attempt]);
 
   const leave = (
     <button
@@ -152,6 +155,7 @@ export function Shared({
       }
     : null;
   const onExport = (f: ExportFormat) => {
+    if (ready) track(`export_${f}`);
     if (ready)
       download(
         exportPlaylist(
@@ -199,7 +203,12 @@ export function Shared({
             />
           )}
           <ExportMenu onExport={onExport} disabled={!ready} />
-          <ShareButton code={ready ? code : null} card={card} name={name} />
+          <ShareButton
+            code={ready ? code : null}
+            card={card}
+            name={name}
+            baseUrl={shareBase(health)}
+          />
         </div>
 
         {other && (
@@ -237,6 +246,9 @@ export function Shared({
             </a>
           </p>
         )}
+        <p>
+          <SourceLink />
+        </p>
       </footer>
     </main>
   );

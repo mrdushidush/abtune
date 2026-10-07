@@ -14,6 +14,7 @@ import {
 } from "@abtune/engine";
 import type { PlaylistRequest, PlaylistResponse, PlaylistTrackOut } from "../../api-types.ts";
 import { type ApiResult, firstRequest, stepRequest } from "./api.ts";
+import type { HealthState } from "./hooks.ts";
 
 /** The request for one more edit, given the tracks on screen before it. */
 export function editRequest(
@@ -90,6 +91,11 @@ export async function replayShare(
 
 /** The hash a share link carries: `#s=<code>`. The fragment never reaches the server. */
 export const SHARE_HASH = "#s=";
+
+/** Where this server's share links point (health `share_url`), else this page. */
+export function shareBase(health: HealthState): string {
+  return health.kind === "ok" ? health.health.share_url : location.href;
+}
 
 export function shareUrl(base: string, code: string): string {
   return `${base.replace(/#.*$/, "")}${SHARE_HASH}${code}`;

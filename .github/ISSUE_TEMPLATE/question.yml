@@ -1,0 +1,32 @@
+name: Question card idea
+description: A this-or-that card you'd like in the quiz. No code needed (or open a PR, see CONTRIBUTING.md).
+labels: ["questions"]
+body:
+  - type: input
+    id: a
+    attributes:
+      label: Side A
+      placeholder: "Dance floor 🪩"
+    validations:
+      required: true
+  - type: input
+    id: b
+    attributes:
+      label: Side B
+      placeholder: "Crying in the car 🚗"
+    validations:
+      required: true
+  - type: textarea
+    id: means
+    attributes:
+      label: What does each side say about someone's music?
+      description: |
+        Energy, mood, era, genres… Cards map to how music sounds, never to who someone is
+        (no identity, politics or nationality to genre).
+    validations:
+      required: true
+  - type: input
+    id: who
+    attributes:
+      label: Who should get it?
+      description: Everyone, or only after certain answers (e.g. people into metal).

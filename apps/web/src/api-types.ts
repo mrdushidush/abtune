@@ -42,6 +42,10 @@ export interface Health {
   readonly ai: AiHealth;
   /** Spotify is set up in `.env` (HANDOFF §11.1): the result screens offer "Save to Spotify". */
   readonly spotify: { readonly configured: boolean };
+  /** Where share links point: this server's public URL, or the public instance. Ends with "/". */
+  readonly share_url: string;
+  /** This server counts usage events (STATS_FILE): the client reports them to POST /api/event. */
+  readonly stats: boolean;
 }
 
 /**
@@ -172,6 +176,21 @@ export interface ApiError {
   /** On ai_failed. */
   readonly reason?: AiFailureCode;
 }
+
+/** Usage events a public instance counts (POST /api/event, `{"e": name}`); nothing else is sent. */
+export const STAT_EVENTS = [
+  "quiz_start",
+  "quiz_done",
+  "ten_more",
+  "shared_open",
+  "share_link",
+  "share_image",
+  "export_m3u",
+  "export_csv",
+  "export_xspf",
+  "export_json",
+] as const;
+export type StatEvent = (typeof STAT_EVENTS)[number];
 
 /** Longest playlist the API generates (the UI offers 25 / 50 / 100). */
 export const MAX_API_LENGTH = 100;
