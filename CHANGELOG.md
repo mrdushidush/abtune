@@ -19,7 +19,10 @@ The first public release.
   songs people know: each artist's best-known songs first.
 - Reshuffle, tweak (energy, mood, popularity, era), "+25 deeper cuts", swap a song, play any song on
   YouTube or Spotify.
-- Export as M3U, CSV, XSPF or JSON, or save it to Spotify with your own Spotify app (self-hosted).
+- "Add to your music app": Spotify, Apple Music or YouTube Music, through TuneMyMusic's free song-list
+  import. ABTune copies the list; you paste it there and sign in to your app there.
+- Export as M3U, CSV, XSPF or JSON, or save it to Spotify directly with your own Spotify app
+  (self-hosted).
 - Holiday songs (Christmas, Hanukkah and the like) stay out of playlists.
 
 ### Sharing

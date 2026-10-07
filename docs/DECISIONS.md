@@ -2,10 +2,12 @@
 
 One line per non-obvious choice: date · decision · why. Big decisions get an ADR in `docs/adr/`.
 
+**Who's who:** "the owner" is David ([@mrdushidush](https://github.com/mrdushidush)), who owns and maintains ABTune and makes its product decisions. The entries were written with Claude Code, the AI coding tool ABTune is built with; "owner decision" marks a call David made; the other entries are implementation choices David approved.
+
 ## Project
 
 - 2026-10-01 · Product named **ABTune** ("A/B test your taste"), replacing the brief's working name "Either FM" · owner's pick after collision checks: Spotify policy bars names "confusing in sound or spelling to Spotify" (rules out "-ify" names), either.fm is taken, ABFM is the American Board of Family Medicine. `docs/HANDOFF.md` is left verbatim, so read "Either FM" there as ABTune.
-- 2026-10-01 · GitHub repo `mrdushidush/abtune` is private until v0.1, then public · owner's choice.
+- 2026-10-01 · GitHub repo `mrdushidush/abtune` is private until v0.1, then public · owner's choice. (Made public on 2026-10-07, with the beta; see the last section.)
 - 2026-10-01 · Stack: all TypeScript + DuckDB, see [ADR-0001](adr/0001-stack.md).
 - 2026-10-01 · Node 24 type stripping runs the server and CLI from `.ts` sources, with no tsx/tsdown build step · fewer moving parts. A bundle comes back only for npm-published packages (M8), since Node refuses to strip types under `node_modules`.
 - 2026-10-01 · TypeScript 7 (native compiler) is used for typechecking only.
@@ -334,7 +336,7 @@ Three reviewer agents looked at ABTune before launch from three sides: a develop
 
 ## Public instance and v0.1 release (owner, 2026-10-07)
 
-- 2026-10-07 · **Ship plan (owner):** on ~2026-10-11 the repo goes public, the hosted demo at abtune.com goes live and a private beta of 30–50 people starts. The Show HN / Reddit launch follows in mid-November, before Spotify Wrapped.
+- 2026-10-07 · **Ship plan (owner):** on ~2026-10-11 the repo goes public, the hosted demo at abtune.com goes live and a private beta of 30–50 people starts. A wider launch follows in mid-November.
 - 2026-10-07 · **Hosted demo runs the full catalog:**
   - Measured: the full catalog takes ~450 MB of memory on the laptop (RSS 423 MB after load, 10.2 s) and 1.3 GB in Docker on the server (Hostinger KVM 1: 1 vCPU, 4 GB; loads in 13.4 s; 50-track playlists p50 465 ms, p95 720 ms, n=40). The dev sample takes ~30 MB. So the 4 GB server holds the full catalog and the demo matches the eval exactly. No hits-only cut; for the November spike, 2+ vCPUs.
   - Host: a small Hostinger server (KVM 1, Ubuntu 26.04) at abtune.com. Kit in `deploy/`, steps in [DEPLOY.md](DEPLOY.md).
@@ -347,4 +349,13 @@ Three reviewer agents looked at ABTune before launch from three sides: a develop
   - The client sends an event name only (`STAT_EVENTS`: quiz started and finished, 10 more, shared link opened, link and image shares, exports by format). Counts per UTC day; no IDs, IPs or cookies. `quiz_done` and `shared_open` count once per quiz seed or link on a device (local storage).
   - `GET /api/stats` is public; the start screen says the site counts. Saved every minute and on SIGTERM.
   - Why our own counters and not an analytics script: the privacy story ("no login, answers stay in your browser") and the strict CSP.
+- 2026-10-07 · **abtune.com is live** (20b7377):
+  - Hostinger KVM 1 (Ubuntu 26.04), Caddy with Let's Encrypt certificates, the full catalog. SSH is key-only; the firewall allows 22, 80 and 443.
+  - The browser e2e passed against the live site, and the owner's check on a phone passed. The usage counters were reset to zero for the beta.
 - 2026-10-07 · **Release plumbing:** CI actions pinned to commit SHAs (Dependabot keeps them current); `image.yml` publishes `ghcr.io/mrdushidush/abtune` for amd64 and arm64 (`:main` per push, `:x.y.z` and `:latest` per release tag).
+- 2026-10-07 · **"Add to your music app" (owner: "so people can add their playlist"):**
+  - Why not "Save to Spotify" on abtune.com: Spotify's development mode allows 5 users per app (the owner plus 4, added by hand), and extended quota needs a registered business with 250k monthly users. Every other visitor would get Spotify's consent screen and then an error.
+  - Instead, the playlist goes to TuneMyMusic's free "Free text" import. Checked 2026-10-07 in a phone-size browser: its page per app (`tunemymusic.com/transfer/freetext-to-<app>`) opens on a paste box with that app already picked; it reads one `Artist - Title` per line (its own example: "The Beatles - Hey Jude"), parsed 5 of 5 sample lines including Hebrew ones and titles with extra dashes, then offers "Transfer to <app>" and the app's sign-in. Free up to 500 songs.
+  - The sheet offers Spotify, Apple Music and YouTube Music. A tap copies the list (`toSongList` in `@abtune/connectors`) inside the click, so the browser allows it, and opens the page in a new tab. Without a clipboard API (a plain-HTTP LAN address) the list is shown, selected, to copy by hand. ABTune sends TuneMyMusic nothing.
+  - It is the main button on the result and shared screens; Export became a secondary button. Counted per app (`handoff_spotify`, `handoff_apple_music`, `handoff_youtube_music`). Self-hosters with their own Spotify app keep "Save to Spotify" next to it.
+- 2026-10-07 · **The repository went public** (owner), four days before the planned date, once the beta link was out: footer links to GitHub would otherwise 404. Before that: the git history was scanned for keys, tokens, private keys, server addresses and personal paths (none found); user docs lost the milestone numbers; the README was rewritten; `docs/QUESTION_AUTHORING.md` was written; the brief, this log and ADR-0001 now say who decides (the owner) and that Claude Code is the tool ABTune is built with.

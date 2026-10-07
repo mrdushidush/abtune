@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=./schema.json
 # ABTune seed question bank (v1)
-# Schema and authoring rules: docs/HANDOFF.md §7–§8 and docs/QUESTION_AUTHORING.md (M9).
+# Schema and authoring rules: docs/QUESTION_AUTHORING.md (the design: docs/HANDOFF.md §7–§8).
 #
 # fx semantics:
 #   scalar keys   -> target position on the axis implied by this answer, in [-1, 1]

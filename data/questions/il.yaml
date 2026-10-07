@@ -3,7 +3,7 @@
 # switch on the setup screen. One open question asks about Hebrew songs; the Israeli artist cards
 # only unlock after a Hebrew answer, so listeners who don't want Hebrew songs aren't asked about
 # artists they don't know. Labels are English (the UI is English; HANDOFF §4, M4 decision).
-# Authoring rules: docs/HANDOFF.md §8.4. Language and artist questions are music taste; nothing here
+# Authoring rules: docs/QUESTION_AUTHORING.md. Language and artist questions are music taste; nothing here
 # asks about identity.
 
 version: 1

@@ -1,5 +1,7 @@
 # Either FM — Build Brief for Claude Code
 
+> **About this file:** the original brief David ([@mrdushidush](https://github.com/mrdushidush)), ABTune's owner and maintainer, wrote on 2026-10-01 for Claude Code, the AI coding tool ABTune is built with. "You" below means Claude Code; "the owner" means David. It is kept as written (Either FM was the working name), with dated amendments; where the build went another way, [DECISIONS.md](DECISIONS.md) says so.
+
 > **Working name:** Either FM ("either/or" + radio). Rename freely.
 > **Owner:** David (GitHub: mrdushidush) · **License:** MIT · **Brief date:** 2026-10-01
 > **Companion file:** `questions.seed.yaml` → place at `data/questions/seed.yaml`

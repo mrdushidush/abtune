@@ -2,7 +2,8 @@
 
 - **Status:** Accepted
 - **Date:** 2026-10-01
-- **Deciders:** David (owner), Claude Code
+- **Decided by:** David (@mrdushidush), ABTune's owner and maintainer
+- **Proposed by:** Claude Code, the AI coding tool ABTune is built with, as the brief asked (HANDOFF §0)
 
 ## Context
 

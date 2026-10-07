@@ -18,12 +18,13 @@ On your own machine you don't need any of this: see [SELF_HOSTING.md](SELF_HOSTI
   use it. A loopback or home-network install sends its share links to abtune.com instead
   (`SHARE_BASE_URL` overrides either).
 - **It counts usage.** `STATS_FILE` turns on counters: quizzes started and finished, "Answer 10
-  more", shared links opened, shares and exports, per day. The browser sends an event name and
+  more", shared links opened, shares, exports and hand-offs to a music app, per day. The browser sends an event name and
   nothing else, so no IDs, IP addresses, cookies or profiles are kept. The counts are public at
   `/api/stats`, and the start screen says they are kept.
 - **AI and Spotify stay off.** AI needs a model server next to the app. Spotify's development mode
   only works for accounts the app's owner adds by hand, so the "Save to Spotify" button is hidden.
-  Exports work as usual.
+  Visitors use "Add to your music app" instead (TuneMyMusic's song-list import, for Spotify, Apple
+  Music and YouTube Music), and exports work as usual.
 
 ## 1. The server
 
@@ -109,7 +110,8 @@ docker compose logs -f app    # wait for "Catalog … ready"
 ```
 
 The build takes a few minutes on a small server. To skip it, set `ABTUNE_IMAGE` in `.env` to a
-published image (`ghcr.io/mrdushidush/abtune:latest`, or `:main` for every push to main) and run
+published image (`ghcr.io/mrdushidush/abtune:main`, built on every push to main, or `:latest`
+for the newest release) and run
 `docker compose pull && docker compose up -d` instead. Caddy or the tunnel starts once the app is
 healthy.
 

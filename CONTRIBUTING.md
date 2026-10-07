@@ -30,7 +30,7 @@ Thanks for helping. The two most useful contributions are **better questions** a
 
 ### Authoring rules
 
-The linter enforces most of these (full rules: [HANDOFF §7–§8](docs/HANDOFF.md)):
+The linter enforces most of these. [docs/QUESTION_AUTHORING.md](docs/QUESTION_AUTHORING.md) explains what each field and dimension means, how the quiz picks cards, and every lint rule:
 
 - `fx` keys must be dimensions from `seed.yaml`, with values in [-1, 1]. Scalars (energy, valence, …) are the *target position* an answer implies; genres, decades and languages are *evidence* (negative = away from).
 - Labels are 22 characters or fewer, so they fit a phone card.
