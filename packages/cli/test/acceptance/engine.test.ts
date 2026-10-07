@@ -17,7 +17,7 @@ import fc from "fast-check";
 import { beforeAll, describe, expect, it } from "vitest";
 import { type AnswerMix, runQuiz, simulate } from "../../src/sim.ts";
 import { determinismDigest } from "./determinism-worker.ts";
-import { FROZEN_BANK_DIR, loadSeedBank, M3_BANK_DIR } from "./load-seed.ts";
+import { DETERMINISM_TIMEOUT, FROZEN_BANK_DIR, loadSeedBank, M3_BANK_DIR } from "./load-seed.ts";
 
 let bank: Bank;
 let m3: Bank;
@@ -96,17 +96,22 @@ describe("§16 #6 coverage of random 10-question runs", () => {
 });
 
 describe("§16 #2 determinism across processes", () => {
-  it("1,000 random sessions give byte-identical results in separate processes", async () => {
-    const worker = fileURLToPath(new URL("./determinism-worker.ts", import.meta.url));
-    const run = () =>
-      promisify(execFile)(process.execPath, [worker, "1000", "5eed5eed5eed5eed"], {
-        maxBuffer: 1 << 20,
-      }).then((r) => r.stdout);
-    const [first, second] = await Promise.all([run(), run()]);
-    expect(first).toMatch(/^[0-9a-f]{64}$/);
-    expect(second).toBe(first);
-    expect(await determinismDigest(1000, "5eed5eed5eed5eed")).toBe(first);
-  }, 180_000);
+  it(
+    "1,000 random sessions give byte-identical results in separate processes",
+    async () => {
+      const worker = fileURLToPath(new URL("./determinism-worker.ts", import.meta.url));
+      const run = () =>
+        promisify(execFile)(process.execPath, [worker, "1000", "5eed5eed5eed5eed"], {
+          maxBuffer: 1 << 20,
+        }).then((r) => r.stdout);
+      const [first, second] = await Promise.all([run(), run()]);
+      expect(first).toMatch(/^[0-9a-f]{64}$/);
+      expect(second).toBe(first);
+      expect(await determinismDigest(1000, "5eed5eed5eed5eed")).toBe(first);
+      // CI 2026-10-07: 125–149 s on Linux and macOS, 161–167 s on Windows; room for a slow runner.
+    },
+    DETERMINISM_TIMEOUT,
+  );
 
   it("is identical on every machine (pinned digest over a frozen bank; CI runs Linux, Windows, macOS)", async () => {
     // Changes only if the engine's behavior changes. If that's intended, update and log it in DECISIONS.md.

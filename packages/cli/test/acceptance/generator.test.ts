@@ -20,7 +20,7 @@ import {
 import { fitTables, loadPersonas, personaAnswerer, playlistMetrics } from "@abtune/eval";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { randomSessionTrace } from "../../src/sim.ts";
-import { FROZEN_BANK_DIR, loadSeedBank } from "./load-seed.ts";
+import { DETERMINISM_TIMEOUT, FROZEN_BANK_DIR, loadSeedBank } from "./load-seed.ts";
 import { playlistDigest } from "./playlist-worker.ts";
 
 const REPO = fileURLToPath(new URL("../../../../", import.meta.url));
@@ -58,17 +58,22 @@ describe("§16 #4 constraints on the fixture", () => {
 });
 
 describe("§16 #2 playlist determinism", () => {
-  it("1,000 random sessions give byte-identical playlists in separate processes", async () => {
-    const worker = fileURLToPath(new URL("./playlist-worker.ts", import.meta.url));
-    const run = () =>
-      promisify(execFile)(process.execPath, [worker, "1000", "5eed5eed5eed5eed"], {
-        maxBuffer: 1 << 20,
-      }).then((r) => r.stdout);
-    const [first, second] = await Promise.all([run(), run()]);
-    expect(first).toMatch(/^[0-9a-f]{64}$/);
-    expect(second).toBe(first);
-    expect(await playlistDigest(1000, "5eed5eed5eed5eed")).toBe(first);
-  }, 180_000);
+  it(
+    "1,000 random sessions give byte-identical playlists in separate processes",
+    async () => {
+      const worker = fileURLToPath(new URL("./playlist-worker.ts", import.meta.url));
+      const run = () =>
+        promisify(execFile)(process.execPath, [worker, "1000", "5eed5eed5eed5eed"], {
+          maxBuffer: 1 << 20,
+        }).then((r) => r.stdout);
+      const [first, second] = await Promise.all([run(), run()]);
+      expect(first).toMatch(/^[0-9a-f]{64}$/);
+      expect(second).toBe(first);
+      expect(await playlistDigest(1000, "5eed5eed5eed5eed")).toBe(first);
+      // CI 2026-10-07: 138–156 s on Linux and macOS, 177 s and 210 s (a timeout at 180 s) on Windows.
+    },
+    DETERMINISM_TIMEOUT,
+  );
 
   it("is identical on every machine (pinned digest: frozen bank + fixture; CI runs Linux, Windows, macOS)", async () => {
     // Changes only if generation changes. If that's intended, update and log it in DECISIONS.md.
