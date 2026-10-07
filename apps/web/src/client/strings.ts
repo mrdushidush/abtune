@@ -155,6 +155,24 @@ export const t = {
       "This link was made with another version of ABTune or its music catalog, so some songs may differ.",
     shortened: "Some of the changes made to this playlist could not be repeated here.",
   },
+  // Hand-off to TuneMyMusic's "Free text" import, which works for every visitor and music app.
+  handoff: {
+    button: "Add to your music app",
+    title: "Add to your music app",
+    close: "Close",
+    intro:
+      "TuneMyMusic, a free transfer site, builds this playlist in your app. You sign in to your app there, never here.",
+    steps: (n: number) => [
+      `Tap your app. ABTune copies the ${n} songs and opens TuneMyMusic.`,
+      "Paste the list into the box and tap Convert song list.",
+      "Tap Transfer, then sign in to your app.",
+    ],
+    copied: (n: number) => `✓ ${n} songs copied. Paste them on TuneMyMusic.`,
+    copyFailed: "Couldn't copy by itself. Copy this list, then paste it on TuneMyMusic:",
+    copyAgain: "Copy the list again",
+    listLabel: "The song list",
+    fine: "Free for up to 500 songs. TuneMyMusic isn't part of ABTune, and ABTune sends it nothing: you paste the list yourself.",
+  },
   spotify: {
     button: "Save to Spotify",
     title: "Save to Spotify",

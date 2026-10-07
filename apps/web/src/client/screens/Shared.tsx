@@ -10,6 +10,7 @@ import {
 } from "@abtune/engine";
 import { useEffect, useMemo, useState } from "react";
 import type { PlaylistTrackOut, SpotifyOutcome } from "../../api-types.ts";
+import { MusicAppButton } from "../components/MusicAppSheet.tsx";
 import { PersonalityCard } from "../components/PersonalityCard.tsx";
 import { ExportMenu } from "../components/ResultActions.tsx";
 import { ShareButton } from "../components/ShareSheet.tsx";
@@ -190,6 +191,7 @@ export function Shared({
         </header>
 
         <div className="flex flex-wrap gap-2">
+          <MusicAppButton tracks={ready ? tracks : null} />
           {offerSpotify(health, location.hostname) && (
             <SpotifyButton
               tracks={ready ? tracks : []}

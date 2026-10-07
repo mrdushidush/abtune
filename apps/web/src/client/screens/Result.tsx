@@ -19,6 +19,7 @@ import type {
   PlaylistTrackOut,
   SpotifyOutcome,
 } from "../../api-types.ts";
+import { MusicAppButton } from "../components/MusicAppSheet.tsx";
 import { PersonalityCard } from "../components/PersonalityCard.tsx";
 import { PlaylistRows, SkeletonRows } from "../components/PlaylistRows.tsx";
 import { ExportMenu, Feedback, TextTweak, TweakBar } from "../components/ResultActions.tsx";
@@ -419,6 +420,7 @@ export function Result({
         )}
 
         <div className="flex flex-wrap gap-2">
+          <MusicAppButton tracks={ready && pending === null ? shown : null} />
           {offerSpotify(health, location.hostname) && (
             <SpotifyButton
               tracks={pending === null ? shown : []}

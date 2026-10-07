@@ -189,6 +189,9 @@ export const STAT_EVENTS = [
   "export_csv",
   "export_xspf",
   "export_json",
+  "handoff_spotify",
+  "handoff_apple_music",
+  "handoff_youtube_music",
 ] as const;
 export type StatEvent = (typeof STAT_EVENTS)[number];
 

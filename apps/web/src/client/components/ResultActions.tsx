@@ -190,7 +190,7 @@ export function ExportMenu({
         disabled={disabled}
         aria-expanded={open}
         aria-haspopup="true"
-        className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-2xl bg-gradient-to-r from-side-a to-side-b px-4 font-extrabold text-ink disabled:opacity-40"
+        className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-2xl bg-raised px-4 font-bold text-text hover:bg-line disabled:opacity-40"
         onClick={() => setOpen((x) => !x)}
       >
         ⬇ {t.result.export} <span aria-hidden="true">▾</span>
