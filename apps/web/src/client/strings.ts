@@ -187,7 +187,7 @@ export const t = {
     setupIntro:
       "ABTune saves playlists through your own Spotify app. It takes about 5 minutes, and the account that creates the app needs Spotify Premium.",
     stepDashboard: "Open the Spotify developer dashboard and create an app.",
-    dashboard: "Open the dashboard ↗",
+    dashboard: "Open the dashboard ↗︎",
     stepApp: "Name it anything that doesn't start with “Spot”, and tick Web API.",
     stepRedirect: "Add this redirect URI, exactly as shown:",
     stepUsers:
@@ -236,7 +236,7 @@ export const t = {
         : `${found} found on Spotify · ${swapped} swapped for similar songs.`,
     missingLine: (n: number) =>
       `${n} song${n === 1 ? "" : "s"} couldn't be found or replaced, so the playlist is shorter.`,
-    open: "Open in Spotify ↗",
+    open: "Open in Spotify ↗︎",
     swaps: "What was swapped",
     errors: {
       quota_exceeded:

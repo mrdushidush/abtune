@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import { MAX_AI_TEXT } from "../../api-types.ts";
 import type { Vote } from "../state/feedback.ts";
 import { EXPORT_LABELS, TWEAK_LABELS, TWEAK_PAIRS, t } from "../strings.ts";
+import { Icon, TILE } from "./Icon.tsx";
 
 const AXIS_NAMES = {
   energy: scalarLabel("energy").name,
@@ -158,7 +159,7 @@ export function TextTweak({
   );
 }
 
-/** Export ▾ with the four §11.2 formats. */
+/** Export, a menu of the four §11.2 formats. */
 export function ExportMenu({
   onExport,
   disabled,
@@ -184,16 +185,21 @@ export function ExportMenu({
     };
   }, [open]);
   return (
-    <div ref={ref} className="relative flex-1">
+    // On a phone the menu hangs from the whole row (the parent is `relative`), not this narrow tile.
+    <div ref={ref} className="sm:relative">
       <button
         type="button"
         disabled={disabled}
         aria-expanded={open}
         aria-haspopup="true"
-        className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-2xl bg-raised px-4 font-bold text-text hover:bg-line disabled:opacity-40"
+        className={TILE}
         onClick={() => setOpen((x) => !x)}
       >
-        ⬇ {t.result.export} <span aria-hidden="true">▾</span>
+        <Icon name="download" />
+        <span className="flex items-center gap-0.5">
+          {t.result.export}
+          <Icon name="chevron" className="size-4" />
+        </span>
       </button>
       {open && (
         <ul className="absolute inset-x-0 top-full z-20 mt-2 overflow-hidden rounded-2xl border border-line bg-raised shadow-2xl sm:min-w-72">

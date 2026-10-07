@@ -99,8 +99,8 @@ const SECURITY_HEADERS = secureHeaders({
     defaultSrc: ["'self'"],
     scriptSrc: ["'self'"],
     styleSrc: ["'self'"],
-    // The favicon is a data: URL; the share card preview is a blob: URL.
-    imgSrc: ["'self'", "data:", "blob:"],
+    // The share card preview is a blob: URL.
+    imgSrc: ["'self'", "blob:"],
     connectSrc: ["'self'"],
     objectSrc: ["'none'"],
     baseUri: ["'none'"],

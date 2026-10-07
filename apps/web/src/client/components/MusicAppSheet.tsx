@@ -39,7 +39,7 @@ export function MusicAppButton({
       <button
         type="button"
         disabled={!tracks?.length}
-        className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-2xl bg-gradient-to-r from-side-a to-side-b px-4 font-extrabold text-ink disabled:opacity-40"
+        className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-2xl bg-gradient-to-r from-side-a to-side-b px-4 font-extrabold text-ink disabled:opacity-40 sm:flex-1"
         onClick={() => {
           setOpen(true);
           dialog.current?.showModal();

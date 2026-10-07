@@ -360,3 +360,12 @@ Three reviewer agents looked at ABTune before launch from three sides: a develop
   - It is the main button on the result and shared screens; Export became a secondary button. Counted per app (`handoff_spotify`, `handoff_apple_music`, `handoff_youtube_music`). Self-hosters with their own Spotify app keep "Save to Spotify" next to it.
 - 2026-10-07 · **v0.1.0 tagged** (owner), the same day the repository went public: the release notes are the changelog's 0.1.0 section, and the tag publishes the `:0.1.0`, `:0.1` and `:latest` images.
 - 2026-10-07 · **The repository went public** (owner), four days before the planned date, once the beta link was out: footer links to GitHub would otherwise 404. Before that: the git history was scanned for keys, tokens, private keys, server addresses and personal paths (none found); user docs lost the milestone numbers; the README was rewritten; `docs/QUESTION_AUTHORING.md` was written; the brief, this log and ADR-0001 now say who decides (the owner) and that Claude Code is the tool ABTune is built with.
+
+## Polish after v0.1 (2026-10-07)
+
+- 2026-10-07 · **Home-screen app (owner: "so users can add it to their phone as an app"):**
+  - `manifest.webmanifest` (`display: standalone`, ink background and theme), an Apple touch icon, and an SVG favicon plus `favicon.ico` in place of the 🎧 emoji. Chrome reports no manifest or installability errors.
+  - No service worker: Chrome reports the page installable without one (`Page.getInstallabilityErrors` is empty), and an offline cache would add stale-build bugs for an app that needs the server for every playlist anyway.
+  - **Icon (owner's pick of three):** the wordmark's AB, pink A and blue B, on the ink tile with the link-preview image's two corner glows. The letterforms are drawn as SVG paths, not set in a font, so no font licence is involved. The PNGs are rendered from the same paths in headless Chrome: 192 and 512 with rounded corners, a full-bleed 180 for iOS, and a 512 maskable one with the mark inside Android's safe circle.
+  - The CSP's `img-src` dropped `data:`: the emoji favicon was its only user.
+- 2026-10-07 · **Result buttons on a phone:** Export, Share and Reshuffle are a row of three (two on a shared playlist), with the icon over the label below 640 px. At 360–390 px, Export used to wrap onto four lines. The export menu hangs from the whole row on a phone. Arrow characters (⬇ ↗ 🔀) were drawn as emoji on Windows and Android, so the buttons use line icons (`components/Icon.tsx`). "Add to your music app" stays full width above them.

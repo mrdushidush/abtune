@@ -3,6 +3,17 @@
 All notable changes to ABTune. The format follows [Keep a Changelog](https://keepachangelog.com/),
 and versions follow [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- Add ABTune to your phone's home screen: it opens full screen, like an app, with its own icon
+  ("Add to Home Screen" on iPhone, "Install app" on Android).
+
+### Changed
+- On a phone, Export, Share and Reshuffle sit in one row of three without their labels wrapping, and
+  the export menu opens across the whole row.
+- Button icons are drawn instead of using arrow characters, which some phones showed as emoji.
+
 ## [0.1.0] - 2026-10-07
 
 The first public release, in beta. Try it at [abtune.com](https://abtune.com).
@@ -46,4 +57,5 @@ The first public release, in beta. Try it at [abtune.com](https://abtune.com).
   Tunnel.
 - Docker images on GitHub's registry (amd64, arm64).
 
+[Unreleased]: https://github.com/mrdushidush/abtune/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/mrdushidush/abtune/releases/tag/v0.1.0

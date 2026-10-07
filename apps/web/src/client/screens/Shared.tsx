@@ -190,27 +190,31 @@ export function Shared({
           <p className="mt-1 text-sm text-text-3">{meta || " "}</p>
         </header>
 
-        <div className="flex flex-wrap gap-2">
-          <MusicAppButton tracks={ready ? tracks : null} />
-          {offerSpotify(health, location.hostname) && (
-            <SpotifyButton
-              tracks={ready ? tracks : []}
-              request={ready?.request ?? null}
-              title={title.title}
-              description={description}
-              shareCode={code}
-              onExportCsv={() => onExport("csv")}
-              outcome={spotifyOutcome}
-              onOutcomeSeen={onSpotifySeen}
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <MusicAppButton tracks={ready ? tracks : null} />
+            {offerSpotify(health, location.hostname) && (
+              <SpotifyButton
+                tracks={ready ? tracks : []}
+                request={ready?.request ?? null}
+                title={title.title}
+                description={description}
+                shareCode={code}
+                onExportCsv={() => onExport("csv")}
+                outcome={spotifyOutcome}
+                onOutcomeSeen={onSpotifySeen}
+              />
+            )}
+          </div>
+          <div className="relative grid grid-cols-2 gap-2">
+            <ExportMenu onExport={onExport} disabled={!ready} />
+            <ShareButton
+              code={ready ? code : null}
+              card={card}
+              name={name}
+              baseUrl={shareBase(health)}
             />
-          )}
-          <ExportMenu onExport={onExport} disabled={!ready} />
-          <ShareButton
-            code={ready ? code : null}
-            card={card}
-            name={name}
-            baseUrl={shareBase(health)}
-          />
+          </div>
         </div>
 
         {other && (
