@@ -9,7 +9,9 @@ name: abtune-public
 
 services:
   app:
-    build: ..
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
     image: ${ABTUNE_IMAGE:-abtune:local}
     env_file: .env
     environment:

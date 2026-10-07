@@ -2,7 +2,9 @@ name: abtune
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
     image: abtune:local
     # Loopback only: Spotify requires http://127.0.0.1:<port>/callback redirects (HANDOFF §3.1).
     ports:
@@ -24,7 +26,9 @@ services:
   #   docker compose run --rm catalog                      (default URL / CATALOG_SAMPLE_URL)
   #   docker compose run --rm catalog --file data/catalog/catalog-2026.09.2-dev50k.tar
   catalog:
-    build: .
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
     image: abtune:local
     profiles: ["tools"]
     entrypoint: ["node", "packages/cli/src/main.ts", "catalog", "fetch"]

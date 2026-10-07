@@ -33,4 +33,4 @@ rebinding (loopback, IP addresses and `APP_BASE_URL`); an Origin check on every 
 for the browser; request size limits; the MCP server writes only inside its export folder; catalog
 downloads are checked against their SHA-256 and unpacked without path traversal. The self-hosted
 server listens on 127.0.0.1 only; a public instance runs behind a reverse proxy or tunnel
-([docs/DEPLOY.md](docs/DEPLOY.md)). CI actions are pinned to commit SHAs.
+([docs/DEPLOY.md](../docs/DEPLOY.md)). CI actions are pinned to commit SHAs.

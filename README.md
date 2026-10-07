@@ -12,7 +12,7 @@ opens like an app.
 [![CI](https://github.com/mrdushidush/abtune/actions/workflows/ci.yml/badge.svg)](https://github.com/mrdushidush/abtune/actions/workflows/ci.yml)
 [![Code: MIT](https://img.shields.io/badge/code-MIT-blue)](LICENSE)
 [![Data: CC BY-NC-SA 3.0](https://img.shields.io/badge/data-CC%20BY--NC--SA%203.0-lightgrey)](docs/DATA_LICENSES.md)
-[![Status: beta](https://img.shields.io/badge/status-beta-orange)](CHANGELOG.md)
+[![Status: beta](https://img.shields.io/badge/status-beta-orange)](docs/CHANGELOG.md)
 
 <img src="docs/media/hero.png" alt="Three phone screens: a 'Top of the charts or Crate-digging finds?' card, the music-personality card 'Sunburst Revivalist' with a sound-profile chart, and a classic-rock playlist (White Room, Layla, Smoke on the Water) under an 'Add to your music app' button" width="900">
 
@@ -64,7 +64,7 @@ is in [docs/DECISIONS.md](docs/DECISIONS.md).
 - "Add to your music app" copies the song list and opens TuneMyMusic, a free transfer site, where
   you sign in to your app. ABTune sends it nothing.
 
-More in [SECURITY.md](SECURITY.md).
+More in [SECURITY.md](.github/SECURITY.md).
 
 ## Run it yourself
 
@@ -154,8 +154,8 @@ or the CLI. Use erasable TypeScript only (no `enum`, no `namespace`) and `.ts` i
 | `data/personas` | The 12 eval personas (what a listener wants, in the bank's dimensions). |
 | `data/tag_map.yaml` | MusicBrainz tags → genre clusters, community-editable like the question packs. |
 | `data/catalog-fixture` | 5k-song test catalog (CC BY-NC-SA 3.0 US). |
-| `deploy` | The kit abtune.com runs on: Docker Compose with Caddy or a Cloudflare Tunnel. |
-| `docs` | The original brief, the ADR, the decision log, data licenses, catalog and eval reports. |
+| `deploy` | The Dockerfile, and the kit abtune.com runs on: Docker Compose with Caddy or a Cloudflare Tunnel. |
+| `docs` | The original brief, the ADR, the decision log, the changelog, data licenses, catalog and eval reports. |
 
 ## What's next
 
@@ -173,11 +173,11 @@ Star or watch the repo to follow along, and say what you'd want next in
 ## Contribute
 
 The most useful contribution is **better questions**, and they're plain YAML, no code needed. Start
-with [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/QUESTION_AUTHORING.md](docs/QUESTION_AUTHORING.md);
+with [CONTRIBUTING.md](.github/CONTRIBUTING.md) and [docs/QUESTION_AUTHORING.md](docs/QUESTION_AUTHORING.md);
 the [good first issues](https://github.com/mrdushidush/abtune/labels/good%20first%20issue) are
 scoped for a first pull request. Got a playlist that isn't you?
 [Tell us](https://github.com/mrdushidush/abtune/issues/new/choose): that report is the fastest way
-to tune the quiz. Everyone taking part follows the [code of conduct](CODE_OF_CONDUCT.md).
+to tune the quiz. Everyone taking part follows the [code of conduct](.github/CODE_OF_CONDUCT.md).
 
 ## Built with Claude Code
 

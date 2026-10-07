@@ -13,6 +13,9 @@ and versions follow [Semantic Versioning](https://semver.org/).
 - On a phone, Export, Share and Reshuffle sit in one row of three without their labels wrapping, and
   the export menu opens across the whole row.
 - Button icons are drawn instead of using arrow characters, which some phones showed as emoji.
+- The Dockerfile is now `deploy/Dockerfile`. `docker compose` finds it; with plain `docker build`,
+  pass `-f deploy/Dockerfile`. The contributing guide, code of conduct and security policy moved to
+  `.github/`, and this changelog to `docs/`.
 
 ## [0.1.0] - 2026-10-07
 

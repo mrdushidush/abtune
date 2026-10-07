@@ -6,7 +6,7 @@ need to write code to add them.
 
 Every `data/questions/*.yaml` file is loaded and merged. `seed.yaml` holds the dimensions and the
 core packs; `more.yaml`, `variants.yaml`, `duels.yaml` and `il.yaml` add to it. A new pack is a new
-file. [CONTRIBUTING.md](../CONTRIBUTING.md) has the step-by-step for a pull request.
+file. [CONTRIBUTING.md](../.github/CONTRIBUTING.md) has the step-by-step for a pull request.
 
 ## A card
 
