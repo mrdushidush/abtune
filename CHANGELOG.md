@@ -3,9 +3,9 @@
 All notable changes to ABTune. The format follows [Keep a Changelog](https://keepachangelog.com/),
 and versions follow [Semantic Versioning](https://semver.org/).
 
-## [0.1.0] - unreleased
+## [0.1.0] - 2026-10-07
 
-The first public release.
+The first public release, in beta. Try it at [abtune.com](https://abtune.com).
 
 ### The quiz
 - This-or-that cards in four depths (10, 20, 50 or 100 questions): tap, swipe, or use the arrow keys.
