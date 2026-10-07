@@ -6,18 +6,21 @@
 like you, picked from an open catalog of 2 million songs.
 
 **[Try it at abtune.com →](https://abtune.com)**<br>
-No login, no app, about two minutes on your phone.
+No login and nothing to install, about two minutes on your phone. Add it to your home screen and it
+opens like an app.
 
 [![CI](https://github.com/mrdushidush/abtune/actions/workflows/ci.yml/badge.svg)](https://github.com/mrdushidush/abtune/actions/workflows/ci.yml)
 [![Code: MIT](https://img.shields.io/badge/code-MIT-blue)](LICENSE)
 [![Data: CC BY-NC-SA 3.0](https://img.shields.io/badge/data-CC%20BY--NC--SA%203.0-lightgrey)](docs/DATA_LICENSES.md)
 [![Status: beta](https://img.shields.io/badge/status-beta-orange)](CHANGELOG.md)
 
-<img src="docs/media/hero.png" alt="Three phone screens: a 'Guitars or Synths?' card, a music-personality card with a sound-profile chart, and the playlist with an 'Add to your music app' button" width="900">
+<img src="docs/media/hero.png" alt="Three phone screens: a 'Top of the charts or Crate-digging finds?' card, the music-personality card 'Sunburst Revivalist' with a sound-profile chart, and a classic-rock playlist (White Room, Layla, Smoke on the Water) under an 'Add to your music app' button" width="900">
 
 </div>
 
 ## What it does
+
+<img src="docs/media/demo.gif" align="right" width="260" alt="Demo: swiping 'Bon Jovi or Britney Spears?' and three more cards, the music-personality card 'Sunburst Revivalist', then a classic-rock playlist opening with Dream On, Jailhouse Rock, La Grange and Free Bird">
 
 - **The quiz.** Pick how deep to go (10, 20, 50 or 100 cards), then tap, swipe or use the arrow
   keys: *Bon Jovi or Britney? 80s or 90s? Road trip or study session?* A hint chip shows what your
@@ -154,12 +157,27 @@ or the CLI. Use erasable TypeScript only (no `enum`, no `namespace`) and `.ts` i
 | `deploy` | The kit abtune.com runs on: Docker Compose with Caddy or a Cloudflare Tunnel. |
 | `docs` | The original brief, the ADR, the decision log, data licenses, catalog and eval reports. |
 
+## What's next
+
+- **Compare with a friend** ([#7](https://github.com/mrdushidush/abtune/issues/7)): both sound
+  profiles on one chart, a match score, and a blended playlist to share back.
+- **French and Spanish** ([#6](https://github.com/mrdushidush/abtune/issues/6)).
+- **The MCP server on npx** ([#8](https://github.com/mrdushidush/abtune/issues/8)): one line in
+  Claude Code, no clone.
+- **More genres in the quiz:** cards for blues, reggae, K-pop and country fans
+  ([#2](https://github.com/mrdushidush/abtune/issues/2)–[#5](https://github.com/mrdushidush/abtune/issues/5)).
+
+Star or watch the repo to follow along, and say what you'd want next in
+[Discussions](https://github.com/mrdushidush/abtune/discussions).
+
 ## Contribute
 
 The most useful contribution is **better questions**, and they're plain YAML, no code needed. Start
-with [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/QUESTION_AUTHORING.md](docs/QUESTION_AUTHORING.md).
-Got a playlist that isn't you? [Tell us](https://github.com/mrdushidush/abtune/issues/new/choose):
-that report is the fastest way to tune the quiz.
+with [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/QUESTION_AUTHORING.md](docs/QUESTION_AUTHORING.md);
+the [good first issues](https://github.com/mrdushidush/abtune/labels/good%20first%20issue) are
+scoped for a first pull request. Got a playlist that isn't you?
+[Tell us](https://github.com/mrdushidush/abtune/issues/new/choose): that report is the fastest way
+to tune the quiz. Everyone taking part follows the [code of conduct](CODE_OF_CONDUCT.md).
 
 ## Built with Claude Code
 

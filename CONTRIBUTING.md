@@ -51,3 +51,7 @@ The linter enforces most of these. [docs/QUESTION_AUTHORING.md](docs/QUESTION_AU
 - Keep pull requests focused, and make sure CI passes.
 
 By contributing you agree your contributions are licensed under the [MIT License](LICENSE).
+
+Everyone taking part in ABTune's issues, pull requests and discussions is expected to follow the [code of conduct](CODE_OF_CONDUCT.md).
+
+Looking for somewhere to start? Issues labelled [good first issue](https://github.com/mrdushidush/abtune/labels/good%20first%20issue) are scoped for a first pull request, and ideas and questions are welcome in [Discussions](https://github.com/mrdushidush/abtune/discussions).
