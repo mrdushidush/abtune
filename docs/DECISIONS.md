@@ -376,3 +376,18 @@ Three reviewer agents looked at ABTune before launch from three sides: a develop
   - `Dockerfile` → `deploy/Dockerfile`, and `.dockerignore` → `deploy/Dockerfile.dockerignore` (BuildKit reads an ignore file named after the Dockerfile). Both compose files and the image workflow name the Dockerfile. Checked locally with Docker Compose 5.1: the build context leaves out `.env`, `data/dumps`, `data/build` and `node_modules`.
   - Not taken: dropping `.nvmrc` for `node-version: 24` in CI, and `vitest.config.ts` for CLI flags.
   - Staying at the root because their tools look there or the quick start needs them: the package and pnpm files, `LICENSE`, `compose.yaml` and `.env.example` (`docker compose up` from a fresh clone), `biome.json`, `tsconfig.base.json`, `.editorconfig`, `.gitattributes` and `.gitignore`.
+
+## Capacity (2026-10-08)
+
+- 2026-10-08 · **Measured on abtune.com** (Hostinger KVM 1, full catalog, AI off; the owner ran a closed-loop test of 300 random 20-answer sessions, 50 tracks each, 15 s per level):
+  - `POST /api/playlist` levels off at **2.2–2.3 playlists/s** (about 0.44 s each); p50 0.51 s with 1 client in flight, 0.90 s with 2, 1.8 s with 4 and 3.2 s with 8. No errors.
+  - Generation is synchronous on one event loop, so requests queue one behind another, and page loads wait with them.
+  - At about 1.5 playlists per visitor and a 4-minute visit: about 180 visitors on the site at once at half load, and 360 at the ceiling.
+  - Locally, pinning the server to one core with Windows affinity gave a false collapse (0.3/s at 8 clients): DuckDB still saw 12 cores and started 12 threads. With DuckDB at 1 thread it held 1.1/s on a desktop core.
+- 2026-10-08 · **Playlists per visitor (owner: "add a rate limit to /api/playlist"):** replaces "no rate limit for the beta". Per-IP limits don't stop a spread-out flood; that is the Cloudflare tunnel's job.
+  - **The limit:** a token bucket per visitor, `PLAYLISTS_PER_MINUTE` tokens refilled evenly over a minute, so a visitor may use a whole minute's worth at once. The public kit sets 20: a visitor in a loop gets at most about 15% of the measured capacity, while a person tweaking and swapping quickly rarely reaches 20 in a minute.
+  - **Who a visitor is:** the address the trusted proxy (Caddy or cloudflared) puts last in `X-Forwarded-For` (`TRUST_PROXY`; earlier entries come from the client and are ignored), else the socket's address. An IPv6 address counts by its /64.
+  - **Off by default:** a loopback install has one listener, and the tests and the eval post many playlists from one address. The public compose file sets the limit and `TRUST_PROXY`, so the server's `.env` needs no change.
+  - **Past the limit:** 429 `rate_limited` with `retry_after` and `Retry-After` in whole seconds. The result and shared screens show "Lots of playlists in a row…" and ask again after that wait. "10 more" and swaps say "Too many changes in a row" and keep the playlist.
+  - **Known gap:** a shared link replays its edits one request each. A link with more than about 19 edits opened by a visitor who has no tokens left loses the edits past the limit, counted in the "couldn't be found or replaced" note.
+  - Idle buckets are dropped after a minute (they're full again by then), so memory stays bounded and nothing is written to disk.

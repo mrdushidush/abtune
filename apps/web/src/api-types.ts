@@ -125,7 +125,9 @@ export type ApiErrorCode =
   /** The AI layer is off on this server. */
   | "ai_off"
   /** The model gave nothing usable; `reason` says why. */
-  | "ai_failed";
+  | "ai_failed"
+  /** This visitor asked for playlists faster than PLAYLISTS_PER_MINUTE; `retry_after` says when. */
+  | "rate_limited";
 
 /** Why an AI call gave nothing (HANDOFF §10.4): the classic result is used, with a notice. */
 export type AiFailureCode = "off" | "timeout" | "unreachable" | "invalid" | "oversized" | "busy";
@@ -175,6 +177,8 @@ export interface ApiError {
   readonly catalog_version?: string;
   /** On ai_failed. */
   readonly reason?: AiFailureCode;
+  /** On rate_limited: seconds until the next request is allowed (also the Retry-After header). */
+  readonly retry_after?: number;
 }
 
 /** Usage events a public instance counts (POST /api/event, `{"e": name}`); nothing else is sent. */

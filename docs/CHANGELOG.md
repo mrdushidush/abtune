@@ -6,6 +6,9 @@ and versions follow [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- A limit on playlists per visitor for public instances (`PLAYLISTS_PER_MINUTE`, with
+  `TRUST_PROXY` behind a reverse proxy). The public deploy kit allows 20 a minute. Past it, the page
+  says so and asks again by itself.
 - Add ABTune to your phone's home screen: it opens full screen, like an app, with its own icon
   ("Add to Home Screen" on iPhone, "Install app" on Android).
 

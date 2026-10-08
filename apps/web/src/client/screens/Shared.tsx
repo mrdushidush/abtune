@@ -18,7 +18,7 @@ import { SourceLink } from "../components/SourceLink.tsx";
 import { SpotifyButton } from "../components/SpotifySheet.tsx";
 import type { CardInput } from "../lib/card-image.ts";
 import { download } from "../lib/download.ts";
-import { postPlaylist } from "../state/api.ts";
+import { postPlaylist, retryAfterMs } from "../state/api.ts";
 import type { HealthState, PlaylistState } from "../state/hooks.ts";
 import { replayShare, shareBase } from "../state/share.ts";
 import { offerSpotify } from "../state/spotify.ts";
@@ -83,6 +83,7 @@ export function Shared({
       return () => clearTimeout(id);
     }
     let alive = true;
+    let wait: ReturnType<typeof setTimeout> | undefined;
     setState({ kind: "loading", previous: null });
     replayShare(
       bank.dimensions,
@@ -98,12 +99,18 @@ export function Shared({
         return setState({ kind: "ready", data: r.response, request: r.first });
       }
       const err = r.result.ok ? null : r.result;
+      if (err?.status === 429) {
+        setState({ kind: "busy" });
+        wait = setTimeout(() => setAttempt((n) => n + 1), retryAfterMs(err.error));
+        return;
+      }
       if (err?.status === 409 || err?.error?.error === "catalog_loading") return refreshHealth();
       if (err?.error?.error === "catalog_error") return setState({ kind: "catalog_error" });
       setState({ kind: "down" });
     });
     return () => {
       alive = false;
+      clearTimeout(wait);
     };
   }, [bank, code, data, health, stale, catalog?.status, catalog?.version, attempt]);
 

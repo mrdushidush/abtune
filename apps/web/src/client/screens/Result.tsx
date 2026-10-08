@@ -161,6 +161,12 @@ export function PlaylistBody({
       );
     case "catalog_error":
       return <Notice>{t.result.catalogError}</Notice>;
+    case "busy":
+      return (
+        <Notice>
+          <span className="animate-pulse">{t.result.busy}</span>
+        </Notice>
+      );
     case "stale":
       return (
         <Notice action={{ label: t.result.reload, onClick: () => location.reload() }}>
@@ -251,17 +257,19 @@ export function Result({
     ops: readonly ShareOp[];
   } | null>(null);
   const [pending, setPending] = useState<"more" | number | null>(null);
-  const [failed, setFailed] = useState(false);
+  /** The last "10 more" or swap didn't work: rate limited (`busy`) or anything else. */
+  const [failed, setFailed] = useState<"busy" | "failed" | null>(null);
   const current = ready && edits?.base === ready.data ? edits : null;
   const shown = ready ? (current?.tracks ?? ready.data.tracks) : [];
   const ops = current?.ops ?? NO_OPS;
   const edit = async (op: ShareOp) => {
     if (!ready || pending !== null) return;
     setPending(op.op === "more" ? "more" : op.index);
-    setFailed(false);
+    setFailed(null);
     const req = editRequest(bank.dimensions, aiv.base, tweaks, ready.request, shown, ops, op);
     const r = await postPlaylist(req);
-    if (!r.ok || r.data.tracks.length === 0) setFailed(true);
+    if (!r.ok || r.data.tracks.length === 0)
+      setFailed(!r.ok && r.status === 429 ? "busy" : "failed");
     else
       setEdits({
         base: ready.data,
@@ -513,7 +521,7 @@ export function Result({
             </button>
             {failed && (
               <p className="text-sm text-text-3" role="status">
-                {t.result.actionFailed}
+                {failed === "busy" ? t.result.actionBusy : t.result.actionFailed}
               </p>
             )}
           </div>

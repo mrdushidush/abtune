@@ -17,6 +17,10 @@ services:
     environment:
       # Usage counters (numbers per day, no IDs), kept in the stats volume.
       STATS_FILE: data/stats/stats.json
+      # Playlists a minute per visitor (deploy/.env can change it). Only Caddy or the tunnel reaches
+      # the app, so the visitor is the address they put last in X-Forwarded-For.
+      PLAYLISTS_PER_MINUTE: ${PLAYLISTS_PER_MINUTE:-20}
+      TRUST_PROXY: "true"
     volumes:
       - ./catalog:/app/data/catalog:ro
       - stats:/app/data/stats
