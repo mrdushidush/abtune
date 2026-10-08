@@ -11,6 +11,9 @@ and versions follow [Semantic Versioning](https://semver.org/).
   says so and asks again by itself.
 - Add ABTune to your phone's home screen: it opens full screen, like an app, with its own icon
   ("Add to Home Screen" on iPhone, "Install app" on Android).
+- Every MCP tool says whether it only reads, can replace a file, is safe to repeat, and reaches
+  outside the server (the four MCP tool hints), so hosts can tell which calls are safe to run
+  unasked. Only `push_to_spotify` reaches outside; only `export_playlist` can replace a file.
 
 ### Changed
 - On a phone, Export, Share and Reshuffle sit in one row of three without their labels wrapping, and
