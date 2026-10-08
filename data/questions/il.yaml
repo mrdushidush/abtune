@@ -9,7 +9,7 @@
 version: 1
 
 packs:
-  il: { weight: 1.0, default: true }
+  il: { weight: 1.0, default: true, lead: [2, 3] }
 
 questions:
 

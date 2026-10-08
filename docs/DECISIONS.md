@@ -391,3 +391,47 @@ Three reviewer agents looked at ABTune before launch from three sides: a develop
   - **Past the limit:** 429 `rate_limited` with `retry_after` and `Retry-After` in whole seconds. The result and shared screens show "Lots of playlists in a row…" and ask again after that wait. "10 more" and swaps say "Too many changes in a row" and keep the playlist.
   - **Known gap:** a shared link replays its edits one request each. A link with more than about 19 edits opened by a visitor who has no tokens left loses the edits past the limit, counted in the "couldn't be found or replaced" note.
   - Idle buckets are dropped after a minute (they're full again by then), so memory stays bounded and nothing is written to disk.
+
+## Playlist fit study (2026-10-08)
+
+- 2026-10-08 · **The ask (owner):** "run the app using headless chrome 200 times… check if all the playlists generated are good enough. We must fine tune this — this is the main issue i got from the first few users."
+- 2026-10-08 · **How it was measured:**
+  - 200 seeded listeners (40% with the Israeli pack on, as an Israeli visitor gets it), each with a taste in genres, decades and language, played the real app in headless Chrome against the full catalog at 10, 20, 50 and 100 cards, answering each card by their taste.
+  - Each playlist was judged by rule. A song fits when it is in a genre the listener likes, within a decade of an era they like, and in their language. **Good**: at least 70% of the songs fit, and for listeners who want hits, at least 60% are recognizable. **Meh**: at least 50% fit. **Bad**: fewer.
+  - The same listeners gave the same answers before and after. Changes were tried first on recorded quizzes (replayed without the browser) and simulated listeners, then checked in the browser.
+- 2026-10-08 · **What went wrong, by cause:**
+  - **Eras:** with decades at τ = 1, a 10-card profile was nearly flat across decades, so a 2010s fan's playlist pulled in 1950s–70s classics (Paul Anka, "Dancing Queen", "Unchained Melody").
+  - **Ties between genres:** a forced choice raises whichever side wins, so a genre the listener doesn't care about can tie the one they love. Duel cards settle that, but they started at card 21, so 10- and 20-card quizzes never got one. A hip-hop fan who picked pop artists over rock ones got an all-pop playlist.
+  - **Language:** "Hebrew songs in your mix?" competed with every other card, and in a 10-card quiz it often came late or never, while language decides most of an Israeli playlist.
+- 2026-10-08 · **What changed (engine 0.6.0):**
+  - **Decades:** τ 0.3, with a relative τ of 0.1 · s_top so long quizzes keep the old split, and 0.3 × neighbor smoothing before the softmax (liking the 80s lifts the late 70s and early 90s). HANDOFF §7.3 amended.
+  - **Duels from card 6** (was 21), and a genre is a contender only once its score is at least 1: picking Britney over Bon Jovi raises pop and dance-pop by 0.8 each, and with duels that early their tie took a mizrahi fan's 10-card profile to 94% dance-pop. HANDOFF §8.3 amended.
+  - **21 new duel cards** (30 → 51) for the pairs the runs showed unsettled: rap against pop choruses, dance-pop and reggaeton; club tracks against pop ballads and pop songs; indie bands against pop stars; K-pop against western dance-pop; rock against country, jazz, soul, funk and movie scores; country against pop, folk, jazz and mizrahi; and more. Every duel card has `weight: 1.5`. The bank grows from 336 to 357 questions. The owner reviewed the new cards and kept all 21; two got a question line ("Who's on stage?", "Who's playing?") so they don't read "A guitar band or A pop star?".
+  - **Lead slots:** a pack may declare `lead` positions. The Israeli pack asks "Hebrew songs in your mix?" second, and after "Lots of Hebrew", "Shlomo Artzi or Eyal Golan?" (Israeli rock or mizrahi) third.
+  - **Lint:** a variant must have its canonical card's `weight`, so a variant can't change what an answer weighs.
+- 2026-10-08 · **Results, 200 browser runs** (engine 0.5.0 live → 0.6.0):
+
+  | | 0.5.0 | 0.6.0 |
+  |---|---:|---:|
+  | good / meh / bad | 84 / 32 / 84 | **127 / 17 / 56** |
+  | songs in the listener's genres | 69% | 78% |
+  | songs in a liked era (±1 decade) | 84% | 96% |
+  | songs 3+ decades off | 9% | 2% |
+  | recognizable (hits view, a top-3 song or a canon hit) | 97% | 95% |
+  | page or API errors | 0 | 0 |
+
+  - By quiz length, good (bad): 10 cards 15 (30) → 27 (25); 20 cards 32 (44) → 62 (23); 50 cards 27 (7) → 27 (5); 100 cards 10 → 11.
+  - Israeli listeners 27 → 45 good (34 → 26 bad); others 57 → 82 (50 → 30). Hip-hop fans 17 good / 12 bad → 24 / 5; country 2 / 5 → 5 / 3; metal 4 / 10 → 9 / 5.
+  - Still weak: a mizrahi fan who also likes English house gets a Hebrew and dance-pop mix (better, not good), and a hip-hop fan whose 20 cards never reach the hip-hop/pop duel still gets pop.
+- 2026-10-08 · **Persona eval** ([docs/eval/2026-10-08-playlist-fit.md](eval/2026-10-08-playlist-fit.md)): mean fit at 10/20/50/100 cards 0.214 / 0.398 / 0.607 / 0.568 → **0.308 / 0.566 / 0.652 / 0.620**. §16 #3–#5 pass: p95 89 ms, 0 of 1,240 playlists break §9.3, and the 100-against-10-card margin is +0.311 (minimum 0.300). Across all modes, fit2 rises for 10 of 12 personas (Hebrew-mizrahi 0.231 → 0.324, jazz & soul 0.456 → 0.653, workout 0.383 → 0.514); 80s pop (0.526 → 0.483) and Israeli rock & pop (0.652 → 0.609) dip.
+- 2026-10-08 · **Open (owner):**
+  - **Canon hits per 100 tracks fall from 9.45 to 5.13, under the recorded floor of 7.0** (D1); seed noise alone moves this figure by about 0.4 (the same code gave 5.55 before two cards got new question text, which changes the seeds). Signature songs (a famous artist's top 3) hold at 74% against a floor of 65%. An eval with the 30 old duel cards (unweighted) on engine 0.6.0 gave 5.95, so the decades change accounts for about 3.5 of the 4.3 drop: the canon list spans every era, and playlists that keep to the listener's eras find fewer of its hits (mainstream 25.5 → 15.9, jazz & soul 10.5 → 4.4, workout 17.5 → 8.9, EDM 7.1 → 4.4 from that alone). The new duels take EDM to 1.1 and workout to 5.3 while raising their fit2 (0.688 → 0.711, 0.416 → 0.514). An EDM fan now gets few of the big crossover hits (Titanium, Levels, Lean On), which may sit in dance-pop rather than EDM. Choices: investigate, or record a new floor.
+  - **The Israeli rock & pop persona dips at 10 and 20 cards** (fit 0.25 / 0.37 → 0.16 / 0.27; better from 50 on), and its playlists are 62% Hebrew, down from 71%.
+- 2026-10-08 · **Measured and rejected** (don't retry without a new idea):
+  - A softer genre split (relative τ 0.3 or 0.5): worse.
+  - Counting "A beat B" as evidence against B: didn't help.
+  - Lifting songs whose year fits the era within each genre and decade cell: didn't help.
+  - A relative τ of 0.5 for languages: the Hebrew personas fell from 79% to 30% Hebrew.
+  - A relative τ of 0.3 for decades: long quizzes spread across too many decades.
+  - `weight: 1.5` on the nine core genre-against-genre cards: a small gain in simulation, but "Classical or EDM?" became everyone's first card and lesser-evil answers took over; the metalhead and mizrahi personas collapsed.
+  - Masking junk titles (medleys and the like): only about 7 in 6,425 songs.

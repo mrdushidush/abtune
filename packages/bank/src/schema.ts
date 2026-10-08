@@ -33,6 +33,7 @@ const pack = z.strictObject({
   weight: z.number().positive(),
   default: z.boolean(),
   opt_in: z.boolean().optional(),
+  lead: z.array(z.number().int().min(1)).min(1).optional(),
 });
 
 const dimensions = z.strictObject({

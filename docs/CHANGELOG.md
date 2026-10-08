@@ -16,6 +16,15 @@ and versions follow [Semantic Versioning](https://semver.org/).
   unasked. Only `push_to_spotify` reaches outside; only `export_playlist` can replace a file.
 
 ### Changed
+- Playlists fit short quizzes much better. In 200 test runs in a browser, the share of playlists
+  that fit the listener rose from 42% to 64%, and clear misses fell from 42% to 28%:
+  - Eras follow your answers more closely: a 2010s fan no longer gets 1950s songs after 10 cards,
+    and liking the 80s also brings in the late 70s and early 90s.
+  - Cards that settle a tie between your two leading genres ("Your playlist needs more: rap verses
+    or pop choruses?") now come from the sixth card on instead of the 21st, with 21 new ones across
+    rap, pop, dance, rock, country, jazz, K-pop and more.
+  - With the Israeli pack on, "Hebrew songs in your mix?" is the second card, and for "Lots of
+    Hebrew" the third is "Shlomo Artzi or Eyal Golan?".
 - On a phone, Export, Share and Reshuffle sit in one row of three without their labels wrapping, and
   the export menu opens across the whole row.
 - Button icons are drawn instead of using arrow characters, which some phones showed as emoji.

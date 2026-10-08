@@ -205,6 +205,12 @@ export function lintBank(merged: MergedBank, options: LintOptions = {}): Diagnos
           "family",
           `a variant shares its canonical question's pack ("${canonical.pack}").`,
         );
+      } else if (canonical.weight !== q.weight) {
+        report(
+          at("weight"),
+          "family",
+          `a variant shares its canonical question's weight (${canonical.weight}).`,
+        );
       }
       if (q.unlock_if) {
         report(

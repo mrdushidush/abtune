@@ -116,7 +116,7 @@ describe("§16 #2 determinism across processes", () => {
   it("is identical on every machine (pinned digest over a frozen bank; CI runs Linux, Windows, macOS)", async () => {
     // Changes only if the engine's behavior changes. If that's intended, update and log it in DECISIONS.md.
     expect(await determinismDigest(300, "a11ce5ba5eba11ed", FROZEN_BANK_DIR)).toBe(
-      "8ebfbb78e6da964f2b5b473932f37ef468d403eadab123671555bb6d403ed18f",
+      "6409da1d8adc7f3b180d7554c451cfb3f955709ba03aab923e6423f9e8776502",
     );
   }, 120_000);
 });

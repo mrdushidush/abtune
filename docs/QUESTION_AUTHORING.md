@@ -64,6 +64,7 @@ A community pack declares itself in its own file:
 version: 1
 packs:
   synthwave: { weight: 1.0, default: false }   # opt_in: true keeps it off unless chosen
+  # lead: [2, 3] would ask the pack's top card 2nd and its next one 3rd (the `il` pack does this)
 questions:
   - id: outrun_darksynth
     pack: synthwave
@@ -75,10 +76,11 @@ questions:
 1. **Eligible** cards: not asked yet, pack switched on, `unlock_if` met (or absent).
 2. **The slot** for this position: the first three are `core` (the hook), every fourth is `vibe`,
    positions 5, 9, 13 and 17 explore a genre or decade nothing has asked about yet, and with spicy on,
-   position 7, 17, 27 and so on are `spicy`. Otherwise it's `core`, `context` or `deep`.
+   position 7, 17, 27 and so on are `spicy`. Otherwise it's `core`, `context` or `deep`. A pack
+   with `lead` positions takes them first: its highest-`pri` eligible card is asked there.
 3. **The score**: how much the card would teach right now (dimensions the quiz is still unsure
-   about count more), times `0.5 + pri/100`. Past 20 answers, cards that split the listener's two
-   leading genres get a bonus.
+   about count more), times `0.5 + pri/100`. From the sixth card on, a card that splits two of the
+   listener's leading genres gets a bonus (a genre counts once a full answer's worth points to it).
 4. **The pick**: each session has a random quiz seed, so the card is a seeded draw among those
    scoring close to the best. Retakes ask a different mix, and the same seed with the same answers
    always gives the same quiz and playlist.
@@ -92,8 +94,8 @@ A variant (`family: <canonical id>`) asks the same contrast in other words or wi
 "Hotel California or Thriller?" next to "Stairway to Heaven or Billie Jean?". A family is asked at
 most once per session, and the seed picks which variant. A variant:
 
-- keeps its canonical card's `pack`, the same `fx` keys and the same A/B meaning (the ones in
-  `variants.yaml` copy `fx` and `pri` exactly), so it can't change what an answer means;
+- keeps its canonical card's `pack` and `weight`, the same `fx` keys and the same A/B meaning (the
+  ones in `variants.yaml` copy `fx` and `pri` exactly), so it can't change what an answer means;
 - points at the canonical card, never at another variant, and has no `unlock_if` of its own.
 
 ## Writing a good card
@@ -129,7 +131,7 @@ What `lint` reports:
 | `fx-empty`, `fx-unknown-key`, `fx-range` | each side has effects, on real dimensions, in [-1, 1] |
 | `sensitive-fx` | a sensitive card touches a non-scalar, or goes past ±0.4 |
 | `unlock-ref`, `unlock-genre` | `unlock_if` names an existing `id=a`/`id=b` and real genres |
-| `family` | a variant points at a canonical card in the same pack, with no `unlock_if` |
+| `family` | a variant points at a canonical card in the same pack, with the same `weight` and no `unlock_if` |
 | `coverage-scalar`, `coverage-genre` | every scalar is touched by at least 5 core/context cards, every genre by at least 3 |
 
 Changing a card changes everyone's quiz: the bank's hash is part of every playlist seed, and share
