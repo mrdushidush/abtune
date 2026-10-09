@@ -13,7 +13,7 @@ One line per non-obvious choice: date · decision · why. Big decisions get an A
 - 2026-10-01 · TypeScript 7 (native compiler) is used for typechecking only.
 - 2026-10-01 · Container base `node:24-bookworm-slim` · DuckDB/resvg prebuilt binaries need glibc.
 - 2026-10-01 · Compose publishes on `127.0.0.1` only · Spotify loopback redirect rule; nothing should listen on the LAN by default.
-- 2026-10-01 · CI: Linux runs everything plus a compose smoke test; Windows runs tests on every push; macOS runs on `main`/manual only · private-repo macOS minutes cost 10×. Hosted Windows/macOS runners can't run Linux containers, so compose is verified on Windows 11 locally; **macOS compose check is pending a manual run**.
+- 2026-10-01 · CI: Linux runs everything plus a compose smoke test; Windows runs tests on every push; macOS runs on `main`/manual only · private-repo macOS minutes cost 10×. Hosted Windows/macOS runners can't run Linux containers, so compose is verified on Windows 11 locally; **macOS compose check is pending a manual run**. (Since 2026-10-09, macOS runs on pull requests too: the repo is public, so macOS minutes are free, and the `main` ruleset requires `Test (macos-latest)`, so a PR without it could only merge by admin bypass.)
 
 ## Question bank
 
