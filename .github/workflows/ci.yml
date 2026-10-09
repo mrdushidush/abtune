@@ -74,7 +74,7 @@ jobs:
           exit 1
       - name: Serves the web app, with link previews pointing at the public instance
         run: |
-          curl -sf http://127.0.0.1:8787/ | grep -q "<title>ABTune</title>"
+          curl -sf http://127.0.0.1:8787/ | grep -q "<title>ABTune: A/B test your music taste</title>"
           curl -sf http://127.0.0.1:8787/ | grep -q 'og:image" content="https://abtune.com/og.png"'
           curl -sf -o /dev/null http://127.0.0.1:8787/og.png
       - name: Generates a playlist, identically twice

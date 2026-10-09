@@ -64,7 +64,7 @@ import {
   viewSession,
 } from "@abtune/engine";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
+import type { CallToolResult, ToolAnnotations } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import { buildPlaylist, type CatalogHandle, type TrackRow } from "./playlist.ts";
 
@@ -172,6 +172,25 @@ const EXPORT_EXTS: Record<ExportFormat, readonly string[]> = {
   json: [".json"],
 };
 
+// Every tool carries all four MCP hints, which hosts read to decide what to run unasked.
+/** Changes nothing. */
+const READS: ToolAnnotations = {
+  readOnlyHint: true,
+  destructiveHint: false,
+  idempotentHint: true,
+  openWorldHint: false,
+};
+/**
+ * Changes only this process's memory: a new session or playlist (a new id each call), or the
+ * next card answered.
+ */
+const IN_MEMORY: ToolAnnotations = {
+  readOnlyHint: false,
+  destructiveHint: false,
+  idempotentHint: false,
+  openWorldHint: false,
+};
+
 /** `file` is `dir` or inside it (both absolute). */
 function inside(dir: string, file: string): boolean {
   const rel = path.relative(dir, file);
@@ -254,7 +273,7 @@ export function createServer(opts: ServerOptions): McpServer {
           .optional()
           .describe("Also list variants (other wordings of the same question)."),
       },
-      annotations: { readOnlyHint: true },
+      annotations: READS,
     },
     async ({ pack, limit, include_variants }) => {
       const packs = pack ? new Set([pack]) : new Set(defaultPacks(bank));
@@ -302,6 +321,7 @@ export function createServer(opts: ServerOptions): McpServer {
           .optional()
           .describe("Question packs (default: core, context, deep, vibe, il)."),
       },
+      annotations: IN_MEMORY,
     },
     async ({ mode, length, packs }) => {
       let state: SessionState;
@@ -329,6 +349,7 @@ export function createServer(opts: ServerOptions): McpServer {
       description:
         "Answer the current card of a quiz session: a, b, both or skip. Returns the next card, or the profile when done.",
       inputSchema: { session_id: z.string(), choice: choiceSchema },
+      annotations: IN_MEMORY,
     },
     async ({ session_id, choice }) => {
       const s = sessions.get(session_id);
@@ -362,6 +383,7 @@ export function createServer(opts: ServerOptions): McpServer {
           .optional()
           .describe("Playlist length (default 25)."),
       },
+      annotations: IN_MEMORY,
     },
     async ({ answers, length }) => {
       const log: AnswerEvent[] = answers.map((a) => ({ id: a.id, choice: a.choice as Choice }));
@@ -406,7 +428,7 @@ export function createServer(opts: ServerOptions): McpServer {
         session_id: z.string().optional(),
         share_code: z.string().optional().describe("A share code or a whole share link."),
       },
-      annotations: { readOnlyHint: true },
+      annotations: READS,
     },
     async ({ session_id, share_code }) => {
       if (!session_id === !share_code) return fail("Pass exactly one of session_id or share_code.");
@@ -465,6 +487,7 @@ export function createServer(opts: ServerOptions): McpServer {
           .optional()
           .describe(`Append this many pages of ${MORE_LENGTH} deeper cuts.`),
       },
+      annotations: IN_MEMORY,
     },
     async (args) => {
       const sources = [args.session_id, args.share_code, args.profile].filter(
@@ -616,6 +639,14 @@ export function createServer(opts: ServerOptions): McpServer {
         path: z.string().optional(),
         overwrite: z.boolean().optional().describe("Replace the file if it exists."),
       },
+      // Writes a file in the export folder; `overwrite` replaces one. The same call writes the
+      // same file again.
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
     },
     async ({ playlist_id, format, path: target, overwrite }) => {
       const p = playlists.get(playlist_id);
@@ -696,6 +727,13 @@ export function createServer(opts: ServerOptions): McpServer {
           .string()
           .optional()
           .describe("Spotify user id or display name, when several accounts are connected"),
+      },
+      // Creates a new playlist in the user's Spotify on each call; it never changes an existing one.
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true,
       },
     },
     async ({ playlist_id, name, public: isPublic, account }) => {

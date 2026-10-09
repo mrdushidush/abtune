@@ -156,6 +156,7 @@ describe("authoring rules (§8.4)", () => {
       "family",
       `questions:\n${question("q_f6", '    family: q_one\n    unlock_if: { any: ["q_one=a"] }\n')}`,
     ],
+    ["family", `questions:\n${question("q_f7", "    family: q_one\n    weight: 1.5\n")}`],
   ];
 
   it("accepts a variant of a canonical question in the same pack", () => {

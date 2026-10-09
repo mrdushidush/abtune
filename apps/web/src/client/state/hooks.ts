@@ -2,7 +2,13 @@ import { type Bank, engineVersion, type SessionState, type TweakSteps } from "@a
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Health, PlaylistRequest, PlaylistResponse } from "../../api-types.ts";
 import { type AiView, failureOf, interpretRequest, postInterpret } from "./ai.ts";
-import { type AiRequestParts, buildPlaylistRequest, fetchHealth, postPlaylist } from "./api.ts";
+import {
+  type AiRequestParts,
+  buildPlaylistRequest,
+  fetchHealth,
+  postPlaylist,
+  retryAfterMs,
+} from "./api.ts";
 import type { AiState, AppAction } from "./app.ts";
 
 export type HealthState =
@@ -29,6 +35,8 @@ export type PlaylistState =
   | { readonly kind: "catalog_loading" }
   | { readonly kind: "catalog_error" }
   | { readonly kind: "stale" }
+  /** Rate limited (429): asks again by itself once the server allows it. */
+  | { readonly kind: "busy" }
   | { readonly kind: "down" };
 
 const POLL_MS = 2000;
@@ -81,12 +89,18 @@ export function usePlaylist(
   useEffect(() => {
     if (!request) return;
     const abort = new AbortController();
+    let wait: ReturnType<typeof setTimeout> | undefined;
     setState({ kind: "loading", previous: last.current });
     postPlaylist(request, abort.signal).then((r) => {
       if (abort.signal.aborted) return;
       if (r.ok) {
         last.current = r.data;
         return setState({ kind: "ready", data: r.data, request });
+      }
+      if (r.status === 429) {
+        setState({ kind: "busy" });
+        wait = setTimeout(() => setAttempt((n) => n + 1), retryAfterMs(r.error));
+        return;
       }
       if (
         r.status === 409 ||
@@ -97,7 +111,10 @@ export function usePlaylist(
       if (r.error?.error === "catalog_error") return setState({ kind: "catalog_error" });
       setState({ kind: "down" });
     });
-    return () => abort.abort();
+    return () => {
+      abort.abort();
+      clearTimeout(wait);
+    };
   }, [key, attempt]);
 
   const retry = useCallback(() => {

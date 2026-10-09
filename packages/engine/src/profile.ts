@@ -172,6 +172,9 @@ export function topCategories(bank: Bank, profile: Profile, group: GroupName, n:
  * grow with every answer. With a fixed τ the split sharpens without limit, so after 50 answers a
  * near-tie becomes 90/10, and a single answer can flip it to 10/90. The relative term makes deep
  * profiles scale-invariant: the split depends on s_c / s_top, not on how many answers were given.
+ *
+ * `smooth` k is for ordered groups (decades): each score first gets k × its neighbors' scores, so
+ * liking the 80s also lifts the late 70s and early 90s, while the 50s stay where they were.
  */
 export function groupDistribution(
   bank: Bank,
@@ -179,14 +182,18 @@ export function groupDistribution(
   group: GroupName,
   tau: number,
   relativeTau = 0,
+  smooth = 0,
 ): Readonly<Record<string, number>> | null {
   const state = profile.groups[group];
   if (state.evidence === 0) return null;
   const keys = bank.dimensions[group];
+  const raw = keys.map((k) => state.s[k] ?? 0);
+  const scores =
+    smooth > 0 ? raw.map((x, i) => x + smooth * ((raw[i - 1] ?? 0) + (raw[i + 1] ?? 0))) : raw;
   let top = 0;
-  for (const k of keys) top = Math.max(top, state.s[k] ?? 0);
+  for (const x of scores) top = Math.max(top, x);
   const t = Math.max(tau, relativeTau * top);
-  const logits = keys.map((k) => (state.s[k] ?? 0) / t);
+  const logits = scores.map((x) => x / t);
   const max = Math.max(...logits);
   const exps = logits.map((l) => Math.exp(l - max));
   const total = exps.reduce((a, b) => a + b, 0);

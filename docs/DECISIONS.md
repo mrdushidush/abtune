@@ -2,10 +2,12 @@
 
 One line per non-obvious choice: date · decision · why. Big decisions get an ADR in `docs/adr/`.
 
+**Who's who:** "the owner" is David ([@mrdushidush](https://github.com/mrdushidush)), who owns and maintains ABTune and makes its product decisions. The entries were written with Claude Code, the AI coding tool ABTune is built with; "owner decision" marks a call David made; the other entries are implementation choices David approved.
+
 ## Project
 
 - 2026-10-01 · Product named **ABTune** ("A/B test your taste"), replacing the brief's working name "Either FM" · owner's pick after collision checks: Spotify policy bars names "confusing in sound or spelling to Spotify" (rules out "-ify" names), either.fm is taken, ABFM is the American Board of Family Medicine. `docs/HANDOFF.md` is left verbatim, so read "Either FM" there as ABTune.
-- 2026-10-01 · GitHub repo `mrdushidush/abtune` is private until v0.1, then public · owner's choice.
+- 2026-10-01 · GitHub repo `mrdushidush/abtune` is private until v0.1, then public · owner's choice. (Made public on 2026-10-07, with the beta; see the last section.)
 - 2026-10-01 · Stack: all TypeScript + DuckDB, see [ADR-0001](adr/0001-stack.md).
 - 2026-10-01 · Node 24 type stripping runs the server and CLI from `.ts` sources, with no tsx/tsdown build step · fewer moving parts. A bundle comes back only for npm-published packages (M8), since Node refuses to strip types under `node_modules`.
 - 2026-10-01 · TypeScript 7 (native compiler) is used for typechecking only.
@@ -334,7 +336,7 @@ Three reviewer agents looked at ABTune before launch from three sides: a develop
 
 ## Public instance and v0.1 release (owner, 2026-10-07)
 
-- 2026-10-07 · **Ship plan (owner):** on ~2026-10-11 the repo goes public, the hosted demo at abtune.com goes live and a private beta of 30–50 people starts. The Show HN / Reddit launch follows in mid-November, before Spotify Wrapped.
+- 2026-10-07 · **Ship plan (owner):** on ~2026-10-11 the repo goes public, the hosted demo at abtune.com goes live and a private beta of 30–50 people starts. A wider launch follows in mid-November.
 - 2026-10-07 · **Hosted demo runs the full catalog:**
   - Measured: the full catalog takes ~450 MB of memory on the laptop (RSS 423 MB after load, 10.2 s) and 1.3 GB in Docker on the server (Hostinger KVM 1: 1 vCPU, 4 GB; loads in 13.4 s; 50-track playlists p50 465 ms, p95 720 ms, n=40). The dev sample takes ~30 MB. So the 4 GB server holds the full catalog and the demo matches the eval exactly. No hits-only cut; for the November spike, 2+ vCPUs.
   - Host: a small Hostinger server (KVM 1, Ubuntu 26.04) at abtune.com. Kit in `deploy/`, steps in [DEPLOY.md](DEPLOY.md).
@@ -347,4 +349,89 @@ Three reviewer agents looked at ABTune before launch from three sides: a develop
   - The client sends an event name only (`STAT_EVENTS`: quiz started and finished, 10 more, shared link opened, link and image shares, exports by format). Counts per UTC day; no IDs, IPs or cookies. `quiz_done` and `shared_open` count once per quiz seed or link on a device (local storage).
   - `GET /api/stats` is public; the start screen says the site counts. Saved every minute and on SIGTERM.
   - Why our own counters and not an analytics script: the privacy story ("no login, answers stay in your browser") and the strict CSP.
+- 2026-10-07 · **abtune.com is live** (20b7377):
+  - Hostinger KVM 1 (Ubuntu 26.04), Caddy with Let's Encrypt certificates, the full catalog. SSH is key-only; the firewall allows 22, 80 and 443.
+  - The browser e2e passed against the live site, and the owner's check on a phone passed. The usage counters were reset to zero for the beta.
 - 2026-10-07 · **Release plumbing:** CI actions pinned to commit SHAs (Dependabot keeps them current); `image.yml` publishes `ghcr.io/mrdushidush/abtune` for amd64 and arm64 (`:main` per push, `:x.y.z` and `:latest` per release tag).
+- 2026-10-07 · **"Add to your music app" (owner: "so people can add their playlist"):**
+  - Why not "Save to Spotify" on abtune.com: Spotify's development mode allows 5 users per app (the owner plus 4, added by hand), and extended quota needs a registered business with 250k monthly users. Every other visitor would get Spotify's consent screen and then an error.
+  - Instead, the playlist goes to TuneMyMusic's free "Free text" import. Checked 2026-10-07 in a phone-size browser: its page per app (`tunemymusic.com/transfer/freetext-to-<app>`) opens on a paste box with that app already picked; it reads one `Artist - Title` per line (its own example: "The Beatles - Hey Jude"), parsed 5 of 5 sample lines including Hebrew ones and titles with extra dashes, then offers "Transfer to <app>" and the app's sign-in. Free up to 500 songs.
+  - The sheet offers Spotify, Apple Music and YouTube Music. A tap copies the list (`toSongList` in `@abtune/connectors`) inside the click, so the browser allows it, and opens the page in a new tab. Without a clipboard API (a plain-HTTP LAN address) the list is shown, selected, to copy by hand. ABTune sends TuneMyMusic nothing.
+  - It is the main button on the result and shared screens; Export became a secondary button. Counted per app (`handoff_spotify`, `handoff_apple_music`, `handoff_youtube_music`). Self-hosters with their own Spotify app keep "Save to Spotify" next to it.
+- 2026-10-07 · **v0.1.0 tagged** (owner), the same day the repository went public: the release notes are the changelog's 0.1.0 section, and the tag publishes the `:0.1.0`, `:0.1` and `:latest` images.
+- 2026-10-07 · **The repository went public** (owner), four days before the planned date, once the beta link was out: footer links to GitHub would otherwise 404. Before that: the git history was scanned for keys, tokens, private keys, server addresses and personal paths (none found); user docs lost the milestone numbers; the README was rewritten; `docs/QUESTION_AUTHORING.md` was written; the brief, this log and ADR-0001 now say who decides (the owner) and that Claude Code is the tool ABTune is built with.
+
+## Polish after v0.1 (2026-10-07)
+
+- 2026-10-07 · **Home-screen app (owner: "so users can add it to their phone as an app"):**
+  - `manifest.webmanifest` (`display: standalone`, ink background and theme), an Apple touch icon, and an SVG favicon plus `favicon.ico` in place of the 🎧 emoji. Chrome reports no manifest or installability errors.
+  - No service worker: Chrome reports the page installable without one (`Page.getInstallabilityErrors` is empty), and an offline cache would add stale-build bugs for an app that needs the server for every playlist anyway.
+  - **Icon (owner's pick of three):** the wordmark's AB, pink A and blue B, on the ink tile with the link-preview image's two corner glows. The letterforms are drawn as SVG paths, not set in a font, so no font licence is involved. The PNGs are rendered from the same paths in headless Chrome: 192 and 512 with rounded corners, a full-bleed 180 for iOS, and a 512 maskable one with the mark inside Android's safe circle.
+  - The CSP's `img-src` dropped `data:`: the emoji favicon was its only user.
+- 2026-10-07 · **Result buttons on a phone:** Export, Share and Reshuffle are a row of three (two on a shared playlist), with the icon over the label below 640 px. At 360–390 px, Export used to wrap onto four lines. The export menu hangs from the whole row on a phone. Arrow characters (⬇ ↗ 🔀) were drawn as emoji on Windows and Android, so the buttons use line icons (`components/Icon.tsx`). "Add to your music app" stays full width above them.
+- 2026-10-07 · **Community setup (owner):** a code of conduct (Contributor Covenant 2.1; reports go to the owner's email), GitHub Discussions on, and seven starter issues from the open items: cards for blues, reggae, K-pop and country (good first issues; they have the fewest cards, 5–9 each against 19–45 for the big genres), French and Spanish, compare with a friend, and the MCP server on npx. The README has a "What's next" section pointing at them, a demo GIF (recorded from the real app with a scripted listener, the full catalog, 17 s, 1 MB) and a refreshed hero.
+- 2026-10-07 · **A shorter repository root (owner: "too many files in the repo"):** GitHub listed 6 folders and 20 files above the README; now it's 6 and 14. The owner picked three moves out of four:
+  - `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md` and `SECURITY.md` → `.github/`. GitHub looks there too, so the README tabs and the Security policy still show them.
+  - `CHANGELOG.md` → `docs/`. The 0.1.0 release notes link files at the `v0.1.0` tag, so they still resolve.
+  - `Dockerfile` → `deploy/Dockerfile`, and `.dockerignore` → `deploy/Dockerfile.dockerignore` (BuildKit reads an ignore file named after the Dockerfile). Both compose files and the image workflow name the Dockerfile. Checked locally with Docker Compose 5.1: the build context leaves out `.env`, `data/dumps`, `data/build` and `node_modules`.
+  - Not taken: dropping `.nvmrc` for `node-version: 24` in CI, and `vitest.config.ts` for CLI flags.
+  - Staying at the root because their tools look there or the quick start needs them: the package and pnpm files, `LICENSE`, `compose.yaml` and `.env.example` (`docker compose up` from a fresh clone), `biome.json`, `tsconfig.base.json`, `.editorconfig`, `.gitattributes` and `.gitignore`.
+
+## Capacity (2026-10-08)
+
+- 2026-10-08 · **Measured on abtune.com** (Hostinger KVM 1, full catalog, AI off; the owner ran a closed-loop test of 300 random 20-answer sessions, 50 tracks each, 15 s per level):
+  - `POST /api/playlist` levels off at **2.2–2.3 playlists/s** (about 0.44 s each); p50 0.51 s with 1 client in flight, 0.90 s with 2, 1.8 s with 4 and 3.2 s with 8. No errors.
+  - Generation is synchronous on one event loop, so requests queue one behind another, and page loads wait with them.
+  - At about 1.5 playlists per visitor and a 4-minute visit: about 180 visitors on the site at once at half load, and 360 at the ceiling.
+  - Locally, pinning the server to one core with Windows affinity gave a false collapse (0.3/s at 8 clients): DuckDB still saw 12 cores and started 12 threads. With DuckDB at 1 thread it held 1.1/s on a desktop core.
+- 2026-10-08 · **Playlists per visitor (owner: "add a rate limit to /api/playlist"):** replaces "no rate limit for the beta". Per-IP limits don't stop a spread-out flood; that is the Cloudflare tunnel's job.
+  - **The limit:** a token bucket per visitor, `PLAYLISTS_PER_MINUTE` tokens refilled evenly over a minute, so a visitor may use a whole minute's worth at once. The public kit sets 20: a visitor in a loop gets at most about 15% of the measured capacity, while a person tweaking and swapping quickly rarely reaches 20 in a minute.
+  - **Who a visitor is:** the address the trusted proxy (Caddy or cloudflared) puts last in `X-Forwarded-For` (`TRUST_PROXY`; earlier entries come from the client and are ignored), else the socket's address. An IPv6 address counts by its /64.
+  - **Off by default:** a loopback install has one listener, and the tests and the eval post many playlists from one address. The public compose file sets the limit and `TRUST_PROXY`, so the server's `.env` needs no change.
+  - **Past the limit:** 429 `rate_limited` with `retry_after` and `Retry-After` in whole seconds. The result and shared screens show "Lots of playlists in a row…" and ask again after that wait. "10 more" and swaps say "Too many changes in a row" and keep the playlist.
+  - **Known gap:** a shared link replays its edits one request each. A link with more than about 19 edits opened by a visitor who has no tokens left loses the edits past the limit, counted in the "couldn't be found or replaced" note.
+  - Idle buckets are dropped after a minute (they're full again by then), so memory stays bounded and nothing is written to disk.
+
+## Playlist fit study (2026-10-08)
+
+- 2026-10-08 · **The ask (owner):** "run the app using headless chrome 200 times… check if all the playlists generated are good enough. We must fine tune this — this is the main issue i got from the first few users."
+- 2026-10-08 · **How it was measured:**
+  - 200 seeded listeners (40% with the Israeli pack on, as an Israeli visitor gets it), each with a taste in genres, decades and language, played the real app in headless Chrome against the full catalog at 10, 20, 50 and 100 cards, answering each card by their taste.
+  - Each playlist was judged by rule. A song fits when it is in a genre the listener likes, within a decade of an era they like, and in their language. **Good**: at least 70% of the songs fit, and for listeners who want hits, at least 60% are recognizable. **Meh**: at least 50% fit. **Bad**: fewer.
+  - The same listeners gave the same answers before and after. Changes were tried first on recorded quizzes (replayed without the browser) and simulated listeners, then checked in the browser.
+- 2026-10-08 · **What went wrong, by cause:**
+  - **Eras:** with decades at τ = 1, a 10-card profile was nearly flat across decades, so a 2010s fan's playlist pulled in 1950s–70s classics (Paul Anka, "Dancing Queen", "Unchained Melody").
+  - **Ties between genres:** a forced choice raises whichever side wins, so a genre the listener doesn't care about can tie the one they love. Duel cards settle that, but they started at card 21, so 10- and 20-card quizzes never got one. A hip-hop fan who picked pop artists over rock ones got an all-pop playlist.
+  - **Language:** "Hebrew songs in your mix?" competed with every other card, and in a 10-card quiz it often came late or never, while language decides most of an Israeli playlist.
+- 2026-10-08 · **What changed (engine 0.6.0):**
+  - **Decades:** τ 0.3, with a relative τ of 0.1 · s_top so long quizzes keep the old split, and 0.3 × neighbor smoothing before the softmax (liking the 80s lifts the late 70s and early 90s). HANDOFF §7.3 amended.
+  - **Duels from card 6** (was 21), and a genre is a contender only once its score is at least 1: picking Britney over Bon Jovi raises pop and dance-pop by 0.8 each, and with duels that early their tie took a mizrahi fan's 10-card profile to 94% dance-pop. HANDOFF §8.3 amended.
+  - **21 new duel cards** (30 → 51) for the pairs the runs showed unsettled: rap against pop choruses, dance-pop and reggaeton; club tracks against pop ballads and pop songs; indie bands against pop stars; K-pop against western dance-pop; rock against country, jazz, soul, funk and movie scores; country against pop, folk, jazz and mizrahi; and more. Every duel card has `weight: 1.5`. The bank grows from 336 to 357 questions. The owner reviewed the new cards and kept all 21; two got a question line ("Who's on stage?", "Who's playing?") so they don't read "A guitar band or A pop star?".
+  - **Lead slots:** a pack may declare `lead` positions. The Israeli pack asks "Hebrew songs in your mix?" second, and after "Lots of Hebrew", "Shlomo Artzi or Eyal Golan?" (Israeli rock or mizrahi) third.
+  - **Lint:** a variant must have its canonical card's `weight`, so a variant can't change what an answer weighs.
+- 2026-10-08 · **Results, 200 browser runs** (engine 0.5.0 live → 0.6.0):
+
+  | | 0.5.0 | 0.6.0 |
+  |---|---:|---:|
+  | good / meh / bad | 84 / 32 / 84 | **127 / 17 / 56** |
+  | songs in the listener's genres | 69% | 78% |
+  | songs in a liked era (±1 decade) | 84% | 96% |
+  | songs 3+ decades off | 9% | 2% |
+  | recognizable (hits view, a top-3 song or a canon hit) | 97% | 95% |
+  | page or API errors | 0 | 0 |
+
+  - By quiz length, good (bad): 10 cards 15 (30) → 27 (25); 20 cards 32 (44) → 62 (23); 50 cards 27 (7) → 27 (5); 100 cards 10 → 11.
+  - Israeli listeners 27 → 45 good (34 → 26 bad); others 57 → 82 (50 → 30). Hip-hop fans 17 good / 12 bad → 24 / 5; country 2 / 5 → 5 / 3; metal 4 / 10 → 9 / 5.
+  - Still weak: a mizrahi fan who also likes English house gets a Hebrew and dance-pop mix (better, not good), and a hip-hop fan whose 20 cards never reach the hip-hop/pop duel still gets pop.
+- 2026-10-08 · **Persona eval** ([docs/eval/2026-10-08-playlist-fit.md](eval/2026-10-08-playlist-fit.md)): mean fit at 10/20/50/100 cards 0.214 / 0.398 / 0.607 / 0.568 → **0.308 / 0.566 / 0.652 / 0.620**. §16 #3–#5 pass: p95 89 ms, 0 of 1,240 playlists break §9.3, and the 100-against-10-card margin is +0.311 (minimum 0.300). Across all modes, fit2 rises for 10 of 12 personas (Hebrew-mizrahi 0.231 → 0.324, jazz & soul 0.456 → 0.653, workout 0.383 → 0.514); 80s pop (0.526 → 0.483) and Israeli rock & pop (0.652 → 0.609) dip.
+- 2026-10-08 · **Open (owner):**
+  - **Canon hits per 100 tracks fall from 9.45 to 5.13, under the recorded floor of 7.0** (D1); seed noise alone moves this figure by about 0.4 (the same code gave 5.55 before two cards got new question text, which changes the seeds). Signature songs (a famous artist's top 3) hold at 74% against a floor of 65%. An eval with the 30 old duel cards (unweighted) on engine 0.6.0 gave 5.95, so the decades change accounts for about 3.5 of the 4.3 drop: the canon list spans every era, and playlists that keep to the listener's eras find fewer of its hits (mainstream 25.5 → 15.9, jazz & soul 10.5 → 4.4, workout 17.5 → 8.9, EDM 7.1 → 4.4 from that alone). The new duels take EDM to 1.1 and workout to 5.3 while raising their fit2 (0.688 → 0.711, 0.416 → 0.514). An EDM fan now gets few of the big crossover hits (Titanium, Levels, Lean On), which may sit in dance-pop rather than EDM. Choices: investigate, or record a new floor.
+  - **The Israeli rock & pop persona dips at 10 and 20 cards** (fit 0.25 / 0.37 → 0.16 / 0.27; better from 50 on), and its playlists are 62% Hebrew, down from 71%.
+- 2026-10-08 · **Measured and rejected** (don't retry without a new idea):
+  - A softer genre split (relative τ 0.3 or 0.5): worse.
+  - Counting "A beat B" as evidence against B: didn't help.
+  - Lifting songs whose year fits the era within each genre and decade cell: didn't help.
+  - A relative τ of 0.5 for languages: the Hebrew personas fell from 79% to 30% Hebrew.
+  - A relative τ of 0.3 for decades: long quizzes spread across too many decades.
+  - `weight: 1.5` on the nine core genre-against-genre cards: a small gain in simulation, but "Classical or EDM?" became everyone's first card and lesser-evil answers took over; the metalhead and mizrahi personas collapsed.
+  - Masking junk titles (medleys and the like): only about 7 in 6,425 songs.

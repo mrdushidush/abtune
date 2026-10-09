@@ -1,6 +1,6 @@
 # Self-hosting ABTune
 
-> This covers the music catalog (M1), the web app (M4), Spotify (M5) and the optional AI layer (M7). The full walkthrough (M9) comes later.
+Run ABTune on your own machine: the app with the 50k-song dev catalog in a few minutes, saving to Spotify with your own Spotify app, an optional local AI model, and the full ~2M-song catalog built from the open dumps. To run a public server like abtune.com, see [DEPLOY.md](DEPLOY.md).
 
 ## Quick start: Docker and the dev catalog
 
@@ -30,13 +30,15 @@ The server starts listening at once and loads the catalog's columns in the backg
 | dev sample (50k) | 0.4 s | small | instant |
 | full (2M) | 7.7 s | ~230 MB of columns | p50 257 ms, p95 522 ms (generation plus track lookup) |
 
-The server answers only to loopback names (`127.0.0.1`, `localhost`), IP addresses and the host names in `APP_BASE_URL` and `SPOTIFY_REDIRECT_URI`; any other `Host` gets 403 `unknown_host`, which stops DNS-rebinding pages. Behind a reverse proxy, set `APP_BASE_URL` to your public URL. Model calls (AI layer) run one at a time with up to 4 waiting; more get the classic playlist with a "busy" notice.
+The server answers only to loopback names (`127.0.0.1`, `localhost`), IP addresses and the host names in `APP_BASE_URL` and `SPOTIFY_REDIRECT_URI`; any other `Host` gets 403 `unknown_host`, which stops DNS-rebinding pages. Behind a reverse proxy, set `APP_BASE_URL` to your public URL. Open to the internet, set `PLAYLISTS_PER_MINUTE` (20 on abtune.com) to limit playlists per visitor, and `TRUST_PROXY=true` when only your proxy can reach the app, so the visitor is the address it puts last in `X-Forwarded-For`. Model calls (AI layer) run one at a time with up to 4 waiting; more get the classic playlist with a "busy" notice.
+
+**Share links** from a self-hosted install open on abtune.com, since a link to `127.0.0.1` only works on your machine. If your install has a public name, set `APP_BASE_URL` to it and links use that instead (`SHARE_BASE_URL` overrides both).
 
 The quiz runs entirely in the browser. The server receives only the quantized taste profile, the seed and the playlist length, never the answers, and it logs no request bodies. Sessions and 👍/👎 feedback stay in the browser's local storage.
 
 ## Saving playlists to Spotify
 
-Export (M3U, CSV, XSPF, JSON) always works without an account. To save playlists straight into Spotify, each ABTune install uses **its own Spotify app**: Spotify's Development Mode allows 5 users per app, and the account that owns the app needs **Spotify Premium**. The "Save to Spotify" button walks you through this; the same steps:
+**Add to your music app** (Spotify, Apple Music or YouTube Music, through TuneMyMusic's free song-list import) and export (M3U, CSV, XSPF, JSON) work without any setup. To save playlists straight into Spotify, each ABTune install uses **its own Spotify app**: Spotify's Development Mode allows 5 users per app, and the account that owns the app needs **Spotify Premium**. The "Save to Spotify" button walks you through this; the same steps:
 
 1. Open the [Spotify developer dashboard](https://developer.spotify.com/dashboard) and create an app. Its name must not start with "Spot" (Spotify's rules). Tick **Web API**.
 2. Add the redirect URI **exactly**: `http://127.0.0.1:8787/callback`. Spotify doesn't accept `localhost`; use the loopback IP, with your port if you changed `ABTUNE_PORT`. Behind a reverse proxy, use your `https://…/callback` instead and set `SPOTIFY_REDIRECT_URI` to it.

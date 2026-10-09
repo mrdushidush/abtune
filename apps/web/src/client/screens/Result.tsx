@@ -19,6 +19,8 @@ import type {
   PlaylistTrackOut,
   SpotifyOutcome,
 } from "../../api-types.ts";
+import { Icon, TILE } from "../components/Icon.tsx";
+import { MusicAppButton } from "../components/MusicAppSheet.tsx";
 import { PersonalityCard } from "../components/PersonalityCard.tsx";
 import { PlaylistRows, SkeletonRows } from "../components/PlaylistRows.tsx";
 import { ExportMenu, Feedback, TextTweak, TweakBar } from "../components/ResultActions.tsx";
@@ -159,6 +161,12 @@ export function PlaylistBody({
       );
     case "catalog_error":
       return <Notice>{t.result.catalogError}</Notice>;
+    case "busy":
+      return (
+        <Notice>
+          <span className="animate-pulse">{t.result.busy}</span>
+        </Notice>
+      );
     case "stale":
       return (
         <Notice action={{ label: t.result.reload, onClick: () => location.reload() }}>
@@ -249,17 +257,19 @@ export function Result({
     ops: readonly ShareOp[];
   } | null>(null);
   const [pending, setPending] = useState<"more" | number | null>(null);
-  const [failed, setFailed] = useState(false);
+  /** The last "10 more" or swap didn't work: rate limited (`busy`) or anything else. */
+  const [failed, setFailed] = useState<"busy" | "failed" | null>(null);
   const current = ready && edits?.base === ready.data ? edits : null;
   const shown = ready ? (current?.tracks ?? ready.data.tracks) : [];
   const ops = current?.ops ?? NO_OPS;
   const edit = async (op: ShareOp) => {
     if (!ready || pending !== null) return;
     setPending(op.op === "more" ? "more" : op.index);
-    setFailed(false);
+    setFailed(null);
     const req = editRequest(bank.dimensions, aiv.base, tweaks, ready.request, shown, ops, op);
     const r = await postPlaylist(req);
-    if (!r.ok || r.data.tracks.length === 0) setFailed(true);
+    if (!r.ok || r.data.tracks.length === 0)
+      setFailed(!r.ok && r.status === 429 ? "busy" : "failed");
     else
       setEdits({
         base: ready.data,
@@ -418,39 +428,46 @@ export function Result({
           </p>
         )}
 
-        <div className="flex flex-wrap gap-2">
-          {offerSpotify(health, location.hostname) && (
-            <SpotifyButton
-              tracks={pending === null ? shown : []}
-              request={ready?.request ?? null}
-              title={title.title}
-              description={description}
-              shareCode={shareCode}
-              onExportCsv={() => onExport("csv")}
-              outcome={spotifyOutcome}
-              onOutcomeSeen={onSpotifySeen}
-            />
-          )}
-          <ExportMenu onExport={onExport} disabled={!ready} />
-          <ShareButton code={shareCode} card={card} name={name} baseUrl={shareBase(health)} />
-          <button
-            type="button"
-            disabled={busy || state.kind !== "ready"}
-            className="flex min-h-12 flex-1 items-center justify-center gap-1.5 rounded-2xl bg-raised px-4 font-bold text-text hover:bg-line disabled:opacity-40"
-            onClick={() => dispatch({ type: "session", action: { type: "reshuffle" } })}
-          >
-            🔀 {t.result.reshuffle}
-          </button>
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <MusicAppButton tracks={ready && pending === null ? shown : null} />
+            {offerSpotify(health, location.hostname) && (
+              <SpotifyButton
+                tracks={pending === null ? shown : []}
+                request={ready?.request ?? null}
+                title={title.title}
+                description={description}
+                shareCode={shareCode}
+                onExportCsv={() => onExport("csv")}
+                outcome={spotifyOutcome}
+                onOutcomeSeen={onSpotifySeen}
+              />
+            )}
+          </div>
+          <div className="relative grid grid-cols-3 gap-2">
+            <ExportMenu onExport={onExport} disabled={!ready} />
+            <ShareButton code={shareCode} card={card} name={name} baseUrl={shareBase(health)} />
+            <button
+              type="button"
+              disabled={busy || state.kind !== "ready"}
+              className={TILE}
+              onClick={() => dispatch({ type: "session", action: { type: "reshuffle" } })}
+            >
+              <Icon name="shuffle" />
+              {t.result.reshuffle}
+            </button>
+          </div>
           {view.status === "profile_ready" && (
             <button
               type="button"
-              className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-2xl border-2 border-profile/60 px-4 font-bold text-text hover:bg-profile/10 sm:w-auto sm:flex-1"
+              className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-2xl border-2 border-profile/60 px-4 font-bold text-text hover:bg-profile/10"
               onClick={() => {
                 track("ten_more");
                 dispatch({ type: "session", action: { type: "ten_more" } });
               }}
             >
-              ＋ {t.result.tenMore}
+              <Icon name="plus" />
+              {t.result.tenMore}
             </button>
           )}
         </div>
@@ -504,7 +521,7 @@ export function Result({
             </button>
             {failed && (
               <p className="text-sm text-text-3" role="status">
-                {t.result.actionFailed}
+                {failed === "busy" ? t.result.actionBusy : t.result.actionFailed}
               </p>
             )}
           </div>

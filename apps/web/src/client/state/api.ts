@@ -102,6 +102,10 @@ export async function call<T, E = ApiError>(
 
 export const fetchHealth = () => call<Health>("/api/health");
 
+/** How long to wait after a 429 `rate_limited`: its `retry_after`, kept between 1 s and a minute. */
+export const retryAfterMs = (error: ApiError | null) =>
+  Math.min(60, Math.max(1, error?.retry_after ?? 3)) * 1000;
+
 export const postPlaylist = (req: PlaylistRequest, signal?: AbortSignal) =>
   call<PlaylistResponse>("/api/playlist", {
     method: "POST",

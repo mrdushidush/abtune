@@ -16,6 +16,7 @@ import { aiHealth, mountAi, type ServerAi } from "./ai.ts";
 import { type CatalogSlot, catalogHealth, readyCatalog } from "./catalog.ts";
 import { sameOrigin } from "./http.ts";
 import { buildPlaylist, parsePlaylistRequest, UnknownTrackError } from "./playlist.ts";
+import { type RateLimitSettings, rateLimit } from "./ratelimit.ts";
 import { mountSpotify } from "./spotify.ts";
 import { isStatEvent, type Stats } from "./stats.ts";
 
@@ -39,6 +40,8 @@ export interface AppOptions {
   readonly publicUrl?: string;
   /** Usage counters (STATS_FILE). Omitted: none are kept and /api/event doesn't exist. */
   readonly stats?: Stats | null;
+  /** Playlists per visitor (PLAYLISTS_PER_MINUTE). Omitted: no limit. */
+  readonly playlistLimit?: RateLimitSettings | null;
 }
 
 /** The public instance: where share links from a loopback or home-network install point. */
@@ -99,8 +102,8 @@ const SECURITY_HEADERS = secureHeaders({
     defaultSrc: ["'self'"],
     scriptSrc: ["'self'"],
     styleSrc: ["'self'"],
-    // The favicon is a data: URL; the share card preview is a blob: URL.
-    imgSrc: ["'self'", "data:", "blob:"],
+    // The share card preview is a blob: URL.
+    imgSrc: ["'self'", "blob:"],
     connectSrc: ["'self'"],
     objectSrc: ["'none'"],
     baseUri: ["'none'"],
@@ -140,6 +143,7 @@ export function createApp({
   hosts = [],
   publicUrl = PUBLIC_INSTANCE_URL,
   stats = null,
+  playlistLimit = null,
 }: AppOptions): Hono {
   const app = new Hono();
   const engine = engineVersion(bank);
@@ -172,6 +176,8 @@ export function createApp({
   );
 
   // The body is never logged: it is a profile, and the server keeps no record of it (HANDOFF §13).
+  // One core builds about two playlists a second, so one visitor in a loop could take them all.
+  if (playlistLimit) app.use("/api/playlist", rateLimit(playlistLimit));
   app.post(
     "/api/playlist",
     bodyLimit({

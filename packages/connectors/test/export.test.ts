@@ -8,6 +8,7 @@ import {
   toCSV,
   toJSON,
   toM3U,
+  toSongList,
   toXSPF,
   xmlText,
 } from "../src/index.ts";
@@ -73,6 +74,20 @@ describe("M3U", () => {
         "",
       ].join("\n"),
     );
+  });
+});
+
+describe("song list", () => {
+  it("writes one Artist - Title per line, nothing else", () => {
+    expect(toSongList(playlist.tracks)).toBe(
+      [
+        "a-ha - Take On Me",
+        "אריק איינשטיין - יש לי סיכוי",
+        '=Gary Glitter - Rock & Roll, "Part 2" <live>',
+        "",
+      ].join("\n"),
+    );
+    expect(toSongList([])).toBe("");
   });
 });
 

@@ -90,6 +90,23 @@ describe("MCP server", () => {
     expect(client.getInstructions()).toBe(INSTRUCTIONS);
   });
 
+  it("gives every tool all four hints", async () => {
+    const { tools } = await client.listTools();
+    const hints = Object.fromEntries(tools.map((t) => [t.name, t.annotations]));
+    for (const [name, a] of Object.entries(hints))
+      expect(Object.keys(a ?? {}).sort(), name).toEqual([
+        "destructiveHint",
+        "idempotentHint",
+        "openWorldHint",
+        "readOnlyHint",
+      ]);
+    const readOnly = tools.filter((t) => t.annotations?.readOnlyHint).map((t) => t.name);
+    expect(readOnly.sort()).toEqual(["get_profile", "list_questions"]);
+    expect(hints.export_playlist?.destructiveHint).toBe(true);
+    const openWorld = tools.filter((t) => t.annotations?.openWorldHint).map((t) => t.name);
+    expect(openWorld).toEqual(["push_to_spotify"]);
+  });
+
   it("§16 #11: a rainy-Sunday playlist from a description to an exported file", async () => {
     const list = ok(await call("list_questions", {}));
     const questions = list.structuredContent.questions as { id: string; a: string; b: string }[];

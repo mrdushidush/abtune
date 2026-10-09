@@ -45,6 +45,14 @@ export interface PackDef {
   readonly weight: number;
   readonly default: boolean;
   readonly opt_in?: boolean;
+  /**
+   * Lead positions (1-based, ascending): when the pack is enabled, its highest-priority eligible
+   * card is asked at the k-th listed position, as long as at most k − 1 of its cards were asked
+   * before. The Israeli pack leads at [2, 3]: "Hebrew songs in your mix?" second, and for a "Lots
+   * of Hebrew" answer "Shlomo Artzi or Eyal Golan?" third (Israeli rock or mizrahi). Language
+   * decides most of an Israeli playlist; in a 10-question quiz the card often came too late or never.
+   */
+  readonly lead?: readonly number[];
 }
 
 export interface Dimensions {

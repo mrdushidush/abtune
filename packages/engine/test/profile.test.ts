@@ -96,4 +96,15 @@ describe("group helpers", () => {
     // Below τ / relativeTau the plain τ applies.
     expect(split(1, 0.5, 0.15)).toBe(split(1, 0.5, 0));
   });
+
+  it("smooth lifts an ordered group's neighbors, not its far ends", () => {
+    const decades = makeBank([q("d", "core", 50, { dec90: 1 }, { dec80: 0 })]);
+    const p = foldProfile(decades, [{ id: "d", choice: "a" }]);
+    // Two decades only in the fixture: dec80 is dec90's neighbor, so smoothing raises it.
+    const plain = groupDistribution(decades, p, "decades", 0.3);
+    const smooth = groupDistribution(decades, p, "decades", 0.3, 0, 0.3);
+    expect(smooth?.dec80 ?? 0).toBeGreaterThan(plain?.dec80 ?? 1);
+    expect(smooth?.dec90 ?? 0).toBeGreaterThan(smooth?.dec80 ?? 1);
+    expect(groupDistribution(decades, p, "decades", 0.3, 0, 0)).toEqual(plain);
+  });
 });

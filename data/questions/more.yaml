@@ -5,7 +5,7 @@
 #     with the same fx keys and A/B meaning. A family is asked once; the session's quiz seed picks
 #     which variant, so a retake rarely repeats a card. Without a seed only the seed question is asked.
 #   - New cards: modern artist pairs, song-vs-song cards, moments, deep follow-ups for thin genres.
-# Authoring rules: docs/HANDOFF.md §8.4 (no identity choice maps to a genre or language).
+# Authoring rules: docs/QUESTION_AUTHORING.md (no identity choice maps to a genre or language).
 
 version: 1
 

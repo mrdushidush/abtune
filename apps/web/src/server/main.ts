@@ -11,6 +11,7 @@ import { serve } from "@hono/node-server";
 import pkg from "../../package.json" with { type: "json" };
 import { createApp, shareBaseUrl } from "./app.ts";
 import { type CatalogSlot, catalogInfo, catalogSlot } from "./catalog.ts";
+import { rateLimitSettings } from "./ratelimit.ts";
 import { Stats } from "./stats.ts";
 
 const repoRoot = path.resolve(import.meta.dirname, "../../../..");
@@ -77,10 +78,13 @@ const hostsOf = (...urls: (string | undefined)[]) =>
 const statsFile = process.env.STATS_FILE ? path.resolve(repoRoot, process.env.STATS_FILE) : null;
 const stats = statsFile ? await Stats.open(statsFile) : null;
 const publicUrl = shareBaseUrl(process.env.APP_BASE_URL, process.env.SHARE_BASE_URL);
+const { settings: playlistLimit, problem: limitProblem } = rateLimitSettings(process.env);
+if (limitProblem) console.error(`${limitProblem}; playlists aren't rate limited.`);
 const app = createApp({
   hosts: hostsOf(process.env.APP_BASE_URL, spotify.redirectUri),
   publicUrl,
   stats,
+  playlistLimit,
   bank,
   catalog,
   spotify,
@@ -96,7 +100,8 @@ const server = serve({ fetch: app.fetch, port, hostname }, (info) => {
       `catalog: ${catalog ? `${catalog.info.version} ${catalog.info.kind}, ${catalog.info.tracks} tracks, loading` : "none; run `abtune catalog fetch`"}; ` +
       `Spotify: ${spotifyMissing.length ? `not set up (${spotifyMissing.join(", ")})` : `redirect ${spotify.redirectUri}`}; ` +
       `AI: ${ai.runtime ? `${aiConfig.model} at ${aiConfig.baseUrl}${aiConfig.rerank ? ", rerank on" : ""}` : "off"}; ` +
-      `share links: ${publicUrl}${statsFile ? `; counting usage in ${statsFile}` : ""})`,
+      `share links: ${publicUrl}${statsFile ? `; counting usage in ${statsFile}` : ""}` +
+      `${playlistLimit ? `; ${playlistLimit.perMinute} playlists a minute per visitor${playlistLimit.trustProxy ? " (behind a proxy)" : ""}` : ""})`,
   );
 });
 

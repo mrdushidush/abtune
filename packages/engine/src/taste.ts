@@ -37,6 +37,8 @@ export interface TasteParams {
    * keep a stable mix instead of collapsing to one category (see groupDistribution). 0 = off.
    */
   readonly relativeTau?: Readonly<Partial<Record<GroupName, number>>>;
+  /** Per ordered group (decades): neighbor smoothing before the softmax (see groupDistribution). */
+  readonly smooth?: Readonly<Partial<Record<GroupName, number>>>;
   /**
    * `mu`: the fold's μ, which the prior pulls toward 0. `evidence`: the evidence-weighted mean of the
    * answers alone (μ·C / (C − prior)); confidence is then carried by κ only.
@@ -52,11 +54,15 @@ export interface TasteParams {
 /**
  * Tuned with the persona eval (M3, see DECISIONS.md); the brief's start: K 3, τ 1, target mu.
  * relativeTau.genres 0.15 was added on 2026-10-03 (the 50-question playlist flipped genres).
+ * 2026-10-08, from 200 browser runs and simulated quizzes (DECISIONS "Playlist fit study"): decades
+ * τ 0.3 with smoothing 0.3, so a 2010s fan no longer gets 1950s songs after a short quiz, and
+ * relativeTau.decades 0.1, so a long quiz keeps the old τ 1 split instead of sharpening without end.
  */
 export const DEFAULT_TASTE_PARAMS: TasteParams = {
   confidenceRamp: 5,
-  tau: { decades: 1, genres: 0.25, languages: 1 },
-  relativeTau: { genres: 0.15 },
+  tau: { decades: 0.3, genres: 0.25, languages: 1 },
+  relativeTau: { genres: 0.15, decades: 0.1 },
+  smooth: { decades: 0.3 },
   target: "evidence",
   popularityLean: { weight: 0.6, target: 0.6 },
 };
@@ -122,6 +128,7 @@ export function tasteVector(
       group,
       params.tau[group],
       params.relativeTau?.[group] ?? 0,
+      params.smooth?.[group] ?? 0,
     );
     groups[group] = p ? bank.dimensions[group].map((k) => quantize(p[k] ?? 0, P_SCALE)) : null;
   }

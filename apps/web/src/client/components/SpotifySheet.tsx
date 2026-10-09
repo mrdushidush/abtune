@@ -15,6 +15,7 @@ import {
   pushRequest,
 } from "../state/spotify.ts";
 import { t } from "../strings.ts";
+import { Icon } from "./Icon.tsx";
 
 const DASHBOARD = "https://developer.spotify.com/dashboard";
 
@@ -66,7 +67,7 @@ export function SpotifyButton({
       <button
         type="button"
         disabled={!enabled}
-        className="flex min-h-12 flex-1 items-center justify-center gap-1.5 rounded-2xl bg-raised px-4 font-bold text-text hover:bg-line disabled:opacity-40"
+        className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-2xl bg-raised px-4 font-bold text-text hover:bg-line disabled:opacity-40 sm:flex-1"
         onClick={show}
       >
         ♫ {t.spotify.button}
@@ -347,7 +348,8 @@ function Failure({
       )}
       {phase.code === "quota_exceeded" && (
         <button type="button" className={btn} onClick={onExportCsv}>
-          ⬇ {t.spotify.exportInstead}
+          <Icon name="download" className="size-4" />
+          {t.spotify.exportInstead}
         </button>
       )}
     </div>

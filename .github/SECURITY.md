@@ -15,6 +15,8 @@ Supported: the latest release and `main`.
   store it or log it.
 - **Share links** carry the taste profile and playlist settings in the URL fragment (`#s=…`), which
   browsers don't send to servers. Opening one sends the server the same profile as above.
+- **Add to your music app** copies the song list to the clipboard and opens TuneMyMusic in a new
+  tab. ABTune sends TuneMyMusic nothing; the visitor pastes the list there and signs in there.
 - **Spotify** (self-hosted only): the sign-in token is stored encrypted (AES-GCM, with
   `TOKEN_ENCRYPTION_KEY`) in `data/spotify/tokens.json`, readable by the web app and the MCP server
   on that machine.
@@ -31,4 +33,4 @@ rebinding (loopback, IP addresses and `APP_BASE_URL`); an Origin check on every 
 for the browser; request size limits; the MCP server writes only inside its export folder; catalog
 downloads are checked against their SHA-256 and unpacked without path traversal. The self-hosted
 server listens on 127.0.0.1 only; a public instance runs behind a reverse proxy or tunnel
-([docs/DEPLOY.md](docs/DEPLOY.md)). CI actions are pinned to commit SHAs.
+([docs/DEPLOY.md](../docs/DEPLOY.md)). CI actions are pinned to commit SHAs.

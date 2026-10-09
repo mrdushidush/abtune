@@ -1,5 +1,7 @@
 # Either FM — Build Brief for Claude Code
 
+> **About this file:** the original brief David ([@mrdushidush](https://github.com/mrdushidush)), ABTune's owner and maintainer, wrote on 2026-10-01 for Claude Code, the AI coding tool ABTune is built with. "You" below means Claude Code; "the owner" means David. It is kept as written (Either FM was the working name), with dated amendments; where the build went another way, [DECISIONS.md](DECISIONS.md) says so.
+
 > **Working name:** Either FM ("either/or" + radio). Rename freely.
 > **Owner:** David (GitHub: mrdushidush) · **License:** MIT · **Brief date:** 2026-10-01
 > **Companion file:** `questions.seed.yaml` → place at `data/questions/seed.yaml`
@@ -338,6 +340,8 @@ p_G = softmax(s / τ_G)      # τ tuned by the eval harness
 
 **Amended 2026-10-03 (see DECISIONS.md):** for genres, τ grows with the evidence: τ′ = max(τ, 0.15 · s_top), where s_top is the best positive score. Scores are sums, so with a fixed τ a near-tie became 90/10 after 50 answers and could flip to 10/90 at 60. Deep profiles now keep their mix; shallow ones are unchanged.
 
+**Amended 2026-10-08 (see DECISIONS.md, "Playlist fit study"):** decades use τ = 0.3 with τ′ = max(τ, 0.1 · s_top), and before the softmax each decade's score gets 0.3 × its two neighbors' scores (s′_c = s_c + 0.3 · (s_{c−1} + s_{c+1})). With τ = 1 a short quiz left decades nearly flat, so a 2010s fan got 1950s songs; the smoothing lets liking the 80s also lift the late 70s and early 90s, and the relative term keeps long quizzes near the old split.
+
 ---
 
 ## 8. Question engine (the state machine)
@@ -398,6 +402,8 @@ Session state is only `{config, answer_log, seed_salt}`. Everything else is deri
    **Amended 2026-10-04 (see DECISIONS.md, "Launch-review fixes"):** positions 5, 9, 13 and 17 are **explore** slots (unless spicy takes 17): among the main packs' questions that set a genre or decade no asked card has touched against something else (|fx_a[k] − fx_b[k]| ≥ 0.5), the highest `pri` wins (with a seed: a draw among those within 15% of the best). If none qualifies, the slot is main. IG gives every genre one shared uncertainty, so without this, hip-hop, alt/indie, blues, reggae and K-pop were asked in 0–1% of 20-card quizzes.
 
    **Amended 2026-10-03 (see DECISIONS.md):** from position 21 on, a card that splits two leading genres scores × (1 + 3 · duel value), where the duel value is c₁ · c₂ · min(|Δ₁|, |Δ₂|) for the best pair of genres the card moves in opposite directions, and c = max(0, s) / s_top. The hook never gets this bonus, and neither do positions 4–20.
+
+   **Amended 2026-10-08 (see DECISIONS.md, "Playlist fit study"):** the duel bonus starts at position 6, and a genre is a contender only once s ≥ 1 (c = s / s_top, else 0), so two genres one card raised together (Britney: pop 0.8, dance-pop 0.8) don't start a duel. Duel cards carry `weight: 1.5`. A pack may declare **lead positions** (`lead: [2, 3]` on the Israeli pack): at its k-th lead position, if at most k − 1 of the pack's cards were asked, the pack's highest-`pri` eligible card is asked, ahead of the hook. Language decides most of an Israeli playlist, and in a 10-card quiz that card often came late or never.
 5. Stop when answered (non-skip) count == mode, or the eligible pool is empty. In that case finish early with a friendly "you've exhausted the bank" message.
 
 ### 8.4 Authoring rules (enforced by `lint`)

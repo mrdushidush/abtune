@@ -10,6 +10,7 @@ import {
 } from "@abtune/engine";
 import { useEffect, useMemo, useState } from "react";
 import type { PlaylistTrackOut, SpotifyOutcome } from "../../api-types.ts";
+import { MusicAppButton } from "../components/MusicAppSheet.tsx";
 import { PersonalityCard } from "../components/PersonalityCard.tsx";
 import { ExportMenu } from "../components/ResultActions.tsx";
 import { ShareButton } from "../components/ShareSheet.tsx";
@@ -17,7 +18,7 @@ import { SourceLink } from "../components/SourceLink.tsx";
 import { SpotifyButton } from "../components/SpotifySheet.tsx";
 import type { CardInput } from "../lib/card-image.ts";
 import { download } from "../lib/download.ts";
-import { postPlaylist } from "../state/api.ts";
+import { postPlaylist, retryAfterMs } from "../state/api.ts";
 import type { HealthState, PlaylistState } from "../state/hooks.ts";
 import { replayShare, shareBase } from "../state/share.ts";
 import { offerSpotify } from "../state/spotify.ts";
@@ -82,6 +83,7 @@ export function Shared({
       return () => clearTimeout(id);
     }
     let alive = true;
+    let wait: ReturnType<typeof setTimeout> | undefined;
     setState({ kind: "loading", previous: null });
     replayShare(
       bank.dimensions,
@@ -97,12 +99,18 @@ export function Shared({
         return setState({ kind: "ready", data: r.response, request: r.first });
       }
       const err = r.result.ok ? null : r.result;
+      if (err?.status === 429) {
+        setState({ kind: "busy" });
+        wait = setTimeout(() => setAttempt((n) => n + 1), retryAfterMs(err.error));
+        return;
+      }
       if (err?.status === 409 || err?.error?.error === "catalog_loading") return refreshHealth();
       if (err?.error?.error === "catalog_error") return setState({ kind: "catalog_error" });
       setState({ kind: "down" });
     });
     return () => {
       alive = false;
+      clearTimeout(wait);
     };
   }, [bank, code, data, health, stale, catalog?.status, catalog?.version, attempt]);
 
@@ -189,26 +197,31 @@ export function Shared({
           <p className="mt-1 text-sm text-text-3">{meta || " "}</p>
         </header>
 
-        <div className="flex flex-wrap gap-2">
-          {offerSpotify(health, location.hostname) && (
-            <SpotifyButton
-              tracks={ready ? tracks : []}
-              request={ready?.request ?? null}
-              title={title.title}
-              description={description}
-              shareCode={code}
-              onExportCsv={() => onExport("csv")}
-              outcome={spotifyOutcome}
-              onOutcomeSeen={onSpotifySeen}
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <MusicAppButton tracks={ready ? tracks : null} />
+            {offerSpotify(health, location.hostname) && (
+              <SpotifyButton
+                tracks={ready ? tracks : []}
+                request={ready?.request ?? null}
+                title={title.title}
+                description={description}
+                shareCode={code}
+                onExportCsv={() => onExport("csv")}
+                outcome={spotifyOutcome}
+                onOutcomeSeen={onSpotifySeen}
+              />
+            )}
+          </div>
+          <div className="relative grid grid-cols-2 gap-2">
+            <ExportMenu onExport={onExport} disabled={!ready} />
+            <ShareButton
+              code={ready ? code : null}
+              card={card}
+              name={name}
+              baseUrl={shareBase(health)}
             />
-          )}
-          <ExportMenu onExport={onExport} disabled={!ready} />
-          <ShareButton
-            code={ready ? code : null}
-            card={card}
-            name={name}
-            baseUrl={shareBase(health)}
-          />
+          </div>
         </div>
 
         {other && (

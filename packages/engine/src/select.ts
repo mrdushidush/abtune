@@ -9,7 +9,7 @@ export const HOOK_PACK = "core";
 export const VIBE_PACK = "vibe";
 export const SPICY_PACK = "spicy";
 
-export type SlotKind = "hook" | "vibe" | "spicy" | "explore" | "main";
+export type SlotKind = "hook" | "vibe" | "spicy" | "explore" | "lead" | "main";
 
 /** Explore slots (2026-10-04) run through this position: 5, 9, 13 and 17. */
 export const EXPLORE_UNTIL = 20;
@@ -17,7 +17,8 @@ export const EXPLORE_UNTIL = 20;
 /**
  * HANDOFF §8.3 pacing for 1-based `position`:
  * 1–3 core only (the hook) · every 4th vibe · 7, 17, 27… spicy (if enabled) · with `explore`,
- * 5, 9, 13, 17 explore (a genre or decade no card has touched yet) · otherwise main.
+ * 5, 9, 13, 17 explore (a genre or decade no card has touched yet) · otherwise main. A pack's
+ * `lead` position overrides this (see nextQuestion).
  */
 export function slotFor(position: number, spicyEnabled: boolean, explore = false): SlotKind {
   if (position <= 3) return "hook";
@@ -36,6 +37,7 @@ export function inSlot(pack: string, slot: SlotKind): boolean {
     case "spicy":
       return pack === SPICY_PACK;
     case "explore":
+    case "lead":
     case "main":
       return pack !== VIBE_PACK && pack !== SPICY_PACK;
   }
@@ -186,9 +188,10 @@ export interface SelectOptions {
  * Genre duels (2026-10-03, see DECISIONS.md): how well `question` splits two of the leading
  * genres, in [0, 1]. A forced choice adds evidence to whichever side is picked, so a genre the
  * listener doesn't care about can tie the one they love; only a card that pits the two against each
- * other settles it. Each genre's contender weight is c = max(0, s) / s_top. For each pair of genres
- * the card moves in opposite directions, the value is c₁ · c₂ · min(|Δ₁|, |Δ₂|), and the card
- * scores its best pair: 1 for a full-strength card between two tied leaders.
+ * other settles it. Each genre's contender weight is c = s / s_top once s ≥ DUEL_MIN_SCORE, else 0.
+ * For each pair of genres the card moves in opposite directions, the value is
+ * c₁ · c₂ · min(|Δ₁|, |Δ₂|), and the card scores its best pair: 1 for a full-strength card between
+ * two tied leaders.
  */
 export function duelValue(bank: Bank, profile: Profile, question: Question): number {
   const s = profile.groups.genres.s;
@@ -198,7 +201,8 @@ export function duelValue(bank: Bank, profile: Profile, question: Question): num
   const diffs: { c: number; d: number }[] = [];
   for (const g of bank.dimensions.genres) {
     const d = (question.a.fx[g] ?? 0) - (question.b.fx[g] ?? 0);
-    const c = Math.max(0, s[g] ?? 0) / top;
+    const sg = s[g] ?? 0;
+    const c = sg >= DUEL_MIN_SCORE ? sg / top : 0;
     if (d !== 0 && c > 0) diffs.push({ c, d });
   }
   let best = 0;
@@ -217,13 +221,21 @@ export function duelValue(bank: Bank, profile: Profile, question: Question): num
 export const DEFAULT_IG_NORM: IgNorm = "keys";
 export const DEFAULT_RAW_HOOK = true;
 /**
- * Genre-duel bonus (2026-10-03, set with simulated listeners; see DECISIONS.md). The first 20
- * cards explore every dimension (a bonus there pushed out the language card); from card 21 on,
- * close genre leaders get a card that settles them, so the playlist stops flipping between 50
- * and 60 answers.
+ * Genre-duel bonus (2026-10-03, set with simulated listeners; see DECISIONS.md). Close genre
+ * leaders get a card that settles them, so the playlist stops flipping between 50 and 60 answers.
+ * It started at card 21 because earlier it pushed out the language card; since the Israeli pack
+ * asks that card second (PackDef.lead), it starts at card 6 (2026-10-08): in a 10- or 20-question
+ * quiz a hip-hop fan who picked pop artists over rock ones now gets "Rap verses or pop choruses?".
  */
 export const DEFAULT_DUEL = 3;
-export const DEFAULT_DUEL_FROM = 21;
+/**
+ * A genre is a duel contender once it has a full answer's worth of evidence (2026-10-08). With
+ * duels from card 6, picking Britney over Bon Jovi (pop 0.8, dance-pop 0.8) tied two genres that
+ * one card raised together, and their duel took a mizrahi fan's 10-question profile to 94%
+ * dance-pop.
+ */
+export const DUEL_MIN_SCORE = 1;
+export const DEFAULT_DUEL_FROM = 6;
 /**
  * Explore slots (2026-10-04, after the launch review). IG gives every genre one shared
  * uncertainty, so a card about a genre nobody has asked about is worth no more than another
@@ -293,6 +305,8 @@ export const VARIETY_BAND: Readonly<Record<SlotKind, number>> = {
   spicy: 0,
   // Explore slots score by priority: a band of 15% keeps the draw among the important cards.
   explore: 0.15,
+  // A lead slot asks its pack's most important card; the family supplies the variety.
+  lead: 0,
 };
 
 /** Integer resolution of the draw's weights (the best candidate weighs this much). */
@@ -327,6 +341,20 @@ export function nextQuestion(
   let slot = slotFor(position, enabledPacks.has(SPICY_PACK), options.explore ?? DEFAULT_EXPLORE);
   const inPool = eligible.filter((q) => inSlot(q.pack, slot));
   let pool = inPool.length > 0 ? inPool : eligible;
+  for (const [pack, def] of Object.entries(bank.packs)) {
+    const k = def.lead?.indexOf(position) ?? -1;
+    if (k < 0 || !enabledPacks.has(pack)) continue;
+    // The k-th lead slot asks the pack's (k+1)-th card at most: a skip leaves the position where
+    // it was, and the pack's next card must not take the same slot again.
+    const { byId } = bankIndex(bank);
+    if (log.filter((e) => byId.get(e.id)?.pack === pack).length > k) continue;
+    const led = eligible.filter((q) => q.pack === pack);
+    if (led.length > 0) {
+      pool = led;
+      slot = "lead";
+      break;
+    }
+  }
   if (slot === "explore") {
     const touched = touchedKeys(bank, log);
     const open = pool.filter((q) => opensKey(bank, q, touched));
@@ -342,7 +370,8 @@ export function nextQuestion(
   const scored = pool
     .map((q) => ({
       q,
-      score: slot === "explore" ? q.pri : scoreQuestion(bank, profile, q, scoring),
+      score:
+        slot === "explore" || slot === "lead" ? q.pri : scoreQuestion(bank, profile, q, scoring),
     }))
     .sort((x, y) => y.score - x.score || compareIds(x.q.id, y.q.id));
   const best = scored[0] as { q: Question; score: number };

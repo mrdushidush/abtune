@@ -7,6 +7,7 @@ import { toXSPF } from "./xspf.ts";
 export * from "./csv.ts";
 export * from "./json.ts";
 export * from "./m3u.ts";
+export * from "./songlist.ts";
 export * from "./types.ts";
 export * from "./xspf.ts";
 

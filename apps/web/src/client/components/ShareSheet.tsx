@@ -4,6 +4,7 @@ import { saveBlob } from "../lib/download.ts";
 import { shareUrl } from "../state/share.ts";
 import { track } from "../state/stats.ts";
 import { t } from "../strings.ts";
+import { Icon, TILE } from "./Icon.tsx";
 
 const slug = (s: string) =>
   s
@@ -24,7 +25,7 @@ const hostOf = (url: string) => {
 };
 
 /**
- * Share ↗ (HANDOFF §4.4, M6): a link that rebuilds this card and playlist on any device, and the
+ * Share (HANDOFF §4.4, M6): a link that rebuilds this card and playlist on any device, and the
  * card as a PNG. The link is a URL fragment, so opening it sends the server nothing but the usual
  * playlist request.
  */
@@ -49,13 +50,14 @@ export function ShareButton({
       <button
         type="button"
         disabled={!code || !card}
-        className="flex min-h-12 flex-1 items-center justify-center gap-1.5 rounded-2xl bg-raised px-4 font-bold text-text hover:bg-line disabled:opacity-40"
+        className={TILE}
         onClick={() => {
           setOpen(true);
           dialog.current?.showModal();
         }}
       >
-        ↗ {t.share.button}
+        <Icon name="share" />
+        {t.share.button}
       </button>
       {/* biome-ignore lint/a11y/useKeyWithClickEvents: backdrop click is a mouse shortcut; keys have Escape and Close */}
       <dialog
@@ -242,7 +244,8 @@ function ShareBody({
               saveBlob(file, file.name);
             }}
           >
-            ⬇ {t.share.saveImage}
+            <Icon name="download" className="size-4" />
+            {t.share.saveImage}
           </button>
           {canShareFile && file && (
             <button
