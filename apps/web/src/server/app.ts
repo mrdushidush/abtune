@@ -20,6 +20,7 @@ import { clientKey, RateLimiter, type RateLimitSettings, rateLimit } from "./rat
 import { looksLikeAVisit, shortLinkTag } from "./shortlinks.ts";
 import { mountSpotify } from "./spotify.ts";
 import { isStatEvent, type Stats } from "./stats.ts";
+import { PlaylistTimings } from "./timing.ts";
 
 export interface AppOptions {
   readonly bank: Bank;
@@ -48,6 +49,8 @@ export interface AppOptions {
    * same allowance. Omitted: no limit.
    */
   readonly eventLimit?: RateLimitSettings | null;
+  /** Playlist build times for /api/health. Omitted: a new one on the system clock. */
+  readonly timings?: PlaylistTimings;
 }
 
 /** The public instance: where share links from a loopback or home-network install point. */
@@ -151,6 +154,7 @@ export function createApp({
   stats = null,
   playlistLimit = null,
   eventLimit = null,
+  timings = new PlaylistTimings(),
 }: AppOptions): Hono {
   const app = new Hono();
   const engine = engineVersion(bank);
@@ -179,9 +183,19 @@ export function createApp({
       spotify: { configured: missingSettings(spotify).length === 0 },
       share_url: publicUrl,
       stats: stats !== null,
+      playlist_timing: timings.hours(),
     } satisfies Health),
   );
 
+  // A playlist built is timed for /api/health and counted: a finished quiz always builds one, so a
+  // day's finished quizzes can't honestly outnumber its playlists. A refused request is neither.
+  app.use("/api/playlist", async (c, next) => {
+    const start = timings.clock();
+    await next();
+    if (c.res.status !== 200) return;
+    timings.record(timings.clock() - start);
+    stats?.count("playlist_built");
+  });
   // The body is never logged: it is a profile, and the server keeps no record of it (HANDOFF §13).
   // One core builds about two playlists a second, so one visitor in a loop could take them all.
   if (playlistLimit) app.use("/api/playlist", rateLimit(playlistLimit));

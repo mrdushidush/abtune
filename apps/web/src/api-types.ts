@@ -46,6 +46,24 @@ export interface Health {
   readonly share_url: string;
   /** This server counts usage events (STATS_FILE): the client reports them to POST /api/event. */
   readonly stats: boolean;
+  /**
+   * How long playlists took, per UTC hour, newest first: the hour under way (still filling), then
+   * those of the 24 hours before it that built any. Kept in memory, so a restart starts over.
+   */
+  readonly playlist_timing: readonly PlaylistTiming[];
+}
+
+/**
+ * The playlists this server built in one UTC hour (POST /api/playlist answered 200), timed from the
+ * request reaching the route to the response being ready.
+ */
+export interface PlaylistTiming {
+  /** `YYYY-MM-DDTHH`. */
+  readonly hour: string;
+  readonly n: number;
+  /** Nearest rank, whole milliseconds: with 10 playlists, p95 is the slowest. */
+  readonly p50_ms: number;
+  readonly p95_ms: number;
 }
 
 /**
@@ -222,9 +240,15 @@ export type StatEvent = (typeof STAT_EVENTS)[number];
 
 /**
  * Counts the server keeps itself, which /api/event refuses: a visit through a typed short link
- * (`/x`, `/ig` or `/tt`, one per source tag).
+ * (`/x`, `/ig` or `/tt`, one per source tag), and a playlist built (POST /api/playlist answered
+ * 200), which a finished quiz always needs.
  */
-export const SERVER_EVENTS = ["shortlink_x", "shortlink_ig", "shortlink_tt"] as const;
+export const SERVER_EVENTS = [
+  "shortlink_x",
+  "shortlink_ig",
+  "shortlink_tt",
+  "playlist_built",
+] as const;
 export type ServerEvent = (typeof SERVER_EVENTS)[number];
 /** Every name GET /api/stats can show. */
 export type CountedEvent = StatEvent | ServerEvent;

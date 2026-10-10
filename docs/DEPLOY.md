@@ -25,7 +25,9 @@ On your own machine you don't need any of this: see [SELF_HOSTING.md](SELF_HOSTI
   quizzes started and finished with it (`quiz_start_via_x`, `quiz_done_via_x`). The short links `/x`,
 `/ig` and `/tt`, for captions where a link can't be tapped, send a visitor on to `/?via=x` and so
 on, and the server counts each visit through one (`shortlink_x`): only when a browser opens it, not
-when an app fetches it for a link preview. The counts are public at
+when an app fetches it for a link preview. The server also counts the playlists it builds
+  (`playlist_built`), and keeps the counts with a source tag per hour as well, for two weeks
+  (`hours`). The counts are public at
   `/api/stats`, and the start screen says they are kept. Because they're public, a script shouldn't
   be able to make them up: an event counts only when the request says it comes from the site's own
   pages (an `Origin` header naming the site, or `Sec-Fetch-Site: same-origin`, which browsers send
@@ -139,7 +141,8 @@ healthy.
 - Paste the site's address into a chat app: the preview shows the ABTune card.
 - `curl -I http://abtune.com/` redirects to https, and `curl -I https://www.abtune.com/` to the
   domain.
-- `curl https://abtune.com/api/stats` shows the counts.
+- `curl https://abtune.com/api/stats` shows the counts, and `/api/health` how long playlists
+  took to build, per hour (`playlist_timing`: count, median and 95th percentile).
 - `curl -m 5 http://SERVER_IP:8787/` from elsewhere fails to connect: the app is only reachable
   through Caddy or the tunnel.
 
