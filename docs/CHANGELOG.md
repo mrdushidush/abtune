@@ -14,6 +14,10 @@ and versions follow [Semantic Versioning](https://semver.org/).
 - Every MCP tool says whether it only reads, can replace a file, is safe to repeat, and reaches
   outside the server (the four MCP tool hints), so hosts can tell which calls are safe to run
   unasked. Only `push_to_spotify` reaches outside; only `export_playlist` can replace a file.
+- Source tags for a public instance's counts: a link may carry `?via=x`, `ig` or `tt` (any other
+  value is ignored). The browser keeps the last tag for 7 days, and the counts add the days a device
+  opened the site with it and the quizzes started and finished with it. A quiz counts for the tag
+  it started with. Still no IDs, IP addresses or cookies.
 
 ### Changed
 - Playlists fit short quizzes much better. In 200 test runs in a browser, the share of playlists

@@ -184,6 +184,13 @@ export interface ApiError {
   readonly retry_after?: number;
 }
 
+/**
+ * Source tags a landing link may carry (`?via=x`): the site's own links on X, Instagram and TikTok.
+ * Any other value is ignored, so nobody can make up new counter names.
+ */
+export const VIA_TAGS = ["x", "ig", "tt"] as const;
+export type ViaTag = (typeof VIA_TAGS)[number];
+
 /** Usage events a public instance counts (POST /api/event, `{"e": name}`); nothing else is sent. */
 export const STAT_EVENTS = [
   "quiz_start",
@@ -199,6 +206,17 @@ export const STAT_EVENTS = [
   "handoff_spotify",
   "handoff_apple_music",
   "handoff_youtube_music",
+  // Per source tag: a day this device opened the site with the tag, and quizzes started and
+  // finished with it.
+  "via_x_open",
+  "via_ig_open",
+  "via_tt_open",
+  "quiz_start_via_x",
+  "quiz_start_via_ig",
+  "quiz_start_via_tt",
+  "quiz_done_via_x",
+  "quiz_done_via_ig",
+  "quiz_done_via_tt",
 ] as const;
 export type StatEvent = (typeof STAT_EVENTS)[number];
 

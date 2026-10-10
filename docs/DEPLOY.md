@@ -19,7 +19,10 @@ On your own machine you don't need any of this: see [SELF_HOSTING.md](SELF_HOSTI
   (`SHARE_BASE_URL` overrides either).
 - **It counts usage.** `STATS_FILE` turns on counters: quizzes started and finished, "Answer 10
   more", shared links opened, shares, exports and hand-offs to a music app, per day. The browser sends an event name and
-  nothing else, so no IDs, IP addresses, cookies or profiles are kept. The counts are public at
+  nothing else, so no IDs, IP addresses, cookies or profiles are kept. A link to the site may carry
+  a source tag, `?via=x`, `ig` or `tt` (any other value is ignored): the browser keeps the last one
+  for 7 days, and the counts add the days a device opened the site with it (`via_x_open`) and the
+  quizzes started and finished with it (`quiz_start_via_x`, `quiz_done_via_x`). The counts are public at
   `/api/stats`, and the start screen says they are kept. Because they're public, a script shouldn't
   be able to make them up: an event counts only when the request says it comes from the site's own
   pages (an `Origin` header naming the site, or `Sec-Fetch-Site: same-origin`, which browsers send

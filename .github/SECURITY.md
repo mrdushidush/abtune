@@ -23,8 +23,9 @@ Supported: the latest release and `main`.
 - **AI** (optional, off by default): answers go to the AI server you configure (a local one in this
   version), and sensitive answers only with a per-session opt-in.
 - **A public instance** (`STATS_FILE`, as on abtune.com) counts events per day: quizzes started and
-  finished, shares, exports. Only the event name is sent: no IDs, IP addresses or cookies. The counts
-  are public at `/api/stats`. To keep a script from making them up, an event counts only when it
+  finished, shares, exports, and visits and quizzes from the site's own links on X, Instagram and
+  TikTok (`?via=x`, `ig` or `tt`; the tag stays in your browser for 7 days). Only the event name is
+  sent: no IDs, IP addresses or cookies. The counts are public at `/api/stats`. To keep a script from making them up, an event counts only when it
   says it comes from the site's own pages, and at most 30 a minute from one address (held in memory
   for a minute, like the playlist limit, and never written down).
 

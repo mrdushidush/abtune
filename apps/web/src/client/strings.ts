@@ -263,7 +263,7 @@ export const t = {
   privacyLine:
     "No login. Your answers stay in this browser; the server only gets your taste profile to pick the songs.",
   statsLine:
-    "This site counts finished quizzes, shares and exports: numbers only, nothing about you.",
+    "This site counts finished quizzes, shares, exports and which of its links brought you: numbers only, nothing about you.",
   source: "Open source on GitHub",
   catalogLine: (version: string, tracks: number) =>
     `${version} · ${tracks.toLocaleString("en-US")} songs`,

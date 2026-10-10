@@ -41,7 +41,8 @@ import {
 } from "../state/hooks.ts";
 import { applyEdit, editRequest, shareBase } from "../state/share.ts";
 import { offerSpotify } from "../state/spotify.ts";
-import { track, trackOnce } from "../state/stats.ts";
+import { track } from "../state/stats.ts";
+import { trackQuizDone } from "../state/via.ts";
 import { t, tweakSummary } from "../strings.ts";
 
 const NO_OPS: readonly ShareOp[] = [];
@@ -326,10 +327,10 @@ export function Result({
     [bank, taste, view.answered, title.title, ready, shown],
   );
 
-  // A finished quiz, counted once (a public instance's usage counters).
+  // A finished quiz, counted once (a public instance's usage counters), with its source tag.
   const quizSeed = session.config.quiz_seed ?? "none";
   useEffect(() => {
-    if (ready) trackOnce("quiz_done", quizSeed);
+    if (ready) trackQuizDone(quizSeed);
   }, [ready, quizSeed]);
   const onExport = (f: ExportFormat) => {
     if (ready) track(`export_${f}`);
