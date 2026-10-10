@@ -220,6 +220,15 @@ export const STAT_EVENTS = [
 ] as const;
 export type StatEvent = (typeof STAT_EVENTS)[number];
 
+/**
+ * Counts the server keeps itself, which /api/event refuses: a visit through a typed short link
+ * (`/x`, `/ig` or `/tt`, one per source tag).
+ */
+export const SERVER_EVENTS = ["shortlink_x", "shortlink_ig", "shortlink_tt"] as const;
+export type ServerEvent = (typeof SERVER_EVENTS)[number];
+/** Every name GET /api/stats can show. */
+export type CountedEvent = StatEvent | ServerEvent;
+
 /** Longest playlist the API generates (the UI offers 25 / 50 / 100). */
 export const MAX_API_LENGTH = 100;
 

@@ -1,14 +1,20 @@
 // Usage counters for a public instance (STATS_FILE, off by default): how many quizzes were
-// started and finished, links shared and playlists exported, per UTC day. Event names and numbers
-// only: no IDs, IP addresses, cookies or profiles, so nothing here tells two visitors apart.
+// started and finished, links shared and playlists exported, visits through the short links, per
+// UTC day. Event names and numbers only: no IDs, IP addresses, cookies or profiles, so nothing here
+// tells two visitors apart.
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { STAT_EVENTS, type StatEvent } from "../api-types.ts";
+import { type CountedEvent, SERVER_EVENTS, STAT_EVENTS, type StatEvent } from "../api-types.ts";
 
+/** A name a browser may send to /api/event. */
 export const isStatEvent = (x: unknown): x is StatEvent =>
   typeof x === "string" && (STAT_EVENTS as readonly string[]).includes(x);
 
-type Counts = Partial<Record<StatEvent, number>>;
+/** A name the counts may hold: a browser's, or one the server counts itself. */
+export const isCountedEvent = (x: unknown): x is CountedEvent =>
+  isStatEvent(x) || (typeof x === "string" && (SERVER_EVENTS as readonly string[]).includes(x));
+
+type Counts = Partial<Record<CountedEvent, number>>;
 
 export interface StatsSnapshot {
   /** The first day counted (UTC, YYYY-MM-DD). */
@@ -53,13 +59,13 @@ export class Stats {
     for (const [day, counts] of Object.entries(saved.days ?? {})) {
       const clean: Counts = {};
       for (const [k, v] of Object.entries(counts))
-        if (isStatEvent(k) && Number.isSafeInteger(v) && v > 0) clean[k] = v;
+        if (isCountedEvent(k) && Number.isSafeInteger(v) && v > 0) clean[k] = v;
       stats.days.set(day, clean);
     }
     return stats;
   }
 
-  count(event: StatEvent): void {
+  count(event: CountedEvent): void {
     const day = dayOf(this.now());
     const counts = this.days.get(day) ?? {};
     counts[event] = (counts[event] ?? 0) + 1;
@@ -70,7 +76,7 @@ export class Stats {
   snapshot(): StatsSnapshot {
     const totals: Counts = {};
     for (const counts of this.days.values())
-      for (const [k, v] of Object.entries(counts) as [StatEvent, number][])
+      for (const [k, v] of Object.entries(counts) as [CountedEvent, number][])
         totals[k] = (totals[k] ?? 0) + v;
     const days = [...this.days.keys()]
       .sort()

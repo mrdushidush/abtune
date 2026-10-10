@@ -18,6 +18,9 @@ and versions follow [Semantic Versioning](https://semver.org/).
   value is ignored). The browser keeps the last tag for 7 days, and the counts add the days a device
   opened the site with it and the quizzes started and finished with it. A quiz counts for the tag
   it started with. Still no IDs, IP addresses or cookies.
+- Short links for a public instance's own accounts: `/x`, `/ig` and `/tt` open the site with that
+  source tag, for captions and pictures where a link can't be tapped. The server counts a visit
+  through one when a browser opens it, not when an app fetches it for a link preview.
 
 ### Changed
 - Playlists fit short quizzes much better. In 200 test runs in a browser, the share of playlists

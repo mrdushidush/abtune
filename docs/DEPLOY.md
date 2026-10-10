@@ -22,7 +22,10 @@ On your own machine you don't need any of this: see [SELF_HOSTING.md](SELF_HOSTI
   nothing else, so no IDs, IP addresses, cookies or profiles are kept. A link to the site may carry
   a source tag, `?via=x`, `ig` or `tt` (any other value is ignored): the browser keeps the last one
   for 7 days, and the counts add the days a device opened the site with it (`via_x_open`) and the
-  quizzes started and finished with it (`quiz_start_via_x`, `quiz_done_via_x`). The counts are public at
+  quizzes started and finished with it (`quiz_start_via_x`, `quiz_done_via_x`). The short links `/x`,
+`/ig` and `/tt`, for captions where a link can't be tapped, send a visitor on to `/?via=x` and so
+on, and the server counts each visit through one (`shortlink_x`): only when a browser opens it, not
+when an app fetches it for a link preview. The counts are public at
   `/api/stats`, and the start screen says they are kept. Because they're public, a script shouldn't
   be able to make them up: an event counts only when the request says it comes from the site's own
   pages (an `Origin` header naming the site, or `Sec-Fetch-Site: same-origin`, which browsers send

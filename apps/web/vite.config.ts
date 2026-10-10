@@ -12,5 +12,11 @@ export default defineConfig({
     tailwindcss(),
     abtuneBank(path.resolve(import.meta.dirname, "../../data/questions")),
   ],
-  server: { proxy: { "/api": "http://127.0.0.1:8787" } },
+  server: {
+    proxy: {
+      "/api": "http://127.0.0.1:8787",
+      // The short links (/x, /ig, /tt, in any case), which the server redirects.
+      "^/([xX]|[iI][gG]|[tT][tT])/?(\\?.*)?$": "http://127.0.0.1:8787",
+    },
+  },
 });
