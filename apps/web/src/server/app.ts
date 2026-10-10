@@ -16,7 +16,8 @@ import { aiHealth, mountAi, type ServerAi } from "./ai.ts";
 import { type CatalogSlot, catalogHealth, readyCatalog } from "./catalog.ts";
 import { fromThisSite } from "./http.ts";
 import { buildPlaylist, parsePlaylistRequest, UnknownTrackError } from "./playlist.ts";
-import { type RateLimitSettings, rateLimit } from "./ratelimit.ts";
+import { clientKey, RateLimiter, type RateLimitSettings, rateLimit } from "./ratelimit.ts";
+import { looksLikeAVisit, shortLinkTag } from "./shortlinks.ts";
 import { mountSpotify } from "./spotify.ts";
 import { isStatEvent, type Stats } from "./stats.ts";
 
@@ -42,7 +43,10 @@ export interface AppOptions {
   readonly stats?: Stats | null;
   /** Playlists per visitor (PLAYLISTS_PER_MINUTE). Omitted: no limit. */
   readonly playlistLimit?: RateLimitSettings | null;
-  /** Usage events per visitor (EVENTS_PER_MINUTE), when `stats` is set. Omitted: no limit. */
+  /**
+   * Usage events per visitor (EVENTS_PER_MINUTE), when `stats` is set; short-link hits draw on the
+   * same allowance. Omitted: no limit.
+   */
   readonly eventLimit?: RateLimitSettings | null;
 }
 
@@ -221,10 +225,13 @@ export function createApp({
   mountSpotify(app, { settings: spotify, bank, catalog, engine });
   mountAi(app, { ai, bank, engine });
 
+  // One allowance per visitor for everything counted: events and short-link hits.
+  const eventBuckets = eventLimit ? new RateLimiter(eventLimit.perMinute) : null;
   if (stats) {
     // The counts are public, so one script in a loop shouldn't be able to make them up: events
     // come from this site's pages (an Origin header naming it), at a visitor's pace.
-    if (eventLimit) app.use("/api/event", rateLimit(eventLimit, "events"));
+    if (eventLimit && eventBuckets)
+      app.use("/api/event", rateLimit(eventLimit, "events", eventBuckets));
     // A name from STAT_EVENTS and nothing else: the count is all that's kept.
     app.post(
       "/api/event",
@@ -254,6 +261,20 @@ export function createApp({
   }
 
   app.all("/api/*", (c) => fail(c, 404, { error: "not_found" }));
+
+  // Typed short links (/x, /ig, /tt) always land on the tagged page. A link preview's fetch, or a
+  // hit past the visitor's allowance, isn't counted, but still lands.
+  app.use("*", async (c, next) => {
+    const tag = c.req.method === "GET" || c.req.method === "HEAD" ? shortLinkTag(c.req.path) : null;
+    if (!tag) return next();
+    if (stats && looksLikeAVisit(c)) {
+      const wait =
+        eventLimit && eventBuckets ? eventBuckets.take(clientKey(c, eventLimit.trustProxy)) : 0;
+      if (wait === 0) stats.count(`shortlink_${tag}` as const);
+    }
+    c.header("Cache-Control", "no-store");
+    return c.redirect(`/?via=${tag}`, 302);
+  });
 
   if (staticRoot !== undefined) {
     // index.html with the public URL filled in, read once.
