@@ -26,6 +26,7 @@ describe("API", async () => {
       spotify: { configured: false },
       share_url: "https://abtune.com/",
       stats: false,
+      playlist_timing: [],
     });
   });
 

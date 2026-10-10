@@ -34,7 +34,7 @@ describe("shortLinkTag", () => {
   });
 
   it("has a counter for each tag, which a browser can't send", () => {
-    expect(SERVER_EVENTS).toHaveLength(VIA_TAGS.length);
+    expect(SERVER_EVENTS.filter((e) => e.startsWith("shortlink_"))).toHaveLength(VIA_TAGS.length);
     for (const tag of VIA_TAGS) {
       expect(isCountedEvent(`shortlink_${tag}`)).toBe(true);
       expect(isStatEvent(`shortlink_${tag}`)).toBe(false);

@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { loadBankFromDisk } from "@abtune/bank/node";
 import { describe, expect, it } from "vitest";
 import { createApp, PUBLIC_INSTANCE_URL, shareBaseUrl } from "../src/server/app.ts";
-import { DAYS_SHOWN, Stats } from "../src/server/stats.ts";
+import { DAYS_KEPT, DAYS_SHOWN, Stats } from "../src/server/stats.ts";
 
 const questionsDir = fileURLToPath(new URL("../../../data/questions", import.meta.url));
 
@@ -119,9 +119,25 @@ describe("public instance", async () => {
         { day: "2026-10-12", counts: { share_link: 2 } },
         { day: "2026-10-11", counts: { quiz_done: 2 } },
       ],
+      hours: [],
     });
     const health = (await (await app.request("/api/health")).json()) as { stats: boolean };
     expect(health.stats).toBe(true);
+  });
+
+  it("keeps the newest DAYS_KEPT days in its file", async () => {
+    const file = path.join(await mkdtemp(path.join(tmpdir(), "abtune-stats-")), "stats.json");
+    let now = new Date("2026-01-01T10:00:00Z");
+    const stats = await Stats.open(file, () => now);
+    for (let d = 0; d < DAYS_KEPT + 2; d++) {
+      now = new Date(Date.UTC(2026, 0, 1 + d, 10));
+      stats.count("quiz_done");
+    }
+    await stats.flush();
+    const saved = JSON.parse(await readFile(file, "utf8")) as { days: Record<string, unknown> };
+    const days = Object.keys(saved.days).sort();
+    expect(days).toHaveLength(DAYS_KEPT);
+    expect(days[0]).toBe("2026-01-03");
   });
 
   it("keeps the counts in its file across restarts", async () => {

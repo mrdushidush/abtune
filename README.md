@@ -58,8 +58,9 @@ is in [docs/DECISIONS.md](docs/DECISIONS.md).
 - The server gets only the resulting taste profile (a few dozen numbers) to pick songs, and keeps
   no record of it.
 - Share links carry the profile in the URL fragment, which browsers don't send to servers.
-- abtune.com counts events per day (quizzes started and finished, shares, exports, and visits
-  from its own links on X, Instagram and TikTok) with no IDs, IP addresses or cookies. The counts
+- abtune.com counts events per day (quizzes started and finished, playlists built, shares,
+  exports, and visits from its own links on X, Instagram and TikTok, those per hour too) with no
+  IDs, IP addresses or cookies. The counts
   are public at
   [abtune.com/api/stats](https://abtune.com/api/stats).
 - "Add to your music app" copies the song list and opens TuneMyMusic, a free transfer site, where
