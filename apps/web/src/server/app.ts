@@ -83,6 +83,9 @@ export function shareBaseUrl(appBaseUrl?: string, shareBase?: string): string {
   return PUBLIC_INSTANCE_URL;
 }
 
+/** Static pages besides the app, each served at `/<name>` from `<name>.html`. */
+export const LEGAL_PAGES = ["privacy", "terms"] as const;
+
 /** In the built index.html: replaced with the public URL (link-preview tags need absolute URLs). */
 export const URL_PLACEHOLDER = "__ABTUNE_URL__";
 
@@ -291,20 +294,29 @@ export function createApp({
   });
 
   if (staticRoot !== undefined) {
-    // index.html with the public URL filled in, read once.
-    let index: Promise<string | null> | null = null;
-    const page = async (c: Context) => {
-      index ??= readFile(path.join(staticRoot, "index.html"), "utf8").then(
-        (html) => html.replaceAll(URL_PLACEHOLDER, attr(publicUrl)),
-        () => null,
-      );
-      const html = await index;
+    // A built page with the public URL filled in, read once.
+    const read = new Map<string, Promise<string | null>>();
+    const pageOf = (file: string) => async (c: Context) => {
+      let pending = read.get(file);
+      if (!pending) {
+        pending = readFile(path.join(staticRoot, file), "utf8").then(
+          (html) => html.replaceAll(URL_PLACEHOLDER, attr(publicUrl)),
+          () => null,
+        );
+        read.set(file, pending);
+      }
+      const html = await pending;
       if (html === null) return c.text("Not found", 404);
       c.header("Cache-Control", "no-cache");
       return c.html(html);
     };
+    const page = pageOf("index.html");
     app.get("/", page);
     app.get("/index.html", page);
+    // The privacy and terms pages: documents that need no script, at the addresses the bios print.
+    for (const name of LEGAL_PAGES)
+      for (const route of [`/${name}`, `/${name}/`, `/${name}.html`])
+        app.get(route, pageOf(`${name}.html`));
     // Built assets have content hashes in their names: cache them for good.
     app.use("/assets/*", async (c, next) => {
       await next();

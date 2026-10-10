@@ -265,6 +265,8 @@ export const t = {
   statsLine:
     "This site counts finished quizzes, shares, exports and which of its links brought you: numbers only, nothing about you.",
   source: "Open source on GitHub",
+  privacy: "Privacy",
+  terms: "Terms",
   catalogLine: (version: string, tracks: number) =>
     `${version} · ${tracks.toLocaleString("en-US")} songs`,
 };

@@ -77,13 +77,18 @@ interface Bucket {
   at: number;
 }
 
-/** A token bucket per visitor: `perMinute` tokens, refilled evenly over a minute. */
+/**
+ * A token bucket per visitor: `perMinute` tokens, refilled evenly over a minute. The keys are
+ * addresses, so they're held in memory only and forgotten within about two minutes of a visitor's
+ * last request (the privacy page says so).
+ */
 export class RateLimiter {
   readonly perMinute: number;
   readonly #now: () => number;
   readonly #buckets = new Map<string, Bucket>();
   readonly #perMs: number;
   #swept: number;
+  #timer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(perMinute: number, now: () => number = Date.now) {
     this.perMinute = perMinute;
@@ -95,15 +100,12 @@ export class RateLimiter {
   /** Spend one token: 0 when allowed, else the whole seconds until the next one. */
   take(key: string): number {
     const now = this.#now();
-    // A bucket left alone for a minute is full again, the same as no bucket.
-    if (now - this.#swept >= 60_000) {
-      for (const [k, b] of this.#buckets) if (now - b.at >= 60_000) this.#buckets.delete(k);
-      this.#swept = now;
-    }
+    if (now - this.#swept >= 60_000) this.#sweep(now);
     const b = this.#buckets.get(key);
     const tokens = b
       ? Math.min(this.perMinute, b.tokens + (now - b.at) * this.#perMs)
       : this.perMinute;
+    this.#schedule();
     if (tokens >= 1) {
       this.#buckets.set(key, { tokens: tokens - 1, at: now });
       return 0;
@@ -115,6 +117,23 @@ export class RateLimiter {
 
   get size(): number {
     return this.#buckets.size;
+  }
+
+  /** A bucket left alone for a minute is full again, the same as no bucket: drop it. */
+  #sweep(now: number): void {
+    for (const [k, b] of this.#buckets) if (now - b.at >= 60_000) this.#buckets.delete(k);
+    this.#swept = now;
+  }
+
+  /** Sweep again in a minute while any bucket is left, even if no other request comes. */
+  #schedule(): void {
+    if (this.#timer) return;
+    this.#timer = setTimeout(() => {
+      this.#timer = null;
+      this.#sweep(this.#now());
+      if (this.#buckets.size > 0) this.#schedule();
+    }, 60_000);
+    this.#timer.unref?.();
   }
 }
 

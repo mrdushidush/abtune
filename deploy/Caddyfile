@@ -1,4 +1,12 @@
 # HTTPS in front of the app (COMPOSE_PROFILES=caddy). Caddy gets and renews the certificates.
+{
+	# Write no visitor down. Caddy keeps no access log unless asked, but it logs a failed request
+	# (a 502 while the app restarts) with the visitor's address and browser: drop those lines.
+	log default {
+		exclude http.log.error
+	}
+}
+
 {$SITE_HOST} {
 	encode zstd gzip
 	# The app leaves HSTS to the proxy.

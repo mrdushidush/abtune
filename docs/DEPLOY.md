@@ -40,7 +40,10 @@ when an app fetches it for a link preview. The server also counts the playlists 
   Past that, `/api/playlist` answers 429 with `Retry-After`, and the page says so and asks again by
   itself. The visitor is the address Caddy or the tunnel puts last in `X-Forwarded-For`
   (`TRUST_PROXY`), and an IPv6 address counts by its /64. Nothing is stored: the counts live in
-  memory for a minute.
+  memory, and an address is forgotten within about two minutes of its last request.
+- **It has privacy and terms pages** at `/privacy` and `/terms`, linked from every screen's footer.
+  They describe abtune.com: for another instance, edit `apps/web/src/client/privacy.html` and
+  `terms.html`.
 - **AI and Spotify stay off.** AI needs a model server next to the app. Spotify's development mode
   only works for accounts the app's owner adds by hand, so the "Save to Spotify" button is hidden.
   Visitors use "Add to your music app" instead (TuneMyMusic's song-list import, for Spotify, Apple
@@ -70,6 +73,10 @@ At the domain's DNS (the registrar's panel), replace any parking records with:
 Leave out `AAAA` records unless the server answers on IPv6. In `deploy/.env`, set
 `COMPOSE_PROFILES=caddy` and `SITE_HOST` to the domain. Caddy gets the certificates on its first
 start, once the DNS records are visible (usually minutes), and `www` redirects to the domain.
+
+Caddy keeps no access log. It does log a failed request (a 502 while the app restarts) with the
+visitor's address and browser, so `deploy/Caddyfile` drops those lines: the privacy page says no
+address is written down.
 
 There is no rate limit in this setup: the app keeps no per-visitor state, and a person taking the
 quiz makes a handful of API calls a minute. Move to the tunnel for that.
@@ -153,6 +160,9 @@ cd abtune && git pull && cd deploy && docker compose up -d --build
 # or, with ABTUNE_IMAGE set:
 docker compose pull && docker compose up -d
 ```
+
+After a change to `deploy/Caddyfile`, also run `docker compose up -d --force-recreate caddy`: `up`
+doesn't notice a changed file it mounts, and a new container also starts with an empty log.
 
 The counters live in the `stats` volume and survive updates; certificates live in `caddy_data`. To
 keep a copy of the counters:

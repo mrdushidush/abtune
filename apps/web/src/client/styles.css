@@ -77,3 +77,101 @@ body {
     transition-duration: 1ms !important;
   }
 }
+
+/* The privacy and terms pages (privacy.html, terms.html): plain documents, no script. */
+.legal {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+  color: var(--color-text-2);
+  line-height: 1.65;
+}
+
+.legal nav {
+  display: flex;
+  gap: 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.legal nav a:first-child {
+  margin-right: auto;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.legal h1 {
+  margin: 2.5rem 0 0.25rem;
+  color: var(--color-text);
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.legal h2 {
+  margin: 2.25rem 0 0.5rem;
+  color: var(--color-text);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.legal p,
+.legal ul,
+.legal table {
+  margin: 0.75rem 0;
+}
+
+.legal ul {
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+.legal li {
+  margin: 0.4rem 0;
+}
+
+.legal a {
+  color: var(--color-text);
+  text-decoration: underline;
+}
+
+.legal strong {
+  color: var(--color-text);
+}
+
+.legal code {
+  padding: 0.05em 0.3em;
+  border-radius: 0.25rem;
+  background: var(--color-raised);
+  font-size: 0.875em;
+  overflow-wrap: anywhere;
+}
+
+.legal table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.legal th,
+.legal td {
+  padding: 0.5rem 0.75rem 0.5rem 0;
+  border-top: 1px solid var(--color-line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.legal th {
+  color: var(--color-text);
+}
+
+/* A storage key reads as one word. */
+.legal td:first-child {
+  white-space: nowrap;
+}
+
+.legal .updated {
+  margin-top: 0;
+  color: var(--color-text-3);
+  font-size: 0.875rem;
+}

@@ -1,6 +1,6 @@
 import { fileURLToPath } from "node:url";
 import { loadBankFromDisk } from "@abtune/bank/node";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { retryAfterMs } from "../src/client/state/api.ts";
 import { createApp } from "../src/server/app.ts";
 import { addressKey, RateLimiter, rateLimitSettings } from "../src/server/ratelimit.ts";
@@ -44,6 +44,24 @@ describe("RateLimiter", () => {
     c.advance(30_000);
     limiter.take("c");
     expect(limiter.size).toBe(1);
+  });
+
+  it("forgets an address within two minutes even when nobody else comes", () => {
+    vi.useFakeTimers();
+    try {
+      const limiter = new RateLimiter(5);
+      limiter.take("a");
+      vi.advanceTimersByTime(30_000);
+      limiter.take("b");
+      vi.advanceTimersByTime(30_000);
+      expect(limiter.size).toBe(1);
+      vi.advanceTimersByTime(60_000);
+      expect(limiter.size).toBe(0);
+      // Nothing left to forget, so no timer is left running.
+      expect(vi.getTimerCount()).toBe(0);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
 

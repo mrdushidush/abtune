@@ -58,6 +58,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: The public kit's Caddyfile is valid, for the Caddy version it runs with
+        run: >-
+          docker run --rm -e SITE_HOST=example.com
+          -v "$PWD/deploy/Caddyfile:/etc/caddy/Caddyfile:ro"
+          "$(grep -o 'caddy:[0-9.]*-alpine' deploy/compose.yaml)"
+          caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
       - name: Install the committed 5k fixture as the catalog
         run: cp -r data/catalog-fixture data/catalog/fixture
       - run: docker compose up -d --build
@@ -77,6 +83,10 @@ jobs:
           curl -sf http://127.0.0.1:8787/ | grep -q "<title>ABTune: A/B test your music taste</title>"
           curl -sf http://127.0.0.1:8787/ | grep -q 'og:image" content="https://abtune.com/og.png"'
           curl -sf -o /dev/null http://127.0.0.1:8787/og.png
+      - name: Serves the privacy and terms pages
+        run: |
+          curl -sf http://127.0.0.1:8787/privacy | grep -q "<h1>Privacy</h1>"
+          curl -sf http://127.0.0.1:8787/terms | grep -q "<h1>Terms of use</h1>"
       - name: Generates a playlist, identically twice
         run: |
           BODY=$(curl -sf http://127.0.0.1:8787/api/health | jq -c '{

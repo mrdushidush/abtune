@@ -30,7 +30,10 @@ Supported: the latest release and `main`.
   link, the server tells a browser from a link preview by two request headers
   (`Sec-Fetch-Mode` and `User-Agent`) and keeps neither. The counts are public at `/api/stats`. To keep a script from making them up, an event counts only when it
   says it comes from the site's own pages, and at most 30 a minute from one address (held in memory
-  for a minute, like the playlist limit, and never written down).
+  for at most about two minutes, like the playlist limit, and never written down).
+- **Logs:** the app logs only its start-up and errors, and the public kit's Caddy writes no visitor
+  down: no access log, and no line for a failed request. abtune.com's full policy is at
+  [abtune.com/privacy](https://abtune.com/privacy).
 
 ## Hardening already in place
 
