@@ -2,7 +2,10 @@ import { getConnInfo } from "@hono/node-server/conninfo";
 import type { Context, MiddlewareHandler } from "hono";
 import type { ApiError } from "../api-types.ts";
 
-/** Playlists per visitor (PLAYLISTS_PER_MINUTE, TRUST_PROXY). Off unless a number is set. */
+/**
+ * Requests per visitor: playlists (PLAYLISTS_PER_MINUTE) or usage events (EVENTS_PER_MINUTE), with
+ * TRUST_PROXY. Off unless a number is set.
+ */
 export interface RateLimitSettings {
   /** Requests a minute per visitor; a visitor may also spend a whole minute's worth at once. */
   readonly perMinute: number;
@@ -10,18 +13,23 @@ export interface RateLimitSettings {
   readonly trustProxy: boolean;
 }
 
+export type RateLimitVariable = "PLAYLISTS_PER_MINUTE" | "EVENTS_PER_MINUTE";
+
 const truthy = (v: string | undefined) => /^(1|true|yes|on)$/i.test(v?.trim() ?? "");
 
 /** From the environment; a bad value leaves the limit off and is reported, so the app still starts. */
-export function rateLimitSettings(env: Record<string, string | undefined>): {
+export function rateLimitSettings(
+  env: Record<string, string | undefined>,
+  variable: RateLimitVariable = "PLAYLISTS_PER_MINUTE",
+): {
   settings: RateLimitSettings | null;
   problem: string | null;
 } {
-  const raw = env.PLAYLISTS_PER_MINUTE?.trim();
+  const raw = env[variable]?.trim();
   if (!raw) return { settings: null, problem: null };
   const perMinute = Number(raw);
   if (!Number.isInteger(perMinute) || perMinute < 1)
-    return { settings: null, problem: "PLAYLISTS_PER_MINUTE must be a whole number ≥ 1" };
+    return { settings: null, problem: `${variable} must be a whole number ≥ 1` };
   return { settings: { perMinute, trustProxy: truthy(env.TRUST_PROXY) }, problem: null };
 }
 
@@ -111,7 +119,11 @@ export class RateLimiter {
 }
 
 /** 429 `rate_limited` with Retry-After once a visitor's tokens run out. */
-export function rateLimit(settings: RateLimitSettings, limiter?: RateLimiter): MiddlewareHandler {
+export function rateLimit(
+  settings: RateLimitSettings,
+  what: "playlists" | "events" = "playlists",
+  limiter?: RateLimiter,
+): MiddlewareHandler {
   const buckets = limiter ?? new RateLimiter(settings.perMinute);
   return async (c, next) => {
     const wait = buckets.take(clientKey(c, settings.trustProxy));
@@ -120,7 +132,7 @@ export function rateLimit(settings: RateLimitSettings, limiter?: RateLimiter): M
     return c.json(
       {
         error: "rate_limited",
-        message: `Too many playlists at once. Try again in ${wait} s.`,
+        message: `Too many ${what} at once. Try again in ${wait} s.`,
         retry_after: wait,
       } satisfies ApiError,
       429,

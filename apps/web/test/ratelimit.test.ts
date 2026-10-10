@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { retryAfterMs } from "../src/client/state/api.ts";
 import { createApp } from "../src/server/app.ts";
 import { addressKey, RateLimiter, rateLimitSettings } from "../src/server/ratelimit.ts";
+import { Stats } from "../src/server/stats.ts";
 
 const questionsDir = fileURLToPath(new URL("../../../data/questions", import.meta.url));
 
@@ -87,6 +88,18 @@ describe("rateLimitSettings", () => {
       expect(r.problem).toMatch(/PLAYLISTS_PER_MINUTE/);
     }
   });
+
+  it("reads EVENTS_PER_MINUTE apart from the playlist limit", () => {
+    const env = { EVENTS_PER_MINUTE: "30", TRUST_PROXY: "true" };
+    expect(rateLimitSettings(env, "EVENTS_PER_MINUTE").settings).toEqual({
+      perMinute: 30,
+      trustProxy: true,
+    });
+    expect(rateLimitSettings(env).settings).toBeNull();
+    expect(rateLimitSettings({ EVENTS_PER_MINUTE: "0" }, "EVENTS_PER_MINUTE").problem).toMatch(
+      /EVENTS_PER_MINUTE/,
+    );
+  });
 });
 
 describe("POST /api/playlist with PLAYLISTS_PER_MINUTE", async () => {
@@ -143,6 +156,44 @@ describe("POST /api/playlist with PLAYLISTS_PER_MINUTE", async () => {
   it("has no limit unless one is set", async () => {
     const app = createApp({ bank, version: "9.9.9" });
     for (let i = 0; i < 30; i++) expect((await post(app, "203.0.113.7")).status).not.toBe(429);
+  });
+});
+
+describe("POST /api/event with EVENTS_PER_MINUTE", async () => {
+  const { bank } = await loadBankFromDisk(["*.yaml"], { cwd: questionsDir });
+  if (!bank) throw new Error("seed bank failed to load");
+  const post = (app: ReturnType<typeof createApp>, forwardedFor: string) =>
+    app.request("/api/event", {
+      method: "POST",
+      headers: { origin: "http://localhost", "x-forwarded-for": forwardedFor },
+      body: '{"e":"quiz_done"}',
+    });
+  const done = (stats: Stats) => stats.snapshot().totals.quiz_done ?? 0;
+
+  it("counts a visitor's events up to the limit, and no more", async () => {
+    const stats = await Stats.open(null);
+    const app = createApp({
+      bank,
+      version: "9.9.9",
+      stats,
+      eventLimit: { perMinute: 3, trustProxy: true },
+    });
+    for (let i = 0; i < 3; i++) expect((await post(app, "203.0.113.7")).status).toBe(204);
+    const res = await post(app, "203.0.113.7");
+    expect(res.status).toBe(429);
+    expect(res.headers.get("retry-after")).toBe("20");
+    expect(await res.json()).toMatchObject({ error: "rate_limited", retry_after: 20 });
+    expect(done(stats)).toBe(3);
+    // Another visitor still counts.
+    expect((await post(app, "198.51.100.1")).status).toBe(204);
+    expect(done(stats)).toBe(4);
+  });
+
+  it("has no limit unless one is set", async () => {
+    const stats = await Stats.open(null);
+    const app = createApp({ bank, version: "9.9.9", stats });
+    for (let i = 0; i < 40; i++) expect((await post(app, "203.0.113.7")).status).toBe(204);
+    expect(done(stats)).toBe(40);
   });
 });
 

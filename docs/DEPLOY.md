@@ -20,7 +20,12 @@ On your own machine you don't need any of this: see [SELF_HOSTING.md](SELF_HOSTI
 - **It counts usage.** `STATS_FILE` turns on counters: quizzes started and finished, "Answer 10
   more", shared links opened, shares, exports and hand-offs to a music app, per day. The browser sends an event name and
   nothing else, so no IDs, IP addresses, cookies or profiles are kept. The counts are public at
-  `/api/stats`, and the start screen says they are kept.
+  `/api/stats`, and the start screen says they are kept. Because they're public, a script shouldn't
+  be able to make them up: an event counts only when the request says it comes from the site's own
+  pages (an `Origin` header naming the site, or `Sec-Fetch-Site: same-origin`, which browsers send
+  and pages can't), and `deploy/compose.yaml` allows 30 events a minute per visitor
+  (`EVENTS_PER_MINUTE`). A quiz sends a handful. A script that fakes the headers still gets 30 a
+  minute per address, so the limit slows a forger down rather than stopping one.
 - **It limits playlists per visitor.** One vCPU builds about two playlists a second, so a script in
   a loop could take them all. `deploy/compose.yaml` allows 20 a minute per visitor, and a visitor
   may use a whole minute's worth at once (`PLAYLISTS_PER_MINUTE` in `deploy/.env` changes it).

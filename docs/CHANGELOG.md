@@ -32,6 +32,12 @@ and versions follow [Semantic Versioning](https://semver.org/).
   pass `-f deploy/Dockerfile`. The contributing guide, code of conduct and security policy moved to
   `.github/`, and this changelog to `docs/`.
 
+### Security
+- A plain script can no longer add to a public instance's usage counts. `/api/event` counts only
+  requests that say they come from the site's own pages (an `Origin` header naming the site, or a
+  browser's `Sec-Fetch-Site: same-origin`), and at most `EVENTS_PER_MINUTE` a minute per visitor
+  (30 in the public deploy kit). A quiz sends a handful, so visitors never notice.
+
 ## [0.1.0] - 2026-10-07
 
 The first public release, in beta. Try it at [abtune.com](https://abtune.com).

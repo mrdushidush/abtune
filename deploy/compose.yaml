@@ -20,6 +20,9 @@ services:
       # Playlists a minute per visitor (deploy/.env can change it). Only Caddy or the tunnel reaches
       # the app, so the visitor is the address they put last in X-Forwarded-For.
       PLAYLISTS_PER_MINUTE: ${PLAYLISTS_PER_MINUTE:-20}
+      # Usage events a minute per visitor (deploy/.env can change it): a quiz sends a handful, so
+      # this only stops a script from making up counts.
+      EVENTS_PER_MINUTE: ${EVENTS_PER_MINUTE:-30}
       TRUST_PROXY: "true"
     volumes:
       - ./catalog:/app/data/catalog:ro

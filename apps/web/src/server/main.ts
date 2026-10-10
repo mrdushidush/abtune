@@ -80,11 +80,17 @@ const stats = statsFile ? await Stats.open(statsFile) : null;
 const publicUrl = shareBaseUrl(process.env.APP_BASE_URL, process.env.SHARE_BASE_URL);
 const { settings: playlistLimit, problem: limitProblem } = rateLimitSettings(process.env);
 if (limitProblem) console.error(`${limitProblem}; playlists aren't rate limited.`);
+const { settings: eventLimit, problem: eventLimitProblem } = rateLimitSettings(
+  process.env,
+  "EVENTS_PER_MINUTE",
+);
+if (eventLimitProblem) console.error(`${eventLimitProblem}; usage events aren't rate limited.`);
 const app = createApp({
   hosts: hostsOf(process.env.APP_BASE_URL, spotify.redirectUri),
   publicUrl,
   stats,
   playlistLimit,
+  eventLimit,
   bank,
   catalog,
   spotify,
@@ -100,7 +106,7 @@ const server = serve({ fetch: app.fetch, port, hostname }, (info) => {
       `catalog: ${catalog ? `${catalog.info.version} ${catalog.info.kind}, ${catalog.info.tracks} tracks, loading` : "none; run `abtune catalog fetch`"}; ` +
       `Spotify: ${spotifyMissing.length ? `not set up (${spotifyMissing.join(", ")})` : `redirect ${spotify.redirectUri}`}; ` +
       `AI: ${ai.runtime ? `${aiConfig.model} at ${aiConfig.baseUrl}${aiConfig.rerank ? ", rerank on" : ""}` : "off"}; ` +
-      `share links: ${publicUrl}${statsFile ? `; counting usage in ${statsFile}` : ""}` +
+      `share links: ${publicUrl}${statsFile ? `; counting usage in ${statsFile}${eventLimit ? `, ${eventLimit.perMinute} events a minute per visitor` : ""}` : ""}` +
       `${playlistLimit ? `; ${playlistLimit.perMinute} playlists a minute per visitor${playlistLimit.trustProxy ? " (behind a proxy)" : ""}` : ""})`,
   );
 });

@@ -126,7 +126,10 @@ export type ApiErrorCode =
   | "ai_off"
   /** The model gave nothing usable; `reason` says why. */
   | "ai_failed"
-  /** This visitor asked for playlists faster than PLAYLISTS_PER_MINUTE; `retry_after` says when. */
+  /**
+   * This visitor asked for playlists faster than PLAYLISTS_PER_MINUTE (or sent events faster than
+   * EVENTS_PER_MINUTE); `retry_after` says when.
+   */
   | "rate_limited";
 
 /** Why an AI call gave nothing (HANDOFF §10.4): the classic result is used, with a notice. */
