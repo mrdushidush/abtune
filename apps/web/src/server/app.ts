@@ -14,7 +14,7 @@ import { secureHeaders } from "hono/secure-headers";
 import type { ApiError, Health } from "../api-types.ts";
 import { aiHealth, mountAi, type ServerAi } from "./ai.ts";
 import { type CatalogSlot, catalogHealth, readyCatalog } from "./catalog.ts";
-import { sameOrigin } from "./http.ts";
+import { fromThisSite } from "./http.ts";
 import { buildPlaylist, parsePlaylistRequest, UnknownTrackError } from "./playlist.ts";
 import { type RateLimitSettings, rateLimit } from "./ratelimit.ts";
 import { mountSpotify } from "./spotify.ts";
@@ -42,6 +42,8 @@ export interface AppOptions {
   readonly stats?: Stats | null;
   /** Playlists per visitor (PLAYLISTS_PER_MINUTE). Omitted: no limit. */
   readonly playlistLimit?: RateLimitSettings | null;
+  /** Usage events per visitor (EVENTS_PER_MINUTE), when `stats` is set. Omitted: no limit. */
+  readonly eventLimit?: RateLimitSettings | null;
 }
 
 /** The public instance: where share links from a loopback or home-network install point. */
@@ -144,6 +146,7 @@ export function createApp({
   publicUrl = PUBLIC_INSTANCE_URL,
   stats = null,
   playlistLimit = null,
+  eventLimit = null,
 }: AppOptions): Hono {
   const app = new Hono();
   const engine = engineVersion(bank);
@@ -219,6 +222,9 @@ export function createApp({
   mountAi(app, { ai, bank, engine });
 
   if (stats) {
+    // The counts are public, so one script in a loop shouldn't be able to make them up: events
+    // come from this site's pages (an Origin header naming it), at a visitor's pace.
+    if (eventLimit) app.use("/api/event", rateLimit(eventLimit, "events"));
     // A name from STAT_EVENTS and nothing else: the count is all that's kept.
     app.post(
       "/api/event",
@@ -227,7 +233,7 @@ export function createApp({
         onError: (c) => fail(c, 413, { error: "too_large", message: "Request body too large." }),
       }),
       async (c) => {
-        if (!sameOrigin(c)) return fail(c, 403, { error: "cross_site" });
+        if (!fromThisSite(c)) return fail(c, 403, { error: "cross_site" });
         let event: unknown;
         try {
           // Sent as text/plain (sendBeacon), so it's parsed here.

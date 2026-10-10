@@ -24,7 +24,9 @@ Supported: the latest release and `main`.
   version), and sensitive answers only with a per-session opt-in.
 - **A public instance** (`STATS_FILE`, as on abtune.com) counts events per day: quizzes started and
   finished, shares, exports. Only the event name is sent: no IDs, IP addresses or cookies. The counts
-  are public at `/api/stats`.
+  are public at `/api/stats`. To keep a script from making them up, an event counts only when it
+  says it comes from the site's own pages, and at most 30 a minute from one address (held in memory
+  for a minute, like the playlist limit, and never written down).
 
 ## Hardening already in place
 

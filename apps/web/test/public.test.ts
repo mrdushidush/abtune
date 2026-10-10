@@ -79,25 +79,44 @@ describe("public instance", async () => {
     let now = new Date("2026-10-11T23:59:00Z");
     const stats = await Stats.open(null, () => now);
     const app = createApp({ bank, version: "9.9.9", stats });
-    const post = (body: string, headers: Record<string, string> = {}) =>
+    // The app's own pages send their origin, as browsers do on every POST.
+    const post = (body: string, headers: Record<string, string> = { origin: "http://localhost" }) =>
       app.request("/api/event", { method: "POST", body, headers });
 
     expect((await post('{"e":"quiz_done"}')).status).toBe(204);
-    expect((await post('{"e":"quiz_done"}', { origin: "http://localhost" })).status).toBe(204);
+    expect((await post('{"e":"quiz_done"}')).status).toBe(204);
     now = new Date("2026-10-12T00:00:01Z");
     expect((await post('{"e":"share_link"}')).status).toBe(204);
     expect((await post('{"e":"profile","taste":[1,2,3]}')).status).toBe(400);
     expect((await post("not json")).status).toBe(400);
     expect((await post('{"e":"quiz_done"}', { origin: "https://evil.example" })).status).toBe(403);
+    // A script that sends no Origin (plain curl), or an opaque one, isn't counted.
+    expect((await post('{"e":"quiz_done"}', {})).status).toBe(403);
+    expect((await post('{"e":"quiz_done"}', { origin: "null" })).status).toBe(403);
+    // Without Origin, a browser's own Sec-Fetch-Site must say the page is this site.
+    expect((await post('{"e":"share_link"}', { "sec-fetch-site": "same-origin" })).status).toBe(
+      204,
+    );
+    for (const site of ["same-site", "cross-site", "none"])
+      expect((await post('{"e":"quiz_done"}', { "sec-fetch-site": site })).status).toBe(403);
+    // A foreign Origin isn't saved by the other header.
+    expect(
+      (
+        await post('{"e":"quiz_done"}', {
+          origin: "https://evil.example",
+          "sec-fetch-site": "same-origin",
+        })
+      ).status,
+    ).toBe(403);
     expect((await post(`{"e":"quiz_done","pad":"${"x".repeat(400)}"}`)).status).toBe(413);
 
     const res = await app.request("/api/stats");
     expect(res.headers.get("cache-control")).toBe("no-store");
     expect(await res.json()).toEqual({
       since: "2026-10-11",
-      totals: { quiz_done: 2, share_link: 1 },
+      totals: { quiz_done: 2, share_link: 2 },
       days: [
-        { day: "2026-10-12", counts: { share_link: 1 } },
+        { day: "2026-10-12", counts: { share_link: 2 } },
         { day: "2026-10-11", counts: { quiz_done: 2 } },
       ],
     });
