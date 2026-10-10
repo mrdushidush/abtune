@@ -1,5 +1,6 @@
 // Usage events for a server that counts them (health `stats`, a public instance): an event name and
-// nothing else, so the server can count finished quizzes, shares and exports but tell no one apart.
+// nothing else, so the server can count finished quizzes, shares, exports and visits from the
+// site's own links (via.ts) but tell no one apart.
 import type { StatEvent } from "../../api-types.ts";
 
 /** null until the server's health says whether it counts; events wait for that. */
@@ -35,9 +36,9 @@ const SEEN_MAX = 50;
 
 /**
  * `track` once per `key` on this device (a quiz's seed, a share code), so reloading a result or
- * reopening a link isn't another quiz.
+ * reopening a link isn't another quiz. True when this call counted it.
  */
-export function trackOnce(e: StatEvent, key: string): void {
+export function trackOnce(e: StatEvent, key: string): boolean {
   const id = `${e}:${key}`;
   let seen: string[] = [];
   try {
@@ -46,11 +47,12 @@ export function trackOnce(e: StatEvent, key: string): void {
   } catch {
     seen = [];
   }
-  if (seen.includes(id)) return;
+  if (seen.includes(id)) return false;
   try {
     localStorage.setItem(SEEN_KEY, JSON.stringify([...seen, id].slice(-SEEN_MAX)));
   } catch {
     // Without storage it may count twice; fine.
   }
   track(e);
+  return true;
 }

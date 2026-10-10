@@ -16,7 +16,8 @@ import {
 import { useHealth } from "./state/hooks.ts";
 import { shareCodeOf } from "./state/share.ts";
 import { takeOutcome } from "./state/spotify.ts";
-import { setCounting, track } from "./state/stats.ts";
+import { setCounting } from "./state/stats.ts";
+import { trackQuizStart, trackVisit } from "./state/via.ts";
 
 const reducer = (s: AppState, a: AppAction) => appReducer(bank, s, a);
 
@@ -47,6 +48,10 @@ export function App() {
   useEffect(() => {
     if (health.kind !== "loading") setCounting(health.kind === "ok" && health.health.stats);
   }, [health]);
+  // A visit from one of the site's own links (`?via=`); waits, like every event, for health.
+  useEffect(() => {
+    trackVisit();
+  }, []);
   // Block body on purpose: newer browsers return a Promise from scrollTo, and React would call
   // an effect's return value as its cleanup.
   // biome-ignore lint/correctness/useExhaustiveDependencies: scroll on screen change only
@@ -76,8 +81,9 @@ export function App() {
         last={state.setup}
         health={health}
         onStart={(setup) => {
-          track("quiz_start");
-          dispatch({ type: "start", setup, quizSeed: randomQuizSeed() });
+          const quizSeed = randomQuizSeed();
+          trackQuizStart(quizSeed);
+          dispatch({ type: "start", setup, quizSeed });
         }}
       />
     );
