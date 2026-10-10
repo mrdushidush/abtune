@@ -14,7 +14,7 @@ import { MusicAppButton } from "../components/MusicAppSheet.tsx";
 import { PersonalityCard } from "../components/PersonalityCard.tsx";
 import { ExportMenu } from "../components/ResultActions.tsx";
 import { ShareButton } from "../components/ShareSheet.tsx";
-import { SourceLink } from "../components/SourceLink.tsx";
+import { LegalLinks, SourceLink } from "../components/SourceLink.tsx";
 import { SpotifyButton } from "../components/SpotifySheet.tsx";
 import type { CardInput } from "../lib/card-image.ts";
 import { download } from "../lib/download.ts";
@@ -261,6 +261,8 @@ export function Shared({
         )}
         <p>
           <SourceLink />
+          {" · "}
+          <LegalLinks />
         </p>
       </footer>
     </main>

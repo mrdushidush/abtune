@@ -1,6 +1,6 @@
 import { type Bank, LENGTHS, MODES } from "@abtune/engine";
 import { useState } from "react";
-import { SourceLink } from "../components/SourceLink.tsx";
+import { LegalLinks, SourceLink } from "../components/SourceLink.tsx";
 import { browserLocale, startingPacks } from "../lib/locale.ts";
 import type { SetupChoice } from "../state/app.ts";
 import type { HealthState } from "../state/hooks.ts";
@@ -207,6 +207,8 @@ export function Setup({
               : ""}
           {" · "}
           <SourceLink />
+          {" · "}
+          <LegalLinks />
         </p>
       </footer>
     </main>

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="What abtune.com and ABTune's social accounts collect, why, and for how long. No accounts, no cookies, no tracking IDs." />
+    <meta name="theme-color" content="#0b0b12" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>Privacy · ABTune</title>
+  </head>
+  <body>
+    <main class="legal">
+      <nav aria-label="ABTune">
+        <a href="/">ABTune</a>
+        <a href="/terms">Terms</a>
+      </nav>
+
+      <h1>Privacy</h1>
+      <p class="updated">Last updated 10 October 2026</p>
+
+      <p>
+        ABTune is a free, open-source music quiz at abtune.com, run by David
+        (<a href="https://github.com/mrdushidush">github.com/mrdushidush</a>). This page covers the
+        site and ABTune's accounts on X, Instagram and TikTok: what they collect, why, and for how
+        long.
+      </p>
+      <p>
+        <strong>In short:</strong> no accounts, no cookies, no tracking IDs. Your answers stay in your
+        browser. The site counts events such as "a quiz was finished" as plain numbers, public for
+        anyone to see, and nothing the server stores says who you are.
+      </p>
+
+      <h2>Your answers stay in your browser</h2>
+      <p>
+        The quiz runs in your browser. It keeps your quiz, your settings and your 👍/👎 votes in your
+        browser's local storage, on your device only. Clearing this site's data in your browser
+        deletes all of it.
+      </p>
+      <table>
+        <thead>
+          <tr><th scope="col">Key</th><th scope="col">What it holds</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>abtune.app.v1</code></td><td>Your quiz: the answers, your settings, and the changes you made to your result.</td></tr>
+          <tr><td><code>abtune.feedback.v1</code></td><td>Your 👍/👎 on playlists (the last 500).</td></tr>
+          <tr><td><code>abtune.counted</code></td><td>Which quizzes, shared links and daily visits were already counted, so a reload isn't counted twice (the last 50).</td></tr>
+          <tr><td><code>abtune.via</code></td><td>The source tag of the ABTune link you came from (<code>x</code>, <code>ig</code> or <code>tt</code>) and when, for 7 days.</td></tr>
+          <tr><td><code>abtune.via.quiz</code></td><td>The tag your current quiz started with.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>What the server gets</h2>
+      <ul>
+        <li>
+          <strong>To pick songs:</strong> your taste profile, a few dozen numbers worked out from your
+          answers, never the answers themselves. With it go a random seed, the playlist's length,
+          version numbers and, when you ask for more songs or swap one, the songs already on your list.
+          The server builds the playlist, sends it back and keeps none of it.
+        </li>
+        <li>
+          <strong>Share links</strong> carry the same profile after the <code>#</code> in the address,
+          which browsers don't send to servers. Opening one sends the server the profile, as above.
+        </li>
+        <li>
+          <strong>Your IP address,</strong> which every website sees. It is used for one thing: limiting
+          how fast one visitor can ask for playlists (20 a minute) and send counts (30 a minute). It is
+          held in memory only, forgotten within about two minutes of your last request, and never
+          written down.
+        </li>
+        <li>
+          <strong>No request logs.</strong> The web server writes down no addresses, and the app logs
+          only its own start-up and errors.
+        </li>
+        <li>
+          <strong>No cookies, and nothing from other companies:</strong> no analytics, ads, fonts or
+          scripts. The site's Content Security Policy only lets a page load files from abtune.com.
+        </li>
+        <li>
+          abtune.com runs on a virtual server rented from Hostinger. Its HTTPS certificates come from
+          Let's Encrypt.
+        </li>
+      </ul>
+
+      <h2>The counts</h2>
+      <p>
+        When you start or finish a quiz, share, export, or hand a playlist to a music app, your browser
+        sends the server only the event's name, such as <code>quiz_done</code>. The server adds one to
+        that day's count and, for the counts that carry a source tag, to that hour's too. The server
+        also counts the playlists it builds and the visits through its short links abtune.com/x, /ig
+        and /tt. For a short link it reads two request headers, <code>Sec-Fetch-Mode</code> and
+        <code>User-Agent</code>, to tell a person from an app fetching a link preview, and keeps
+        neither.
+      </p>
+      <p>
+        A source tag only says which of ABTune's own accounts a link came from; links from anywhere
+        else carry none. The counts are public at
+        <a href="/api/stats">abtune.com/api/stats</a>. They hold no personal data, so there is nothing
+        in them to look up or delete for one person. Every name that can be counted:
+      </p>
+      <ul>
+        <li>Quizzes: <code>quiz_start</code>, <code>quiz_done</code>, <code>ten_more</code> ("Answer 10 more").</li>
+        <li>Sharing: <code>shared_open</code>, <code>share_link</code>, <code>share_image</code>.</li>
+        <li>
+          Exports and music apps: <code>export_m3u</code>, <code>export_csv</code>,
+          <code>export_xspf</code>, <code>export_json</code>, <code>handoff_spotify</code>,
+          <code>handoff_apple_music</code>, <code>handoff_youtube_music</code>.
+        </li>
+        <li>
+          Source tags, per day and per hour: <code>via_x_open</code>, <code>via_ig_open</code>,
+          <code>via_tt_open</code>, <code>quiz_start_via_x</code>, <code>quiz_start_via_ig</code>,
+          <code>quiz_start_via_tt</code>, <code>quiz_done_via_x</code>, <code>quiz_done_via_ig</code>,
+          <code>quiz_done_via_tt</code>, <code>shortlink_x</code>, <code>shortlink_ig</code>,
+          <code>shortlink_tt</code>.
+        </li>
+        <li>Counted by the server: <code>playlist_built</code>.</li>
+      </ul>
+
+      <h2>Links that leave ABTune</h2>
+      <ul>
+        <li>"Add to your music app" opens TuneMyMusic in a new tab. ABTune sends it nothing: you paste the song list there yourself.</li>
+        <li>A song's links search YouTube or Spotify for it, and its MusicBrainz link opens the song's page. Those sites see your visit like any link you open.</li>
+        <li>Sharing hands the link or the picture to the app you pick on your device.</li>
+      </ul>
+
+      <h2>ABTune's social accounts</h2>
+      <p>
+        ABTune's accounts on X, Instagram and TikTok are run by David with an automated assistant that
+        drafts and posts within limits set in its code. They are labeled as automated where the
+        platform offers a label, and every automated reply ends with "(ABTune automated reply)".
+      </p>
+      <ul>
+        <li>
+          To answer, the assistant reads comments on ABTune's posts and posts that mention ABTune,
+          through the platform's official API. It keeps each one's text, the author's public username
+          and its own reply, and deletes them within 90 days, backups included.
+        </li>
+        <li>
+          To draft a reply, it sends the comment's text to Anthropic's API (the Claude model).
+          <a href="https://www.anthropic.com/legal/privacy">Anthropic's privacy policy</a> covers how
+          Anthropic handles it. A reply the assistant isn't sure about waits for David's OK and reaches
+          David through Telegram.
+        </li>
+        <li>
+          It also reads the numbers the platforms report about ABTune's own posts (views, likes,
+          profile visits), which name no one. It never messages anyone first and collects nothing else
+          about anyone.
+        </li>
+        <li>On TikTok, David posts by hand, and nothing automated reads the comments.</li>
+        <li>The platforms' own privacy policies cover what they do with your activity there.</li>
+      </ul>
+
+      <h2>Your choices</h2>
+      <ul>
+        <li>To delete what your browser keeps, clear this site's data in your browser's settings.</li>
+        <li>
+          To have a comment or mention the assistant kept deleted sooner, or with any question about
+          this page, email <a href="mailto:mrdushidush@gmail.com">mrdushidush@gmail.com</a>. You'll
+          get an answer within 30 days.
+        </li>
+      </ul>
+
+      <h2>Other copies of ABTune</h2>
+      <p>
+        ABTune is open source, so anyone can run a copy. This page describes abtune.com and ABTune's
+        own accounts. A copy at another address is run by someone else, under their rules.
+      </p>
+
+      <h2>Changes</h2>
+      <p>
+        When something here changes, this page changes first and its date moves. Its full history is
+        <a href="https://github.com/mrdushidush/abtune/commits/main/apps/web/src/client/privacy.html">public on GitHub</a>.
+      </p>
+    </main>
+  </body>
+</html>

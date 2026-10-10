@@ -25,7 +25,7 @@ import { PersonalityCard } from "../components/PersonalityCard.tsx";
 import { PlaylistRows, SkeletonRows } from "../components/PlaylistRows.tsx";
 import { ExportMenu, Feedback, TextTweak, TweakBar } from "../components/ResultActions.tsx";
 import { ShareButton } from "../components/ShareSheet.tsx";
-import { SourceLink } from "../components/SourceLink.tsx";
+import { LegalLinks, SourceLink } from "../components/SourceLink.tsx";
 import { SpotifyButton } from "../components/SpotifySheet.tsx";
 import type { CardInput } from "../lib/card-image.ts";
 import { download } from "../lib/download.ts";
@@ -542,6 +542,8 @@ export function Result({
         )}
         <p>
           <SourceLink />
+          {" · "}
+          <LegalLinks />
         </p>
       </footer>
     </main>

@@ -65,6 +65,8 @@ is in [docs/DECISIONS.md](docs/DECISIONS.md).
   [abtune.com/api/stats](https://abtune.com/api/stats).
 - "Add to your music app" copies the song list and opens TuneMyMusic, a free transfer site, where
   you sign in to your app. ABTune sends it nothing.
+- The full policy is at [abtune.com/privacy](https://abtune.com/privacy), and the terms at
+  [abtune.com/terms](https://abtune.com/terms).
 
 More in [SECURITY.md](.github/SECURITY.md).
 

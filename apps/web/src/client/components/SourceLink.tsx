@@ -15,3 +15,18 @@ export function SourceLink() {
     </a>
   );
 }
+
+/** "Privacy · Terms", in the footers: pages the server serves at /privacy and /terms. */
+export function LegalLinks() {
+  return (
+    <>
+      <a href="/privacy" className="underline hover:text-text">
+        {t.privacy}
+      </a>
+      {" · "}
+      <a href="/terms" className="underline hover:text-text">
+        {t.terms}
+      </a>
+    </>
+  );
+}
