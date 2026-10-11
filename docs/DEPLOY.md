@@ -78,8 +78,8 @@ Caddy keeps no access log. It does log a failed request (a 502 while the app res
 visitor's address and browser, so `deploy/Caddyfile` drops those lines: the privacy page says no
 address is written down.
 
-There is no rate limit in this setup: the app keeps no per-visitor state, and a person taking the
-quiz makes a handful of API calls a minute. Move to the tunnel for that.
+Caddy adds no limit of its own, so the app's per-visitor limits (above) are the only ones. They slow
+down one address in a loop, not a flood from many addresses: move to the tunnel for that.
 
 ## 2b. The way in: Cloudflare Tunnel
 
