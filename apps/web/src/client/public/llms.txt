@@ -1,0 +1,27 @@
+# ABTune
+
+> ABTune is a free music taste quiz that builds a playlist. You answer quick this-or-that cards (Bon Jovi or Britney? 80s or 90s? Road trip or study session?) and get one of 16 music personalities, a sound profile, and a playlist of songs people know, picked from an open catalog of about 2 million songs. No login, no ads, and no Spotify account needed.
+
+- It runs in the browser at __ABTUNE_URL__ and takes about two minutes (10, 20, 50 or 100 cards). Playlists are 25, 50 or 100 songs.
+- The result: one of 16 music personalities (such as Sunburst Revivalist or Night-Drive Ghost), a sound profile on nine scales (energy, mood, danceability and six more), top genres and eras.
+- The playlist can be tweaked (more energy, moodier, newer…), reshuffled and extended, added to Spotify, Apple Music or YouTube Music, exported as M3U, CSV, XSPF or JSON, or shared as a link that rebuilds it on any device.
+- It doesn't use Spotify's data. Spotify closed its recommendations and audio-features API to new apps in November 2024; ABTune's catalog is built from MusicBrainz, ListenBrainz and AcousticBrainz data (MetaBrainz Foundation).
+- How songs are picked: each answer moves a profile of 9 sound scales, 24 genre clusters, 8 decades and 5 languages. The server scores the catalog against it, favors well-known songs, allows at most two songs per artist, and orders the list along an energy curve. The same answers always give the same playlist.
+- Privacy: answers stay in the browser. The server gets only the taste profile (a few dozen numbers) and keeps no record of it. No accounts, cookies or tracking IDs.
+- Open source: code under MIT, catalog data under CC BY-NC-SA 3.0 US. Made by David (github.com/mrdushidush), built with Claude Code.
+
+## Pages
+
+- [The quiz](__ABTUNE_URL__): the app, with how it works and common questions.
+- [Privacy](__ABTUNE_URL__privacy): what the site and its social accounts collect, and for how long.
+- [Terms](__ABTUNE_URL__terms): the terms of use.
+
+## Source
+
+- [GitHub repository](https://github.com/mrdushidush/abtune): the code, the catalog pipeline, and self-hosting with Docker.
+- [Design brief](https://github.com/mrdushidush/abtune/blob/main/docs/HANDOFF.md): how the quiz, the taste model and playlist generation work.
+- [Decision log](https://github.com/mrdushidush/abtune/blob/main/docs/DECISIONS.md): every design choice since, with its reason.
+
+## Optional
+
+- [MCP server](https://github.com/mrdushidush/abtune#use-it-from-claude-code-mcp): lets Claude Code or another MCP host take the quiz from a plain description and return a playlist (self-hosted, with an installed catalog).

@@ -54,7 +54,7 @@ describe("public instance", async () => {
       publicUrl: 'https://abtune.example.com/"x/',
       hosts: ["abtune.example.com"],
     });
-    for (const route of ["/", "/index.html", "/some/client/route"]) {
+    for (const route of ["/", "/index.html"]) {
       const res = await app.request(`https://abtune.example.com${route}`);
       expect(res.status, route).toBe(200);
       expect(res.headers.get("content-type")).toContain("text/html");

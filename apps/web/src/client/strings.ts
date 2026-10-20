@@ -259,6 +259,49 @@ export const t = {
     },
     exportInstead: "Export CSV instead",
   },
+  // Under the start button: what a visitor who scrolls, a search engine and an AI answer engine read
+  // first. The questions are the page's structured data too (prerender.tsx), so they say only what
+  // the page shows.
+  about: {
+    how: "How it works",
+    steps: [
+      {
+        title: "Pick this or that",
+        body: "Bon Jovi or Britney? 80s or 90s? Road trip or study session? Tap, swipe or use the arrow keys. Each card is the one that tells the quiz the most about you right now, so every quiz asks a different mix.",
+      },
+      {
+        title: "Meet your music personality",
+        body: "One of 16 types, from Sunburst Revivalist to Night-Drive Ghost, with your sound profile (energy, mood, danceability and six more), your top genres and your eras.",
+      },
+      {
+        title: "Take your playlist anywhere",
+        body: "Songs people actually know, from an open catalog of 2 million. Tweak it, reshuffle it, add it to Spotify, Apple Music or YouTube Music, export it, or share a link that rebuilds it on any device.",
+      },
+    ],
+    faq: "Questions",
+    questions: [
+      {
+        q: "Is ABTune free?",
+        a: "Yes. There's no account, no ads and nothing to install, and the code is open source on GitHub.",
+      },
+      {
+        q: "Do I need Spotify?",
+        a: "No. ABTune doesn't use Spotify's data: Spotify closed its recommendations and audio-features API to new apps in November 2024. The songs come from open music data (MusicBrainz, ListenBrainz and AcousticBrainz). When your playlist is ready, “Add to your music app” takes it to Spotify, Apple Music or YouTube Music.",
+      },
+      {
+        q: "What happens to my answers?",
+        a: "They stay in your browser. The server gets only your taste profile, a few dozen numbers, to pick the songs, and keeps no record of it. No cookies, no tracking IDs.",
+      },
+      {
+        q: "How long does it take?",
+        a: "About two minutes for 20 cards. 10 cards take a minute, and 50 or 100 give a sharper result. You can answer 10 more at any time to sharpen your playlist.",
+      },
+      {
+        q: "How are the songs picked?",
+        a: "Each answer moves your profile on 9 sound scales, 24 genres, 8 decades and 5 languages. The server scores the catalog against it, favors songs people know, keeps any artist to two songs and orders the list along an energy curve. The same answers always give the same playlist.",
+      },
+    ],
+  },
   footerNoCatalog: "No catalog installed yet",
   privacyLine:
     "No login. Your answers stay in this browser; the server only gets your taste profile to pick the songs.",

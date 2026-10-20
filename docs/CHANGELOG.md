@@ -21,8 +21,15 @@ and versions follow [Semantic Versioning](https://semver.org/).
 - Short links for a public instance's own accounts: `/x`, `/ig` and `/tt` open the site with that
   source tag, for captions and pictures where a link can't be tapped. The server counts a visit
   through one when a browser opens it, not when an app fetches it for a link preview.
+- The start page explains itself under the Start button: how it works, and five common questions.
+  It is built into the page, so search engines and AI answer engines read it without running the
+  app, along with structured data (schema.org), a canonical address, `/sitemap.xml`, a `Sitemap:`
+  line in `/robots.txt`, and `/llms.txt`.
 
 ### Changed
+- An address that isn't a page answers 404, with a short page that points to the quiz, instead of
+  the app. The app has no addresses of its own: a share link is a `#s=` fragment.
+- The page title is "ABTune: Music Taste Quiz That Builds Your Playlist".
 - Playlists fit short quizzes much better. In 200 test runs in a browser, the share of playlists
   that fit the listener rose from 42% to 64%, and clear misses fell from 42% to 28%:
   - Eras follow your answers more closely: a 2010s fan no longer gets 1950s songs after 10 cards,

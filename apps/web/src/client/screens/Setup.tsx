@@ -1,7 +1,8 @@
 import { type Bank, LENGTHS, MODES } from "@abtune/engine";
 import { useState } from "react";
+import { About } from "../components/About.tsx";
 import { LegalLinks, SourceLink } from "../components/SourceLink.tsx";
-import { browserLocale, startingPacks } from "../lib/locale.ts";
+import { browserLocale, type Locale, startingPacks } from "../lib/locale.ts";
 import type { SetupChoice } from "../state/app.ts";
 import type { HealthState } from "../state/hooks.ts";
 import { PACKS, packName, t } from "../strings.ts";
@@ -87,16 +88,19 @@ export function Setup({
   last,
   health,
   onStart,
+  locale,
 }: {
   bank: Bank;
   last: SetupChoice | null;
   health: HealthState;
   onStart: (s: SetupChoice) => void;
+  /** Picks the starting packs; the browser's when omitted. The prerender passes a fixed one. */
+  locale?: Locale;
 }) {
   const [mode, setMode] = useState(last?.mode ?? 20);
   const [length, setLength] = useState(last?.length ?? 25);
   const [packs, setPacks] = useState<readonly string[]>(
-    () => last?.packs ?? startingPacks(bank, browserLocale()),
+    () => last?.packs ?? startingPacks(bank, locale ?? browserLocale()),
   );
   const optional = Object.keys(bank.packs).filter((p) => p !== "core");
   const toggle = (p: string) =>
@@ -193,6 +197,8 @@ export function Setup({
       >
         {t.setup.start} →
       </button>
+
+      <About />
 
       <footer className="flex flex-col gap-2 text-center text-xs leading-relaxed text-text-3">
         <p>

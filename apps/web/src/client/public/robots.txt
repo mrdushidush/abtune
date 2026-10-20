@@ -1,2 +1,4 @@
 User-agent: *
 Disallow: /api/
+
+Sitemap: __ABTUNE_URL__sitemap.xml
