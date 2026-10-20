@@ -82,9 +82,9 @@ describe("the legal pages' addresses", async () => {
         expect(res.headers.get("cache-control"), route).toBe("no-cache");
         expect(await res.text(), route).toBe(heading);
       }
-    // Anything else is still the app's.
+    // Anything else is not found (crawlers.test.ts).
     for (const route of ["/privacy/x", "/privacypolicy", "/Privacy"])
-      expect(await (await app.request(route)).text(), route).toBe("<p>the app</p>");
+      expect((await app.request(route)).status, route).toBe(404);
   });
 
   it("answers 404 when a page wasn't built", async () => {

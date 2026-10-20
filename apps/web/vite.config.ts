@@ -3,8 +3,10 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
 import { abtuneBank } from "./src/bank-plugin.ts";
+import { abtunePrerender } from "./src/prerender-plugin.ts";
 
 const client = path.resolve(import.meta.dirname, "src/client");
+const questions = path.resolve(import.meta.dirname, "../../data/questions");
 
 /** The legal pages at the clean addresses the server gives them (/privacy, /terms). */
 const legalPages = (): Plugin => ({
@@ -22,19 +24,21 @@ export default defineConfig({
   build: {
     outDir: "../../dist/client",
     emptyOutDir: true,
-    // The app, and the privacy and terms pages: static documents that need no script.
+    // The app, and the privacy, terms and not-found pages: static documents that need no script.
     rollupOptions: {
       input: {
         index: path.join(client, "index.html"),
         privacy: path.join(client, "privacy.html"),
         terms: path.join(client, "terms.html"),
+        notFound: path.join(client, "404.html"),
       },
     },
   },
   plugins: [
     react(),
     tailwindcss(),
-    abtuneBank(path.resolve(import.meta.dirname, "../../data/questions")),
+    abtuneBank(questions),
+    abtunePrerender(client, questions),
     legalPages(),
   ],
   server: {

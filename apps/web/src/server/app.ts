@@ -86,7 +86,17 @@ export function shareBaseUrl(appBaseUrl?: string, shareBase?: string): string {
 /** Static pages besides the app, each served at `/<name>` from `<name>.html`. */
 export const LEGAL_PAGES = ["privacy", "terms"] as const;
 
-/** In the built index.html: replaced with the public URL (link-preview tags need absolute URLs). */
+/** Text files for crawlers, served at `/<name>` with the public URL filled in. */
+export const CRAWLER_FILES = [
+  ["robots.txt", "text/plain; charset=utf-8"],
+  ["sitemap.xml", "application/xml; charset=utf-8"],
+  ["llms.txt", "text/plain; charset=utf-8"],
+] as const;
+
+/**
+ * In the built pages and crawler files: replaced with the public URL (link previews, the canonical
+ * address, structured data and the sitemap need absolute URLs).
+ */
 export const URL_PLACEHOLDER = "__ABTUNE_URL__";
 
 const attr = (s: string) =>
@@ -294,22 +304,27 @@ export function createApp({
   });
 
   if (staticRoot !== undefined) {
-    // A built page with the public URL filled in, read once.
+    // A built file with the public URL filled in, read once.
     const read = new Map<string, Promise<string | null>>();
-    const pageOf = (file: string) => async (c: Context) => {
+    const builtFile = (file: string) => {
       let pending = read.get(file);
       if (!pending) {
         pending = readFile(path.join(staticRoot, file), "utf8").then(
-          (html) => html.replaceAll(URL_PLACEHOLDER, attr(publicUrl)),
+          (text) => text.replaceAll(URL_PLACEHOLDER, attr(publicUrl)),
           () => null,
         );
         read.set(file, pending);
       }
-      const html = await pending;
-      if (html === null) return c.text("Not found", 404);
-      c.header("Cache-Control", "no-cache");
-      return c.html(html);
+      return pending;
     };
+    const pageOf =
+      (file: string, status: 200 | 404 = 200) =>
+      async (c: Context) => {
+        const html = await builtFile(file);
+        if (html === null) return c.text("Not found", 404);
+        c.header("Cache-Control", "no-cache");
+        return c.html(html, status);
+      };
     const page = pageOf("index.html");
     app.get("/", page);
     app.get("/index.html", page);
@@ -317,14 +332,23 @@ export function createApp({
     for (const name of LEGAL_PAGES)
       for (const route of [`/${name}`, `/${name}/`, `/${name}.html`])
         app.get(route, pageOf(`${name}.html`));
+    // For crawlers: they name absolute URLs, so they're filled in like the pages.
+    for (const [file, type] of CRAWLER_FILES)
+      app.get(`/${file}`, async (c) => {
+        const text = await builtFile(file);
+        if (text === null) return c.text("Not found", 404);
+        c.header("Cache-Control", "no-cache");
+        return c.body(text, 200, { "Content-Type": type });
+      });
     // Built assets have content hashes in their names: cache them for good.
     app.use("/assets/*", async (c, next) => {
       await next();
       if (c.res.status === 200) c.header("Cache-Control", "public, max-age=31536000, immutable");
     });
     app.use("/*", serveStatic({ root: staticRoot }));
-    // SPA fallback: client-side routes get index.html.
-    app.get("*", page);
+    // The app has no client-side routes (a share link is a #fragment), so any other address is a
+    // real 404: answering it with the app would hand crawlers endless copies of the start page.
+    app.get("*", pageOf("404.html", 404));
   }
 
   return app;

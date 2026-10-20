@@ -80,9 +80,18 @@ jobs:
           exit 1
       - name: Serves the web app, with link previews pointing at the public instance
         run: |
-          curl -sf http://127.0.0.1:8787/ | grep -q "<title>ABTune: A/B test your music taste</title>"
+          curl -sf http://127.0.0.1:8787/ | grep -q "<title>ABTune: Music Taste Quiz That Builds Your Playlist</title>"
           curl -sf http://127.0.0.1:8787/ | grep -q 'og:image" content="https://abtune.com/og.png"'
           curl -sf -o /dev/null http://127.0.0.1:8787/og.png
+      - name: Crawlers read the page without running it, and a wrong address is a 404
+        run: |
+          curl -sf http://127.0.0.1:8787/ | grep -q '<link rel="canonical" href="https://abtune.com/" />'
+          curl -sf http://127.0.0.1:8787/ | grep -q "Do I need Spotify?"
+          curl -sf http://127.0.0.1:8787/ | grep -q '"@type":"FAQPage"'
+          curl -sf http://127.0.0.1:8787/robots.txt | grep -q "Sitemap: https://abtune.com/sitemap.xml"
+          curl -sf http://127.0.0.1:8787/sitemap.xml | grep -q "<loc>https://abtune.com/privacy</loc>"
+          curl -sf http://127.0.0.1:8787/llms.txt | grep -q "^# ABTune"
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8787/no/such/page)" = 404
       - name: Serves the privacy and terms pages
         run: |
           curl -sf http://127.0.0.1:8787/privacy | grep -q "<h1>Privacy</h1>"

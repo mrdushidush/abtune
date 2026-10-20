@@ -163,8 +163,10 @@ describe("short links", async () => {
     await writeFile(path.join(dir, "index.html"), "<p>page</p>");
     const app = createApp({ bank, version: "9.9.9", staticRoot: dir, stats: await counting() });
     expect((await get(app, "/x")).status).toBe(302);
-    for (const route of ["/", "/xx", "/x/y", "/igloo"])
-      expect((await get(app, route)).status, route).toBe(200);
+    expect((await get(app, "/")).status).toBe(200);
+    // Look-alikes aren't short links: they aren't redirected, and they aren't pages either.
+    for (const route of ["/xx", "/x/y", "/igloo"])
+      expect((await get(app, route)).status, route).toBe(404);
     expect((await app.request("/x", { method: "POST", headers: BROWSER })).status).not.toBe(302);
   });
 
