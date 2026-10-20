@@ -175,3 +175,78 @@ body {
   color: var(--color-text-3);
   font-size: 0.875rem;
 }
+
+/* The music personality pages (types.html, types/*.html), written at build by type-pages.ts. */
+.legal .kicker {
+  margin: 2.5rem 0 0;
+  color: var(--color-text-3);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.legal .kicker + h1 {
+  margin-top: 0.25rem;
+}
+
+.legal .traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  padding: 0;
+  list-style: none;
+}
+
+.legal .traits li {
+  margin: 0;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  background: var(--color-raised);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.legal .lead {
+  color: var(--color-text);
+  font-size: 1.125rem;
+}
+
+.legal dt {
+  margin-top: 1rem;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.legal dd {
+  margin: 0.25rem 0 0;
+}
+
+.legal .types span,
+.legal .note {
+  color: var(--color-text-3);
+  font-size: 0.875rem;
+}
+
+.legal .types a {
+  font-weight: 700;
+}
+
+.legal a.cta {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  background: var(--color-text);
+  color: var(--color-ink);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.legal footer {
+  display: flex;
+  gap: 1.25rem;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-line);
+  font-size: 0.875rem;
+}

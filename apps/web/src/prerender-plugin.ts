@@ -1,6 +1,7 @@
 import { loadBankFromDisk } from "@abtune/bank/node";
 import react from "@vitejs/plugin-react";
 import { createServer, type Plugin } from "vite";
+import { typePages } from "./type-pages.ts";
 
 /** The server's URL_PLACEHOLDER (app.ts): it fills in the public URL when it serves the page. */
 const URL_PLACEHOLDER = "__ABTUNE_URL__";
@@ -56,6 +57,40 @@ export function abtunePrerender(clientRoot: string, questionsDir: string): Plugi
           await vite.close();
         }
       },
+    },
+  };
+}
+
+/** The stylesheet a built page links (its name carries a content hash). */
+const STYLESHEET = /<link rel="stylesheet"[^>]*href="([^"]+)"/;
+
+/**
+ * Writes the music personality pages (type-pages.ts) next to the built app, linking the stylesheet
+ * the built privacy page links. In dev, serves them at their addresses (/types, /types/<slug>).
+ */
+export function abtuneTypePages(): Plugin {
+  return {
+    name: "abtune-type-pages",
+    // After Vite's own HTML plugin, which writes privacy.html.
+    enforce: "post",
+    configureServer(server) {
+      server.middlewares.use(async (req, res, next) => {
+        const route = req.url?.split("?")[0] ?? "";
+        const page = typePages(URL_PLACEHOLDER, "/styles.css").find(
+          (p) => `/${p.file}` === `${route.replace(/\/$/, "")}.html`,
+        );
+        if (!page) return next();
+        res.setHeader("Content-Type", "text/html; charset=utf-8");
+        res.end(await server.transformIndexHtml(route, page.html));
+      });
+    },
+    generateBundle(_, bundle) {
+      const privacy = bundle["privacy.html"];
+      const href =
+        privacy?.type === "asset" ? STYLESHEET.exec(String(privacy.source))?.[1] : undefined;
+      if (!href) throw new Error("the built privacy.html links no stylesheet");
+      for (const { file, html } of typePages(URL_PLACEHOLDER, href))
+        this.emitFile({ type: "asset", fileName: file, source: html });
     },
   };
 }

@@ -13,8 +13,30 @@
 ## Pages
 
 - [The quiz](__ABTUNE_URL__): the app, with how it works and common questions.
+- [The 16 music personalities](__ABTUNE_URL__types): the four traits behind them (energy, mood, era, texture) and how each is worked out.
 - [Privacy](__ABTUNE_URL__privacy): what the site and its social accounts collect, and for how long.
 - [Terms](__ABTUNE_URL__terms): the terms of use.
+
+## Music personalities
+
+Each page says what the type's four traits mean together and names five well-known songs that ABTune's catalog itself places there.
+
+- [Sunburst Revivalist](__ABTUNE_URL__types/sunburst-revivalist): Big, sunny songs played by real bands, mostly from before 2000.
+- [Neon Nostalgist](__ABTUNE_URL__types/neon-nostalgist): Upbeat, plugged-in songs with synths and a big studio sound, mostly from before 2000.
+- [Festival Wanderer](__ABTUNE_URL__types/festival-wanderer): Feel-good songs with real instruments, with plenty from 2000 on.
+- [Dancefloor Futurist](__ABTUNE_URL__types/dancefloor-futurist): Upbeat, synth-driven songs made for moving, with plenty from 2000 on.
+- [Thunder Purist](__ABTUNE_URL__types/thunder-purist): Driving, brooding songs played by real bands, mostly from before 2000.
+- [Midnight Synth Rider](__ABTUNE_URL__types/midnight-synth-rider): Driving, shadowy songs with synths and beats, mostly from before 2000.
+- [Riff Rebel](__ABTUNE_URL__types/riff-rebel): Loud, moody guitar songs, with plenty from 2000 on.
+- [Bass-Drop Outlaw](__ABTUNE_URL__types/bass-drop-outlaw): Hard-hitting electronic and hip-hop songs with a dark edge, with plenty from 2000 on.
+- [Porch Poet](__ABTUNE_URL__types/porch-poet): Easygoing, warm songs with guitar and piano, mostly from before 2000.
+- [Lounge Lizard](__ABTUNE_URL__types/lounge-lizard): Smooth, groovy songs with electric keys and basslines, mostly from before 2000.
+- [Coffeehouse Romantic](__ABTUNE_URL__types/coffeehouse-romantic): Gentle, warm songs with acoustic instruments, with plenty from 2000 on.
+- [Lo-fi Sunbather](__ABTUNE_URL__types/lo-fi-sunbather): Relaxed, sunny electronic songs, with plenty from 2000 on.
+- [Rainy-Day Balladeer](__ABTUNE_URL__types/rainy-day-balladeer): Slow, sad songs with guitar and piano, mostly from before 2000.
+- [Smoky Noir Detective](__ABTUNE_URL__types/smoky-noir-detective): Slow, shadowy songs with beats and atmosphere, mostly from before 2000.
+- [Candlelit Confessor](__ABTUNE_URL__types/candlelit-confessor): Quiet, heartfelt songs with acoustic instruments, with plenty from 2000 on.
+- [Night-Drive Ghost](__ABTUNE_URL__types/night-drive-ghost): Slow, moody electronic songs for late nights, with plenty from 2000 on.
 
 ## Source
 

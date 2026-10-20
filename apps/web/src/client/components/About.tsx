@@ -25,6 +25,14 @@ export function About() {
               <div>
                 <h3 className="font-bold">{s.title}</h3>
                 <p className="text-sm leading-relaxed text-text-2">{s.body}</p>
+                {s.link && (
+                  <a
+                    href={s.link.href}
+                    className="mt-1 inline-block text-sm font-semibold underline underline-offset-4"
+                  >
+                    {s.link.text}
+                  </a>
+                )}
               </div>
             </li>
           ))}

@@ -39,6 +39,8 @@ COPY packages/cli/src packages/cli/src
 COPY apps/web/src/server apps/web/src/server
 # The client/server API contract (the server imports a constant from it).
 COPY apps/web/src/api-types.ts apps/web/src/api-types.ts
+# The music personality pages' addresses (the server routes them).
+COPY apps/web/src/personalities.ts apps/web/src/personalities.ts
 COPY data/questions data/questions
 COPY data/personas data/personas
 COPY --from=build /app/apps/web/dist apps/web/dist

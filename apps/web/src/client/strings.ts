@@ -2,9 +2,14 @@
 import {
   clusterLabel,
   decadeLabel,
+  ENERGY_HI,
   type Hint,
   languageLabel,
+  MODERN_SHARE,
+  RETRO_BEFORE,
   scalarLabel,
+  TARGET_SCALE,
+  type Traits,
   type TweakAxis,
   type TweakId,
 } from "@abtune/engine";
@@ -272,6 +277,7 @@ export const t = {
       {
         title: "Meet your music personality",
         body: "One of 16 types, from Sunburst Revivalist to Night-Drive Ghost, with your sound profile (energy, mood, danceability and six more), your top genres and your eras.",
+        link: { text: "See all 16 music personalities", href: "/types" },
       },
       {
         title: "Take your playlist anywhere",
@@ -432,6 +438,258 @@ export const TRAIT_LABELS = {
   era: { retro: "Retro", modern: "Modern" },
   texture: { organic: "Organic", electric: "Electric" },
 } as const;
+
+/** One type's page: a one-line summary (also the hub's line and the meta description), the copy, songs. */
+export interface TypeCopy {
+  readonly lead: string;
+  readonly body: string;
+  /** [title, artist]: well-known English songs the catalog itself puts in the type's corner. */
+  readonly songs: readonly (readonly [string, string])[];
+}
+
+/**
+ * The music personality pages (/types, written at build by type-pages.ts). Each type's songs are
+ * catalog-2026.09.2 hits whose own features sit in the type's corner: energy ≥ +0.3 or ≤ 0, valence
+ * ≥ +0.2 or ≤ −0.2, acoustic ≥ +0.2 or ≤ −0.2, and released in 1960–1999 or from 2000 (DECISIONS.md,
+ * "Music personality pages").
+ */
+export const TYPE_PAGES = {
+  hub: {
+    title: "The 16 Music Personality Types · ABTune",
+    description:
+      "ABTune's music taste quiz gives you one of 16 music personalities, from four traits: energy, mood, era and texture. All 16, with songs that fit each one.",
+    heading: "The 16 music personalities",
+    intro:
+      "ABTune's music taste quiz ends with one of 16 music personalities. Each is four traits read from your answers, and each trait has two sides, so 2 × 2 × 2 × 2 = 16. The same answers always give the same type.",
+    traitsHeading: "The four traits",
+    traits: [
+      {
+        name: "Energy",
+        sides: `${TRAIT_LABELS.energy.hi} or ${TRAIT_LABELS.energy.lo}`,
+        about: `Whether your picks lean to driving, loud songs or to calm ones. The line sits a little above the middle (+${(ENERGY_HI / TARGET_SCALE).toFixed(2)} on a scale from −1 to +1), because most of the quiz's cards lean energetic.`,
+      },
+      {
+        name: "Mood",
+        sides: `${TRAIT_LABELS.mood.bright} or ${TRAIT_LABELS.mood.dark}`,
+        about:
+          "Whether the songs you lean to sound happy, or sad, tense and brooding. It's how a song sounds, measured from the audio, not what its lyrics say.",
+      },
+      {
+        name: "Era",
+        sides: `${TRAIT_LABELS.era.retro} or ${TRAIT_LABELS.era.modern}`,
+        about: `Modern when songs from the ${RETRO_BEFORE}s on make up at least ${Math.round(MODERN_SHARE * 100)}% of your decade mix, Retro when they make up less. With no answers about eras, it's Modern.`,
+      },
+      {
+        name: "Texture",
+        sides: `${TRAIT_LABELS.texture.organic} or ${TRAIT_LABELS.texture.electric}`,
+        about:
+          "Whether you lean to songs that sound played, with guitars, piano and voices, or to songs with synths, drum machines and a big studio sound.",
+      },
+    ],
+    group: (energy: Traits["energy"], mood: Traits["mood"]) =>
+      `${TRAIT_LABELS.energy[energy]} and ${TRAIT_LABELS.mood[mood].toLowerCase()}`,
+  },
+  page: {
+    kicker: "Music personality",
+    title: (name: string) => `${name}: Music Personality Type · ABTune`,
+    description: (lead: string) =>
+      `${lead} One of the 16 music personalities in ABTune's free music taste quiz.`,
+    songs: "Songs that fit",
+    song: (title: string, artist: string) => `${title} by ${artist}`,
+    songsAbout: (t: Traits) =>
+      `Well-known songs that ABTune's music catalog itself rates ${TRAIT_LABELS.energy[t.energy].toLowerCase()}, ${TRAIT_LABELS.mood[t.mood].toLowerCase()} and ${TRAIT_LABELS.texture[t.texture].toLowerCase()}, released ${t.era === "retro" ? `before ${RETRO_BEFORE}` : `in ${RETRO_BEFORE} or later`}.`,
+    neighbors: "One trait away",
+    neighbor: (trait: keyof Traits, from: string, to: string) => {
+      const label = TRAIT_LABELS[trait] as Readonly<Record<string, string>>;
+      return `${label[to]?.toLowerCase()} instead of ${label[from]?.toLowerCase()}`;
+    },
+  },
+  nav: { home: "ABTune", all: "All 16 types", privacy: "Privacy", terms: "Terms" },
+  cta: {
+    heading: "What's yours?",
+    body: "ABTune is a free music taste quiz. Pick this or that for about two minutes and get your music personality, your sound profile and a playlist that sounds like you. No login, and your answers stay in your browser.",
+    link: "Take the quiz",
+  },
+  /** Keyed by trait key (personalities.ts). */
+  types: {
+    "hi.bright.retro.organic": {
+      lead: "Big, sunny songs played by real bands, mostly from before 2000.",
+      body: "You like music that lifts a room: a guitar riff everyone knows, a chorus made for singing along, a drummer you can hear. Your picks run upbeat and happy-sounding, lean to the decades before 2000, and favor songs that sound played rather than programmed. Soul, classic rock, 70s pop and 90s guitar bands all fit: the road-trip playlist, windows down.",
+      songs: [
+        ["Dancing Queen", "ABBA"],
+        ["Respect", "Aretha Franklin"],
+        ["Brown Eyed Girl", "Van Morrison"],
+        ["Summer of ’69", "Bryan Adams"],
+        ["Buddy Holly", "Weezer"],
+      ],
+    },
+    "hi.bright.retro.electric": {
+      lead: "Upbeat, plugged-in songs with synths and a big studio sound, mostly from before 2000.",
+      body: "You like the sound of the 80s turned up: keyboards up front, drum machines, choruses built for arenas and dance floors. Your picks run upbeat and bright, lean to the decades before 2000, and favor songs that sound plugged in over acoustic ones. New wave, synth-pop, arena rock with keyboards and 90s alternative with the distortion on all fit.",
+      songs: [
+        ["Jump", "Van Halen"],
+        ["Let’s Dance", "David Bowie"],
+        ["Dancing in the Dark", "Bruce Springsteen"],
+        ["The Final Countdown", "Europe"],
+        ["Song 2", "Blur"],
+      ],
+    },
+    "hi.bright.modern.organic": {
+      lead: "Feel-good songs with real instruments, with plenty from 2000 on.",
+      body: "You like music that sounds like a summer festival: guitars, stomps and claps, a crowd singing the hook back. Your picks run upbeat and bright, give the 2000s and later a good share, and favor a band sound over synths. Indie rock, folk-pop with a banjo, pop-punk and the guitar side of the charts all fit.",
+      songs: [
+        ["Hey Ya!", "OutKast"],
+        ["I Will Wait", "Mumford & Sons"],
+        ["You’ve Got the Love", "Florence + the Machine"],
+        ["The Middle", "Jimmy Eat World"],
+        ["Last Nite", "The Strokes"],
+      ],
+    },
+    "hi.bright.modern.electric": {
+      lead: "Upbeat, synth-driven songs made for moving, with plenty from 2000 on.",
+      body: "You like music built to move to: a beat up front, synths with some shine, a hook that lands on the first listen. Your picks run upbeat and bright, give the 2000s and later a good share, and favor electronic sound over acoustic. Dance-pop, electropop and indie dance all fit. It's the biggest corner of ABTune's catalog: about one in five of its well-known English songs sounds like this.",
+      songs: [
+        ["Toxic", "Britney Spears"],
+        ["Midnight City", "M83"],
+        ["Only Girl (In the World)", "Rihanna"],
+        ["Ready for the Floor", "Hot Chip"],
+        ["I Bet You Look Good on the Dancefloor", "Arctic Monkeys"],
+      ],
+    },
+    "hi.dark.retro.organic": {
+      lead: "Driving, brooding songs played by real bands, mostly from before 2000.",
+      body: "You like music with weight: a band playing hard, a minor key, a singer who means every word. Your picks run energetic but dark, lean to the decades before 2000, and favor songs that sound played rather than programmed. Hard rock, grunge and 90s alternative fit, and so does the heavier side of 70s rock. It's the rarest corner of ABTune's catalog: fewer than one in a hundred of its well-known English songs sound like this.",
+      songs: [
+        ["Zombie", "The Cranberries"],
+        ["Black", "Pearl Jam"],
+        ["Lady in Black", "Uriah Heep"],
+        ["One of These Nights", "Eagles"],
+        ["Weak", "Skunk Anansie"],
+      ],
+    },
+    "hi.dark.retro.electric": {
+      lead: "Driving, shadowy songs with synths and beats, mostly from before 2000.",
+      body: "You like music for after dark: a pulsing bassline, cold synths, a beat that keeps moving while the mood stays tense. Your picks run energetic but dark, lean to the decades before 2000, and favor electronic sound over acoustic. Shadowy 80s pop, 90s dance music and big beat all fit.",
+      songs: [
+        ["Thriller", "Michael Jackson"],
+        ["When Doves Cry", "Prince"],
+        ["Insomnia", "Faithless"],
+        ["Firestarter", "The Prodigy"],
+        ["Self Control", "Laura Branigan"],
+      ],
+    },
+    "hi.dark.modern.organic": {
+      lead: "Loud, moody guitar songs, with plenty from 2000 on.",
+      body: "You like music with a guitar and something to get off your chest: a riff up front, a chorus that hits hard, a singer working through it. Your picks run energetic but dark, give the 2000s and later a good share, and favor a band sound over synths. Emo, post-grunge and moody alternative rock fit. It's the second-rarest corner of ABTune's catalog: about one in a hundred of its well-known English songs sounds like this.",
+      songs: [
+        ["Yellow", "Coldplay"],
+        ["Girl’s Not Grey", "AFI"],
+        ["It’s Been Awhile", "Staind"],
+        ["Ohio Is for Lovers", "Hawthorne Heights"],
+        ["Hemorrhage (In My Hands)", "Fuel"],
+      ],
+    },
+    "hi.dark.modern.electric": {
+      lead: "Hard-hitting electronic and hip-hop songs with a dark edge, with plenty from 2000 on.",
+      body: "You like music that hits you in the chest: heavy bass, hard beats, synths with teeth. Your picks run energetic but dark, give the 2000s and later a good share, and favor electronic sound over acoustic. Drum and bass, electro, dark dance-pop and hip-hop with a menacing beat all fit.",
+      songs: [
+        ["Harder, Better, Faster, Stronger", "Daft Punk"],
+        ["Poker Face", "Lady Gaga"],
+        ["Gold Digger", "Kanye West"],
+        ["Witchcraft", "Pendulum"],
+        ["Day ’n’ Nite (Nightmare)", "Kid Cudi"],
+      ],
+    },
+    "lo.bright.retro.organic": {
+      lead: "Easygoing, warm songs with guitar and piano, mostly from before 2000.",
+      body: "You like music that takes its time: an acoustic guitar, a piano, a voice telling a story, a chorus you can hum. Your picks run calm and bright, lean to the decades before 2000, and favor songs that sound played rather than programmed. Folk, singer-songwriters, roots rock and a bit of reggae fit: a sunny afternoon on the porch, as the name says.",
+      songs: [
+        ["Three Little Birds", "Bob Marley & The Wailers"],
+        ["The Weight", "The Band"],
+        ["Wild World", "Cat Stevens"],
+        ["Piano Man", "Billy Joel"],
+        ["Kiss Me", "Sixpence None the Richer"],
+      ],
+    },
+    "lo.bright.retro.electric": {
+      lead: "Smooth, groovy songs with electric keys and basslines, mostly from before 2000.",
+      body: "You like music with a slow strut: a funky bassline, electric keys, a groove that never hurries. Your picks run calm and bright, lean to the decades before 2000, and favor plugged-in sound over acoustic. 70s funk and soul, smooth 80s pop and late-90s downtempo all fit.",
+      songs: [
+        ["Theme From ‘Shaft’", "Isaac Hayes"],
+        ["Low Rider", "War"],
+        ["Superstition", "Stevie Wonder"],
+        ["Kelly Watch the Stars", "Air"],
+        ["Maneater", "Daryl Hall & John Oates"],
+      ],
+    },
+    "lo.bright.modern.organic": {
+      lead: "Gentle, warm songs with acoustic instruments, with plenty from 2000 on.",
+      body: "You like music that feels like a good morning: an acoustic guitar, a ukulele or a whistled hook, a melody that makes you smile without trying hard. Your picks run calm and bright, give the 2000s and later a good share, and favor acoustic sound. Indie folk, singer-songwriter pop and soft acoustic hits all fit.",
+      songs: [
+        ["Mushaboom", "Feist"],
+        ["Hey, Soul Sister", "Train"],
+        ["Your Body Is a Wonderland", "John Mayer"],
+        ["Home", "Edward Sharpe & The Magnetic Zeros"],
+        ["Young Folks", "Peter Bjorn and John"],
+      ],
+    },
+    "lo.bright.modern.electric": {
+      lead: "Relaxed, sunny electronic songs, with plenty from 2000 on.",
+      body: "You like music that glows: soft synths, a light beat, a hook that floats instead of shouting. Your picks run calm and bright, give the 2000s and later a good share, and favor electronic sound over acoustic. Indietronica, chilled electropop and dreamy synth songs all fit.",
+      songs: [
+        ["Fireflies", "Owl City"],
+        ["Such Great Heights", "The Postal Service"],
+        ["DARE", "Gorillaz"],
+        ["Oblivion", "Grimes"],
+        ["Lights", "Ellie Goulding"],
+      ],
+    },
+    "lo.dark.retro.organic": {
+      lead: "Slow, sad songs with guitar and piano, mostly from before 2000.",
+      body: "You like music for staring out of a window: a quiet guitar, a piano, a voice close to the mic, a song that lets the sadness sit. Your picks run calm and dark, lean to the decades before 2000, and favor songs that sound played rather than programmed. Folk ballads, soul, classic rock's slow songs and 90s alternative ballads all fit.",
+      songs: [
+        ["The Sound of Silence", "Simon & Garfunkel"],
+        ["Ain’t No Sunshine", "Bill Withers"],
+        ["Wish You Were Here", "Pink Floyd"],
+        ["Everybody Hurts", "R.E.M."],
+        ["Hallelujah", "Jeff Buckley"],
+      ],
+    },
+    "lo.dark.retro.electric": {
+      lead: "Slow, shadowy songs with beats and atmosphere, mostly from before 2000.",
+      body: "You like music that sounds like a city at 2 a.m.: a slow beat, a low bassline, a haze of synths and a voice that keeps its secrets. Your picks run calm and dark, lean to the decades before 2000, and favor electronic sound over acoustic. Trip-hop, sultry 80s and 90s soul and downtempo all fit.",
+      songs: [
+        ["Teardrop", "Massive Attack"],
+        ["No Ordinary Love", "Sade"],
+        ["6 Underground", "Sneaker Pimps"],
+        ["Black Velvet", "Alannah Myles"],
+        ["Missing", "Everything but the Girl"],
+      ],
+    },
+    "lo.dark.modern.organic": {
+      lead: "Quiet, heartfelt songs with acoustic instruments, with plenty from 2000 on.",
+      body: "You like music that tells the truth softly: a fingerpicked guitar, a piano, a voice that sounds like it's singing to one person. Your picks run calm and dark, give the 2000s and later a good share, and favor acoustic sound. Indie folk, piano ballads and stripped-back singer-songwriters all fit.",
+      songs: [
+        ["Someone Like You", "Adele"],
+        ["Skinny Love", "Bon Iver"],
+        ["I Will Follow You Into the Dark", "Death Cab for Cutie"],
+        ["Mad World", "Gary Jules"],
+        ["Cannonball", "Damien Rice"],
+      ],
+    },
+    "lo.dark.modern.electric": {
+      lead: "Slow, moody electronic songs for late nights, with plenty from 2000 on.",
+      body: "You like music for an empty road at night: slow synths, echoing beats, a voice drifting somewhere in the mix. Your picks run calm and dark, give the 2000s and later a good share, and favor electronic sound over acoustic. Alt-R&B, downtempo, chilled electronica and moody synth-pop all fit.",
+      songs: [
+        ["Thinkin Bout You", "Frank Ocean"],
+        ["Archangel", "Burial"],
+        ["Breathe", "Télépopmusik"],
+        ["Sail", "AWOLNATION"],
+        ["I Follow Rivers", "Lykke Li"],
+      ],
+    },
+  } as Readonly<Record<string, TypeCopy>>,
+};
 
 export const EXPORT_LABELS = {
   m3u: { name: "M3U", about: "Music players (VLC, foobar2000)" },
