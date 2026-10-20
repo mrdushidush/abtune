@@ -25,6 +25,10 @@ and versions follow [Semantic Versioning](https://semver.org/).
   It is built into the page, so search engines and AI answer engines read it without running the
   app, along with structured data (schema.org), a canonical address, `/sitemap.xml`, a `Sitemap:`
   line in `/robots.txt`, and `/llms.txt`.
+- A page for each of the 16 music personalities, such as `/types/porch-poet`, and a list of all 16
+  at `/types` that explains the four traits. Each page says what its traits mean together, names
+  five well-known songs the catalog itself places there, and links the four types one trait away.
+  Plain pages with no script, in the sitemap and `llms.txt`, and linked from the start page.
 
 ### Changed
 - An address that isn't a page answers 404, with a short page that points to the quiz, instead of

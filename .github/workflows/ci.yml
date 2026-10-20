@@ -96,6 +96,13 @@ jobs:
         run: |
           curl -sf http://127.0.0.1:8787/privacy | grep -q "<h1>Privacy</h1>"
           curl -sf http://127.0.0.1:8787/terms | grep -q "<h1>Terms of use</h1>"
+      - name: Serves the music personality pages, with the public URL filled in
+        run: |
+          curl -sf http://127.0.0.1:8787/types | grep -q "<h1>The 16 music personalities</h1>"
+          curl -sf http://127.0.0.1:8787/types/night-drive-ghost | grep -q "<h1>Night-Drive Ghost</h1>"
+          curl -sf http://127.0.0.1:8787/types/night-drive-ghost | grep -q '<link rel="canonical" href="https://abtune.com/types/night-drive-ghost" />'
+          curl -sf http://127.0.0.1:8787/sitemap.xml | grep -q "<loc>https://abtune.com/types/night-drive-ghost</loc>"
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8787/types/nope)" = 404
       - name: Generates a playlist, identically twice
         run: |
           BODY=$(curl -sf http://127.0.0.1:8787/api/health | jq -c '{

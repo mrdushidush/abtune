@@ -12,6 +12,7 @@ import { type Context, Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import { secureHeaders } from "hono/secure-headers";
 import type { ApiError, Health } from "../api-types.ts";
+import { PERSONALITIES, TYPES_PATH } from "../personalities.ts";
 import { aiHealth, mountAi, type ServerAi } from "./ai.ts";
 import { type CatalogSlot, catalogHealth, readyCatalog } from "./catalog.ts";
 import { fromThisSite } from "./http.ts";
@@ -85,6 +86,12 @@ export function shareBaseUrl(appBaseUrl?: string, shareBase?: string): string {
 
 /** Static pages besides the app, each served at `/<name>` from `<name>.html`. */
 export const LEGAL_PAGES = ["privacy", "terms"] as const;
+
+/** The music personality pages, served the same way: `/types` and `/types/<slug>` (personalities.ts). */
+export const TYPE_PAGES: readonly string[] = [
+  TYPES_PATH,
+  ...PERSONALITIES.map((p) => `${TYPES_PATH}/${p.slug}`),
+];
 
 /** Text files for crawlers, served at `/<name>` with the public URL filled in. */
 export const CRAWLER_FILES = [
@@ -328,8 +335,9 @@ export function createApp({
     const page = pageOf("index.html");
     app.get("/", page);
     app.get("/index.html", page);
-    // The privacy and terms pages: documents that need no script, at the addresses the bios print.
-    for (const name of LEGAL_PAGES)
+    // The privacy and terms pages, at the addresses the bios print, and the music personality pages:
+    // documents that need no script.
+    for (const name of [...LEGAL_PAGES, ...TYPE_PAGES])
       for (const route of [`/${name}`, `/${name}/`, `/${name}.html`])
         app.get(route, pageOf(`${name}.html`));
     // For crawlers: they name absolute URLs, so they're filled in like the pages.

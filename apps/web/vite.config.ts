@@ -3,7 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
 import { abtuneBank } from "./src/bank-plugin.ts";
-import { abtunePrerender } from "./src/prerender-plugin.ts";
+import { abtunePrerender, abtuneTypePages } from "./src/prerender-plugin.ts";
 
 const client = path.resolve(import.meta.dirname, "src/client");
 const questions = path.resolve(import.meta.dirname, "../../data/questions");
@@ -39,6 +39,7 @@ export default defineConfig({
     tailwindcss(),
     abtuneBank(questions),
     abtunePrerender(client, questions),
+    abtuneTypePages(),
     legalPages(),
   ],
   server: {

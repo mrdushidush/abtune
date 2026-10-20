@@ -9,8 +9,15 @@ import { archetypeName } from "@abtune/engine";
 import { describe, expect, it } from "vitest";
 import { IL_PACK } from "../src/client/lib/locale.ts";
 import { landingHtml, structuredData } from "../src/client/prerender.tsx";
-import { packName, t } from "../src/client/strings.ts";
-import { CRAWLER_FILES, createApp, LEGAL_PAGES, URL_PLACEHOLDER } from "../src/server/app.ts";
+import { packName, TYPE_PAGES as TYPE_PAGES_COPY, t } from "../src/client/strings.ts";
+import { PERSONALITIES } from "../src/personalities.ts";
+import {
+  CRAWLER_FILES,
+  createApp,
+  LEGAL_PAGES,
+  TYPE_PAGES,
+  URL_PLACEHOLDER,
+} from "../src/server/app.ts";
 
 const client = fileURLToPath(new URL("../src/client/", import.meta.url));
 const questionsDir = fileURLToPath(new URL("../../../data/questions", import.meta.url));
@@ -65,6 +72,10 @@ describe("the prerendered start screen", () => {
     const named = [...names].filter((n) => step.includes(n));
     expect(named).toEqual(["Sunburst Revivalist", "Night-Drive Ghost"]);
   });
+
+  it("links the page that lists all 16", () => {
+    expect(html).toContain('href="/types"');
+  });
 });
 
 describe("structured data", () => {
@@ -97,7 +108,10 @@ describe("the sources crawlers read", () => {
   it("list every page in the sitemap, and point robots.txt at it", async () => {
     const sitemap = await source("public/sitemap.xml");
     const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-    expect(locs).toEqual([URL_PLACEHOLDER, ...LEGAL_PAGES.map((p) => `${URL_PLACEHOLDER}${p}`)]);
+    expect(locs).toEqual([
+      URL_PLACEHOLDER,
+      ...[...LEGAL_PAGES, ...TYPE_PAGES].map((p) => `${URL_PLACEHOLDER}${p}`),
+    ]);
     const robots = await source("public/robots.txt");
     expect(robots).toContain("Disallow: /api/");
     expect(robots).toContain(`Sitemap: ${URL_PLACEHOLDER}sitemap.xml`);
@@ -106,7 +120,13 @@ describe("the sources crawlers read", () => {
   it("link the same pages from llms.txt", async () => {
     const llms = await source("public/llms.txt");
     expect(llms.startsWith("# ABTune\n\n> ")).toBe(true);
-    for (const p of ["", ...LEGAL_PAGES]) expect(llms).toContain(`(${URL_PLACEHOLDER}${p})`);
+    for (const p of ["", ...LEGAL_PAGES, ...TYPE_PAGES])
+      expect(llms).toContain(`(${URL_PLACEHOLDER}${p})`);
+    // Each type's line is its page's lead, word for word.
+    for (const p of PERSONALITIES)
+      expect(llms).toContain(
+        `- [${p.name}](${URL_PLACEHOLDER}types/${p.slug}): ${TYPE_PAGES_COPY.types[p.key]?.lead}\n`,
+      );
   });
 });
 
