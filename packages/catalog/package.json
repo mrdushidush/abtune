@@ -19,6 +19,6 @@
     "@abtune/engine": "workspace:*",
     "@duckdb/node-api": "1.5.6-r.1",
     "yaml": "^2.9.1",
-    "zod": "^4.6.5"
+    "zod": "^4.6.6"
   }
 }
