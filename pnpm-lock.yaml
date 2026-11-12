@@ -42,8 +42,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/engine
       '@hono/node-server':
-        specifier: ^2.1.3
-        version: 2.1.3(hono@4.13.12)
+        specifier: ^2.1.6
+        version: 2.1.8(hono@4.13.12)
       hono:
         specifier: ^4.13.12
         version: 4.13.12
@@ -288,11 +288,11 @@ packages:
   '@duckdb/node-bindings@1.5.6-r.1':
     resolution: {integrity: sha512-/pWlTyvKC1d16iSMJCBAPwlmzoeXRs5Y9cqG+TpKd/YAW6Ke05FJg099v/Im2bkS9BgznNyNcAK1NxA1eQhSUw==}
 
-  '@hono/node-server@2.1.3':
-    resolution: {integrity: sha512-TA//nWMqPhbfdfneACk6t5a9eqbS9lABEPyKn0/xZTah3H3U2XaVg85rJFl0/Fyit0I552YDHgXGVSf3GwqbUw==}
+  '@hono/node-server@2.1.8':
+    resolution: {integrity: sha512-jdf7FHh6A1lzjpHHQUgxsg2GeER2vMetnAOfeActzcoli6jamlK+NAwL6Dsr5Fl3BS3tYUQzCdtZjU8Qxv7bEA==}
     engines: {node: '>=20'}
     peerDependencies:
-      hono: ^4
+      hono: ^4 || ^5.0.0-0
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -1498,7 +1498,7 @@ snapshots:
       '@duckdb/node-bindings-win32-arm64': 1.5.6-r.1
       '@duckdb/node-bindings-win32-x64': 1.5.6-r.1
 
-  '@hono/node-server@2.1.3(hono@4.13.12)':
+  '@hono/node-server@2.1.8(hono@4.13.12)':
     dependencies:
       hono: 4.13.12
 
@@ -1523,7 +1523,7 @@ snapshots:
 
   '@modelcontextprotocol/sdk@1.32.0(zod@4.6.7)':
     dependencies:
-      '@hono/node-server': 2.1.3(hono@4.13.12)
+      '@hono/node-server': 2.1.8(hono@4.13.12)
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)
       content-type: 1.0.5
